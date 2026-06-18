@@ -9,6 +9,11 @@ import './MyPage.css'
 export default function MyPage() {
   const navigate = useNavigate()
 
+  function handleLogout() {
+    localStorage.clear()
+    navigate('/login')
+  }
+
   return (
     <>
       {/* Figma 345:1539: 헤더 h=64(웹), border-bottom #e2e2e2 */}
@@ -36,7 +41,7 @@ export default function MyPage() {
 
         {/* Figma 345:1575: 로그아웃 */}
         <div className="mypage-logout-section">
-          <div className="mypage-menu-item">
+          <div className="mypage-menu-item" onClick={handleLogout} style={{ cursor: 'pointer' }}>
             <span className="mypage-menu-label">로그아웃</span>
             <img src={navNextIcon} alt="" className="mypage-menu-arrow" />
           </div>
