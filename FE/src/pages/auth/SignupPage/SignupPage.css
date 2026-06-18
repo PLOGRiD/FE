@@ -1,0 +1,98 @@
+.signup-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100dvh;
+  min-height: 100vh;
+  background: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+/* y=73 / 852 */
+.signup-header {
+  width: 100%;
+  padding: 73px 28px 0;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.back-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+/* y=97 / 852 ≈ bird section */
+.signup-bird {
+  margin-top: 0;
+  display: flex;
+  justify-content: center;
+  padding: 0;
+}
+
+.signup-bird-img {
+  width: 112px;
+  height: 117px;
+  object-fit: contain;
+}
+
+/* y=218 */
+.signup-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #323639;
+  text-align: center;
+  margin-top: 4px;
+  margin-bottom: 24px;
+}
+
+.signup-form {
+  width: 100%;
+  padding: 0 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* 비밀번호 확인은 바로 붙임 (gap 9px) */
+.signup-form .input-wrap + .input-wrap {
+  margin-top: 13px;
+}
+
+.signup-form .pw-confirm {
+  margin-top: 9px;
+}
+
+/* 완료 버튼: 피그마 y=754 → 하단 고정 느낌 */
+.signup-submit {
+  position: absolute;
+  bottom: 56px;
+  left: 33px;
+  right: 33px;
+  height: 43px;
+  background: var(--gray-disabled);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: not-allowed;
+}
+
+.signup-submit.active {
+  background: var(--mint);
+  cursor: pointer;
+}
+
+.signup-submit.active:active {
+  opacity: 0.9;
+}
