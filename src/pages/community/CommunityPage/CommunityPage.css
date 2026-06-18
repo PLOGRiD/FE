@@ -1,0 +1,183 @@
+/* Figma 365:44: 헤더 h=64(웹), border-bottom #e2e2e2 */
+.community-header {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  height: 64px;
+  background: #fff;
+  border-bottom: 1px solid #e2e2e2;
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 15px 10px;
+}
+
+.community-back-btn {
+  background: none; border: none; padding: 0;
+  width: 11px; height: 22px; flex-shrink: 0;
+}
+.community-back-icon { width: 11px; height: 22px; object-fit: contain; }
+
+.community-title {
+  flex: 1;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'SUIT Variable', sans-serif;
+  color: #323639;
+}
+
+/* Figma 375:30: 탭바 h=36, border-bottom #e2e2e2 */
+.community-tabbar {
+  position: fixed;
+  top: 64px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  height: 36px;
+  background: #fff;
+  border-bottom: 1px solid #e2e2e2;
+  display: flex;
+  z-index: 49;
+}
+
+.community-tab {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'SUIT Variable', sans-serif;
+  color: #323639;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.community-tab.active {
+  border-bottom-color: #a0cfbd;
+  color: #323639;
+}
+
+/* 스크롤 콘텐츠 */
+.community-page {
+  padding-top: calc(64px + 36px);
+  padding-bottom: 90px;
+  background: #f4f6f8;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Figma 365:35: 게시글 카드 bg=white */
+.community-post {
+  background: #fff;
+  overflow: hidden;
+}
+
+/* Figma 365:98: 작성자 행 pt=17, pb=12, px=18 */
+.post-author-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 17px 18px 12px;
+}
+
+/* Figma 365:42: avatar w=44, h=45, radius=200, border 0.5px #d4d4d4
+   inner (365:43): image 104 → w=52, h=51, left=-4.5, top=2.5, object-cover */
+.post-avatar {
+  position: relative;
+  width: 44px;
+  height: 45px;
+  border-radius: 200px;
+  border: 0.5px solid #d4d4d4;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.post-avatar-img {
+  position: absolute;
+  width: 52px;
+  height: 51px;
+  left: -4.5px;
+  top: 2.5px;
+  object-fit: cover;
+}
+
+.post-author-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: #2f2f2f;
+}
+
+/* Figma 365:100: 이미지 h=294 */
+.post-image-wrap {
+  position: relative;
+  width: 100%;
+  height: 294px;
+  overflow: hidden;
+}
+.post-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Figma 365:102: 2/4 배지 bg rgba(217,217,217,0.33), radius=8 */
+.post-slide-badge {
+  position: absolute;
+  top: 10px;
+  right: 5px;
+  background: rgba(217,217,217,0.33);
+  border-radius: 8px;
+  padding: 2px 6px;
+  font-size: 9px;
+  font-weight: 400;
+  color: #fff;
+  letter-spacing: 1.8px;
+}
+
+/* Figma 365:93: 좋아요 행 */
+.post-likes-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 20px 4px;
+}
+.post-heart-icon { width: 24px; height: 24px; }
+.post-likes {
+  font-size: 13px;
+  color: #6d6d6d;
+}
+
+/* Figma 365:96: 제목 font=18px Bold #1e1e1e */
+.post-title {
+  font-size: 18px;
+  font-weight: 700;
+  font-family: 'SUIT Variable', sans-serif;
+  color: #1e1e1e;
+  padding: 4px 20px;
+  line-height: 1.6;
+}
+
+/* Figma 365:97: 본문 font=12px Medium #6d6d6d */
+.post-body {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6d6d6d;
+  padding: 2px 20px 16px;
+  line-height: 1.5;
+}
+
+.post-more-btn {
+  font-size: 10px;
+  font-weight: 500;
+  color: #a19e9e;
+  background: none;
+  border: none;
+  padding: 0 20px 16px;
+  display: block;
+  cursor: pointer;
+}

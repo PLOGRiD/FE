@@ -1,0 +1,114 @@
+/* Figma 345:1011: 헤더 h=64(웹) */
+.plogging-header {
+  position: fixed;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 100%; max-width: 430px;
+  height: 64px;
+  background: #fff;
+  border-bottom: 1px solid #e2e2e2;
+  z-index: 50;
+  display: flex; align-items: flex-end;
+  padding: 0 15px 10px;
+}
+.plogging-back-btn { background: none; border: none; padding: 0; width: 11px; height: 22px; flex-shrink: 0; }
+.plogging-back-icon { width: 11px; height: 22px; object-fit: contain; display: block; }
+.plogging-title {
+  flex: 1; text-align: center;
+  font-size: 15px; font-weight: 700;
+  font-family: 'SUIT Variable', sans-serif;
+  color: #323639;
+}
+
+/* 스크롤 콘텐츠 */
+.plogging-page {
+  padding-top: 64px;
+  padding-bottom: 90px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Figma 345:1039: top=144 (전체 프레임 기준) → 헤더 64px 제외 80px */
+.plogging-main-title {
+  font-size: 20px; font-weight: 600; color: #323639;
+  text-align: center;
+  margin-top: 80px;
+}
+
+/* Figma 345:1040: top=184 → 184-144=40px gap */
+.plogging-sub {
+  font-size: 13px; font-weight: 500; color: #7c7c7c;
+  text-align: center; line-height: 1.6;
+  margin-top: 10px;
+}
+
+/* 백 + 그림자 묶음 영역 */
+.plogging-bag-area {
+  position: relative;
+  width: 150px;
+  height: 175px;
+  margin-top: 35px;
+}
+
+/* Figma 345:1044: w=150, h=146, top=269 (frame기준)
+   inner img: absolute w=868.67%, h=596.09%, left=-29.75%, top=-352.44% */
+.plogging-bag-container {
+  position: absolute;
+  top: 0; left: 0;
+  width: 150px; height: 146px;
+  overflow: hidden;
+}
+.plogging-bag-img {
+  position: absolute;
+  width: 868.67%;
+  height: 596.09%;
+  left: -29.75%;
+  top: -352.44%;
+}
+
+/* Figma 345:1043: ellipse w=147, h=29, top=377 (frame) → 377-269=108px from bag top */
+.plogging-ellipse-container {
+  position: absolute;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 147px; height: 29px;
+}
+.plogging-ellipse-img {
+  position: absolute;
+  /* inset=[-34.48%, -6.8%] → overflow 처리 */
+  width: calc(100% + 2 * 6.8%);
+  height: calc(100% + 2 * 34.48%);
+  left: -6.8%; top: -34.48%;
+  object-fit: contain;
+}
+
+/* Figma 345:1036: "연결 대기 중" top=456 */
+.plogging-wait-title {
+  font-size: 20px; font-weight: 600; color: #323639;
+  text-align: center;
+  margin-top: 28px;
+}
+
+/* Figma 345:1037: loading icon size=24 */
+.plogging-loading {
+  margin-top: 10px;
+  display: flex; align-items: center; justify-content: center;
+  height: 24px;
+}
+.plogging-loading-icon { width: 24px; height: 24px; object-fit: contain; }
+
+/* Figma 345:1041: h=246, w=254, border #bdc0c7, radius=10 */
+.plogging-qr-border {
+  width: 254px; height: 246px;
+  border: 1px solid #bdc0c7;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 20px;
+}
+.plogging-qr-img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: -40px -45px;
+}

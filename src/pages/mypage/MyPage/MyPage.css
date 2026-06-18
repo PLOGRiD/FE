@@ -1,0 +1,130 @@
+/* Figma 345:1539: 헤더 h=64(웹), border-bottom #e2e2e2 */
+.mypage-header {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  height: 64px;
+  background: #fff;
+  border-bottom: 1px solid #e2e2e2;
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 15px 10px;
+}
+
+.mypage-back-btn {
+  background: none; border: none; padding: 0;
+  width: 11px; height: 22px; flex-shrink: 0;
+}
+.mypage-back-icon { width: 11px; height: 22px; object-fit: contain; }
+
+.mypage-title {
+  flex: 1;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: #323639;
+}
+
+/* 스크롤 콘텐츠 */
+.mypage-page {
+  padding-top: 64px;
+  padding-bottom: 90px;
+  background: #f4f6f8;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Figma 345:1568: 메뉴 목록 h=139, bg=white */
+.mypage-menu-section {
+  background: #fff;
+  overflow: hidden;
+}
+
+.mypage-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 26px;
+  height: 55px;
+}
+
+/* Figma 345:1570: font=13px SemiBold #323639 */
+.mypage-menu-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #323639;
+}
+
+.mypage-menu-arrow {
+  width: 19px;
+  height: 19px;
+  object-fit: contain;
+}
+
+/* Figma 345:1569: divider #e2e2e2, mx=16 */
+.mypage-divider {
+  height: 1px;
+  background: #e2e2e2;
+  margin: 0 16px;
+}
+
+/* Figma 345:1575: 로그아웃 섹션 */
+.mypage-logout-section {
+  background: #fff;
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+/* Figma 345:1579: 마스코트 right side, opacity=40%, h=165, w=174 */
+.mypage-mascot-wrap {
+  position: absolute;
+  right: 0;
+  top: calc(64px + 139px + 55px + 120px);
+  width: 174px;
+  height: 165px;
+  opacity: 0.4;
+  overflow: hidden;
+  pointer-events: none;
+}
+.mypage-mascot {
+  position: absolute;
+  width: 483.25%;
+  height: 410.52%;
+  left: -250.09%;
+  top: -54.24%;
+}
+
+/* Figma 345:1563: 하단 브랜딩 left=23, top=691 */
+.mypage-footer {
+  position: absolute;
+  left: 23px;
+  bottom: 100px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.mypage-footer-clover {
+  width: 23px;
+  height: 23px;
+}
+
+.mypage-footer-brand {
+  font-size: 18px;
+  font-weight: 700;
+  color: #a9a9a9;
+}
+
+.mypage-footer-info {
+  width: 100%;
+  font-size: 9px;
+  color: #a9a9a9;
+  line-height: 15px;
+}
+.mypage-footer-info p:last-child { font-weight: 500; }

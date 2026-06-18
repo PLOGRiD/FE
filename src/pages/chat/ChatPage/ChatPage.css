@@ -1,0 +1,206 @@
+/* ── 헤더 Figma 345:519: bg=white, h=106→64(웹), border-bottom #e2e2e2 ── */
+.chat-header {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  height: 64px;
+  background: #fff;
+  border-bottom: 1px solid #e2e2e2;
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 14px 10px;
+}
+
+/* Figma 345:520: 뒤로가기 w=11, h=22 */
+.chat-back-btn {
+  background: none; border: none; padding: 0;
+  width: 11px; height: 22px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.chat-back-icon { width: 11px; height: 22px; object-fit: contain; display: block; }
+
+/* Figma 345:522: 플로비 SUIT Bold 15px center */
+.chat-title {
+  flex: 1;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'SUIT Variable', sans-serif;
+  color: #323639;
+}
+
+/* Figma 345:525: bg=#f5f5f5, w=31, h=32, radius=7 */
+.chat-session-btn {
+  width: 31px; height: 32px;
+  background: #f5f5f5; border-radius: 7px; border: none;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.chat-session-icon { width: 24px; height: 24px; }
+
+/* ── 메시지 영역 Figma: bg=#f4f6f8 ── */
+.chat-messages {
+  position: fixed;
+  top: 64px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  bottom: calc(96px + 90px);
+  overflow-y: auto;
+  background: #f4f6f8;
+  padding: 24px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  z-index: 10;
+}
+
+.chat-row { display: flex; align-items: flex-start; gap: 10px; }
+.chat-row.user { flex-direction: row-reverse; }
+
+/* Figma 345:528: size=55, radius=200, border 0.5px #d4d4d4, bg=white, overflow=hidden */
+.chat-bot-avatar {
+  position: relative;
+  width: 55px; height: 55px;
+  border-radius: 200px;
+  border: 0.5px solid #d4d4d4;
+  background: #fff;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* Figma 345:529: image 105 → w=73, h=66, left=-9.5, top=1.5 */
+.chat-avatar-inner {
+  position: absolute;
+  width: 73px; height: 66px;
+  left: -9.5px; top: 1.5px;
+  overflow: hidden;
+}
+
+/* Figma: img inside 345:529 → w=544.95%, h=483.96%, left=-284.84%, top=-356.06% */
+.chat-avatar-img {
+  position: absolute;
+  width: 544.95%;
+  height: 483.96%;
+  left: -284.84%;
+  top: -356.06%;
+}
+
+/* Figma 345:555: 봇 bubble bg=white, shadow, radius 3/10/10/10 */
+.chat-bubble {
+  max-width: 246px;
+  padding: 13px 14px;
+  font-size: 10px;
+  font-weight: 500;
+  color: #323639;
+  line-height: 1.6;
+  border-radius: 3px 10px 10px 10px;
+  box-shadow: 0px 1px 4px 0px rgba(0,0,0,0.1);
+  word-break: break-word;
+}
+.chat-bubble.bot { background: #fff; }
+
+/* Figma 345:565: 유저 bubble bg=#a0cfbd, radius 10/3/10/10 */
+.chat-bubble.user {
+  background: #a0cfbd;
+  color: #fff;
+  border-radius: 10px 3px 10px 10px;
+}
+
+/* 타이핑 애니메이션 */
+.chat-typing { display: flex; gap: 4px; align-items: center; min-height: 40px; }
+.chat-typing span {
+  width: 5px; height: 5px;
+  background: #a0cfbd; border-radius: 50%;
+  animation: chat-dot 1.2s infinite;
+}
+.chat-typing span:nth-child(2) { animation-delay: 0.2s; }
+.chat-typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes chat-dot {
+  0%, 80%, 100% { opacity: 0.3; }
+  40% { opacity: 1; }
+}
+
+/* Figma 345:518: BackgroundMascot w=234, h=262, opacity=50%
+   frame 기준 left=calc(33.33%+25px), top=492 */
+.chat-bg-mascot {
+  position: fixed;
+  width: 234px;
+  height: 262px;
+  right: calc(50% - 430px/2);
+  bottom: calc(96px + 90px + 10px);
+  opacity: 0.5;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 5;
+}
+/* Figma: img inside → w=600.88%, h=432.02%, left=-477.71%, top=-312.34% */
+.chat-bg-mascot-img {
+  position: absolute;
+  width: 600.88%;
+  height: 432.02%;
+  left: -477.71%;
+  top: -312.34%;
+}
+
+/* Figma 345:550: 입력창 bg=white, h=96, shadow 0 -5 4 rgba(0,0,0,0.1) */
+.chat-input-area {
+  position: fixed;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  height: 96px;
+  background: #fff;
+  box-shadow: 0px -5px 4px 0px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  padding: 0 19px;
+  gap: 10px;
+  z-index: 40;
+}
+
+/* Figma 345:552: w=304, h=46, bg=#f8f8f8, border 0.6px #dee4e9, radius=5, px=16 */
+.chat-input-wrap {
+  flex: 1;
+  height: 46px;
+  background: #f8f8f8;
+  border: 0.6px solid #dee4e9;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 10px;
+}
+
+/* Figma 345:553: 이미지 첨부 버튼 size=24 */
+.chat-attach-btn {
+  width: 24px; height: 24px;
+  flex-shrink: 0;
+  background: none; border: none;
+  display: flex; align-items: center; justify-content: center;
+}
+.chat-attach-btn img { width: 24px; height: 24px; }
+
+.chat-input {
+  flex: 1;
+  border: none; background: none;
+  font-size: 12px; font-family: inherit; color: #323639;
+  outline: none;
+}
+.chat-input::placeholder { color: #b1b7bc; }
+
+/* Figma 345:1934: SendButton w=47, h=46 */
+.chat-send-btn {
+  width: 47px; height: 46px;
+  flex-shrink: 0;
+  border: none; background: none; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.chat-send-btn img { width: 47px; height: 46px; object-fit: contain; }
+.chat-send-btn:disabled { opacity: 0.4; }
