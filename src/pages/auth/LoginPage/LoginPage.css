@@ -1,0 +1,100 @@
+/* 피그마 캔버스 393×852 기준 절대좌표 매핑 */
+.login-page {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  min-height: 100vh;
+  background: #fff;
+  overflow: hidden;
+}
+
+/* 피그마: x=133, y=269 */
+.login-tagline {
+  position: absolute;
+  left: 133px;
+  top: calc(269 / 852 * 100dvh);
+  font-size: 15px;
+  font-weight: 600;
+  color: #609581;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+/* 피그마: x=40, y=275, w=298 */
+.login-logo {
+  position: absolute;
+  left: 40px;
+  top: calc(275 / 852 * 100dvh);
+  width: 298px;
+  object-fit: contain;
+}
+
+/* 피그마: x=37, right=33px (393-37-323=33) */
+.login-form {
+  position: absolute;
+  left: 37px;
+  right: 33px;
+  top: calc(403 / 852 * 100dvh);
+  display: flex;
+  flex-direction: column;
+}
+
+/* 피그마: h=46, border #e8e8e8, bg #fafafa, pl=22 */
+.login-field {
+  width: 100%;
+  height: 46px;
+  padding: 0 22px;
+  border: 1px solid #e8e8e8;
+  border-radius: 5px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--text);
+  background: #fafafa;
+  outline: none;
+}
+
+/* 피그마: 아이디 y=403, 비밀번호 y=462 → gap=462-(403+46)=13px */
+.login-field + .login-field {
+  margin-top: 13px;
+}
+
+.login-field::placeholder {
+  color: #737881;
+}
+
+.login-field:focus {
+  border-color: var(--mint);
+  background: #fff;
+}
+
+/* 피그마: 버튼 y=521, 비밀번호 bottom=508 → gap=13px, h=46, bg=#a0cfbd */
+.login-btn {
+  margin-top: 13px;
+  width: 100%;
+  height: 46px;
+  background: #a0cfbd;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.login-btn:active {
+  opacity: 0.9;
+}
+
+/* 피그마: y=577, 버튼 bottom=567 → gap=10px */
+.signup-link {
+  margin-top: 10px;
+  align-self: center;
+  font-size: 14px;
+  color: #737881;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+}

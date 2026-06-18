@@ -1,0 +1,44 @@
+/* 피그마 캔버스 393×852 기준 절대좌표 매핑 */
+.splash-page {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  min-height: 100vh;
+  background: #fff;
+  overflow: hidden;
+}
+
+/* 피그마: x=130, y=284 */
+.splash-tagline {
+  position: absolute;
+  left: 130px;
+  top: calc(284 / 852 * 100dvh);
+  font-size: 15px;
+  font-weight: 600;
+  color: #609581;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+/* 피그마: x=36, y=289, w=298 */
+.splash-logo {
+  position: absolute;
+  left: 36px;
+  top: calc(289 / 852 * 100dvh);
+  width: 298px;
+  object-fit: contain;
+}
+
+/* 피그마: x=15, y=539, w=401, h=424 */
+.splash-bird-wrap {
+  position: absolute;
+  left: 15px;
+  top: calc(539 / 852 * 100dvh);
+  width: 401px;
+}
+
+.splash-bird-img {
+  width: 100%;
+  display: block;
+  object-fit: contain;
+}
