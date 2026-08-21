@@ -1,0 +1,186 @@
+.result-page {
+  padding-top: 44px;
+  padding-bottom: 40px;
+  background: #fff;
+}
+
+/* ── 축하 히어로 ── */
+.result-hero {
+  position: relative;
+  height: 110px;
+  overflow: hidden;
+}
+
+.result-congrats {
+  position: absolute;
+  left: 18px;
+  top: 54px;
+}
+.result-congrats-line {
+  font-size: 18px;
+  font-weight: 600;
+  font-family: 'Pretendard Variable', sans-serif;
+  color: #323639;
+  line-height: 1.4;
+}
+
+.result-illust {
+  position: absolute;
+  right: 0;
+  top: -20px;
+  width: 200px;
+  height: 180px;
+}
+.result-ellipse {
+  position: absolute;
+  right: 10px;
+  top: 20px;
+  width: 158px;
+  height: 158px;
+  object-fit: contain;
+}
+/* 캐릭터 크롭 */
+.result-bird-wrap {
+  position: absolute;
+  right: 20px;
+  top: 6px;
+  width: 121px;
+  height: 129px;
+  overflow: hidden;
+}
+.result-bird {
+  position: absolute;
+  width: 638.75%;
+  height: 481.37%;
+  left: -27.5%;
+  top: -354.43%;
+}
+
+/* ── 공통 stat 스타일 ── */
+.result-stat-icon-box {
+  width: 31px; height: 32px;
+  background: #f5f5f5;
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.result-stat-icon { width: 22px; height: 22px; object-fit: contain; }
+.result-stat-label { font-size: 12px; font-weight: 600; color: #323639; margin-bottom: 3px; }
+.result-stat-value { font-size: 10px; font-weight: 600; color: #323639; }
+.result-stat-num { color: #a0cfbd; }
+.result-stat-value.mint { color: #a0cfbd; }
+
+/* ── 이동거리 / 진행시간 ── */
+.result-stats-row {
+  display: flex; gap: 8px;
+  margin: 0 17px;
+}
+.result-stat-card {
+  flex: 1; height: 72px;
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: -0.5px 1px 4px rgba(0,0,0,0.1);
+  display: flex; align-items: center;
+  padding: 0 12px 0 15px;
+  gap: 10px;
+  overflow: hidden;
+}
+
+/* ── 수거한 쓰레기 카드 ── */
+.result-trash-card {
+  margin: 12px 16px 0;
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: -0.5px 1px 4px rgba(0,0,0,0.1);
+  padding: 14px 15px;
+}
+.result-trash-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 12px;
+}
+
+/* 사진 그리드 */
+.result-photo-grid {
+  display: flex; gap: 10px;
+  margin-bottom: 16px;
+}
+.result-photo-thumb {
+  flex: 1; height: 90px;
+  background: #949494;
+  border-radius: 10px;
+}
+
+/* 바 차트 */
+.result-charts {
+  display: flex; gap: 8px;
+}
+.result-chart-col {
+  flex: 1;
+  display: flex; flex-direction: column; gap: 7px;
+}
+.result-chart-row {
+  display: flex; align-items: center; gap: 3px;
+}
+.result-chart-label {
+  font-size: 5px; font-weight: 500; color: #323639;
+  width: 20px; flex-shrink: 0;
+}
+.result-bar-bg {
+  flex: 1; height: 5px;
+  background: #d9d9d9;
+  border-radius: 30px;
+  overflow: hidden;
+}
+.result-bar-fill {
+  height: 100%;
+  background: #a0cfbd;
+  border-radius: 30px;
+}
+.result-chart-pct {
+  font-size: 6px; font-weight: 500; color: #323639;
+  width: 22px; text-align: center; flex-shrink: 0;
+}
+
+/* ── AI 배너 ── */
+.result-ai-banner {
+  margin: 12px 15px 0;
+  height: 60px;
+  background: rgba(160,207,189,0.25);
+  border-radius: 5px;
+  display: flex; align-items: center;
+  padding: 0 11px;
+  gap: 10px;
+  overflow: hidden;
+}
+.result-ai-icon { width: 37px; height: 37px; object-fit: contain; flex-shrink: 0; }
+.result-ai-title { font-size: 12px; font-weight: 600; color: #323639; margin-bottom: 2px; }
+.result-ai-sub { font-size: 8px; font-weight: 500; color: #323639; }
+
+/* ── 환경 기여 점수 ── */
+.result-score-card {
+  margin: 12px 16px 0;
+  height: 72px;
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: -0.5px 1px 4px rgba(0,0,0,0.1);
+  display: flex; align-items: center;
+  padding: 0 12px 0 15px;
+  gap: 10px;
+  overflow: hidden;
+}
+
+/* ── 확인 버튼 ── */
+.result-confirm-btn {
+  display: block;
+  width: calc(100% - 70px);
+  height: 43px;
+  background: #a0cfbd;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px; font-weight: 600;
+  font-family: 'SUIT Variable', sans-serif;
+  color: #fff;
+  cursor: pointer;
+  margin: 20px auto 0;
+}
+.result-confirm-btn:active { background: #8bbda9; }

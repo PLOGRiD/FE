@@ -1,17 +1,17 @@
-/* Figma 345:1011: 헤더 h=64(웹) */
+/* ── 헤더 ── */
 .plogging-header {
   position: fixed;
   top: 0; left: 50%;
   transform: translateX(-50%);
   width: 100%; max-width: 430px;
-  height: 64px;
+  height: 44px;
   background: #fff;
   border-bottom: 1px solid #e2e2e2;
   z-index: 50;
-  display: flex; align-items: flex-end;
-  padding: 0 15px 10px;
+  display: flex; align-items: center;
+  padding: 0 15px;
 }
-.plogging-back-btn { background: none; border: none; padding: 0; width: 11px; height: 22px; flex-shrink: 0; }
+.plogging-back-btn { background: none; border: none; padding: 0; width: 11px; height: 22px; flex-shrink: 0; cursor: pointer; }
 .plogging-back-icon { width: 11px; height: 22px; object-fit: contain; display: block; }
 .plogging-title {
   flex: 1; text-align: center;
@@ -20,9 +20,9 @@
   color: #323639;
 }
 
-/* 스크롤 콘텐츠 */
+/* ── 스크롤 콘텐츠 ── */
 .plogging-page {
-  padding-top: 64px;
+  padding-top: 44px;
   padding-bottom: 90px;
   background: #fff;
   display: flex;
@@ -30,30 +30,26 @@
   align-items: center;
 }
 
-/* Figma 345:1039: top=144 (전체 프레임 기준) → 헤더 64px 제외 80px */
+/* ── 디바이스 연결 타이틀 ── */
 .plogging-main-title {
   font-size: 20px; font-weight: 600; color: #323639;
   text-align: center;
   margin-top: 80px;
 }
 
-/* Figma 345:1040: top=184 → 184-144=40px gap */
 .plogging-sub {
   font-size: 13px; font-weight: 500; color: #7c7c7c;
   text-align: center; line-height: 1.6;
   margin-top: 10px;
 }
 
-/* 백 + 그림자 묶음 영역 */
+/* ── 백/디바이스 일러스트 ── */
 .plogging-bag-area {
   position: relative;
-  width: 150px;
-  height: 175px;
+  width: 150px; height: 175px;
   margin-top: 35px;
 }
 
-/* Figma 345:1044: w=150, h=146, top=269 (frame기준)
-   inner img: absolute w=868.67%, h=596.09%, left=-29.75%, top=-352.44% */
 .plogging-bag-container {
   position: absolute;
   top: 0; left: 0;
@@ -68,7 +64,14 @@
   top: -352.44%;
 }
 
-/* Figma 345:1043: ellipse w=147, h=29, top=377 (frame) → 377-269=108px from bag top */
+/* 연결 완료 상태의 디바이스 이미지 */
+.plogging-device-img {
+  position: absolute;
+  width: 100%; height: 100%;
+  object-fit: contain;
+  left: 0; top: 0;
+}
+
 .plogging-ellipse-container {
   position: absolute;
   bottom: 0; left: 50%;
@@ -77,21 +80,19 @@
 }
 .plogging-ellipse-img {
   position: absolute;
-  /* inset=[-34.48%, -6.8%] → overflow 처리 */
   width: calc(100% + 2 * 6.8%);
   height: calc(100% + 2 * 34.48%);
   left: -6.8%; top: -34.48%;
   object-fit: contain;
 }
 
-/* Figma 345:1036: "연결 대기 중" top=456 */
+/* ── 연결 대기 중 ── */
 .plogging-wait-title {
   font-size: 20px; font-weight: 600; color: #323639;
   text-align: center;
   margin-top: 28px;
 }
 
-/* Figma 345:1037: loading icon size=24 */
 .plogging-loading {
   margin-top: 10px;
   display: flex; align-items: center; justify-content: center;
@@ -99,16 +100,296 @@
 }
 .plogging-loading-icon { width: 24px; height: 24px; object-fit: contain; }
 
-/* Figma 345:1041: h=246, w=254, border #bdc0c7, radius=10 */
+/* ── QR 영역 ── */
 .plogging-qr-border {
+  position: relative;
   width: 254px; height: 246px;
   border: 1px solid #bdc0c7;
   border-radius: 10px;
   overflow: hidden;
   margin-top: 20px;
+  background: #1c1c1e;
 }
-.plogging-qr-img {
+
+/* 탭해서 스캔 힌트 */
+.plogging-qr-tap {
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.plogging-qr-tap:active { opacity: 0.8; }
+.plogging-qr-hint {
+  position: absolute;
+  bottom: 12px; left: 0; right: 0;
+  text-align: center;
+  font-size: 11px; font-weight: 600; color: #fff;
+  background: rgba(0,0,0,0.45);
+  padding: 6px 0;
+}
+
+/* ── 카메라 스캔 ── */
+.plogging-camera-video {
   width: 100%; height: 100%;
   object-fit: cover;
-  object-position: -40px -45px;
 }
+
+/* QR 프레임 코너 마커 */
+.plogging-qr-corners {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.qr-corner {
+  position: absolute;
+  width: 24px; height: 24px;
+  border-color: #a0cfbd;
+  border-style: solid;
+}
+.qr-corner.tl { top: 12px; left: 12px; border-width: 3px 0 0 3px; }
+.qr-corner.tr { top: 12px; right: 12px; border-width: 3px 3px 0 0; }
+.qr-corner.bl { bottom: 12px; left: 12px; border-width: 0 0 3px 3px; }
+.qr-corner.br { bottom: 12px; right: 12px; border-width: 0 3px 3px 0; }
+
+.plogging-scanning-text {
+  position: absolute;
+  bottom: 12px; left: 0; right: 0;
+  text-align: center;
+  font-size: 11px; font-weight: 600; color: #fff;
+  background: rgba(0,0,0,0.45);
+  padding: 6px 0;
+}
+
+/* ── 연결 완료 ── */
+.plogging-connected-title {
+  font-size: 20px; font-weight: 600;
+  color: #5c9a82;
+  text-align: center;
+  margin-top: 28px;
+}
+
+.plogging-connected-check {
+  margin-top: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+.plogging-check-icon { width: 24px; height: 24px; }
+
+.plogging-connected-sub {
+  font-size: 13px; font-weight: 600; color: #323639;
+  text-align: center;
+  margin-top: 12px;
+}
+.plogging-connected-sub2 {
+  font-size: 11px; font-weight: 500; color: #7c7c7c;
+  text-align: center;
+  margin-top: 4px;
+}
+
+.plogging-done-btn {
+  width: calc(100% - 70px);
+  height: 43px;
+  background: #a0cfbd;
+  border: none; border-radius: 5px;
+  font-size: 16px; font-weight: 600;
+  font-family: 'SUIT Variable', sans-serif;
+  color: #fff;
+  cursor: pointer;
+  margin-top: 28px;
+}
+.plogging-done-btn:active { background: #8bbda9; }
+
+/* ── 플로깅 진행 중 ── */
+.plogging-running-page {
+  justify-content: flex-start;
+  gap: 0;
+}
+
+.plogging-running-label {
+  font-size: 13px; font-weight: 500; color: #7c7c7c;
+  text-align: center;
+  margin-top: 48px;
+}
+
+.plogging-running-timer {
+  font-size: 36px; font-weight: 700; color: #323639;
+  text-align: center; letter-spacing: 2px;
+  margin-top: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.plogging-running-stats {
+  display: flex; gap: 12px;
+  width: calc(100% - 28px);
+  margin-top: 28px;
+}
+
+.plogging-stat-card {
+  flex: 1;
+  background: #f4f6f8;
+  border-radius: 10px;
+  padding: 16px 14px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+
+.plogging-stat-label {
+  font-size: 11px; font-weight: 500; color: #7c7c7c;
+}
+.plogging-stat-value {
+  font-size: 22px; font-weight: 700; color: #323639;
+}
+.plogging-stat-unit {
+  font-size: 13px; font-weight: 500; color: #7c7c7c;
+}
+
+.plogging-running-device {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 20px;
+}
+.plogging-device-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #a0cfbd;
+  display: inline-block;
+}
+.plogging-device-status {
+  font-size: 11px; font-weight: 500; color: #537467;
+}
+
+.plogging-stop-btn {
+  width: calc(100% - 28px);
+  height: 48px;
+  background: #e05c5c;
+  border: none; border-radius: 8px;
+  font-size: 16px; font-weight: 700;
+  font-family: 'SUIT Variable', sans-serif;
+  color: #fff;
+  cursor: pointer;
+  margin-top: 32px;
+}
+.plogging-stop-btn:active { background: #c44f4f; }
+
+/* ── 플로깅 진행 중 (Kakao Map) ── */
+.pr-running-wrap {
+  position: fixed;
+  top: 0; bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+}
+
+#kakao-map {
+  position: absolute;
+  top: 44px;
+  left: 0; right: 0;
+  bottom: 335px;
+}
+
+.pr-alert {
+  position: absolute;
+  top: 77px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #a0cfbd;
+  border-radius: 20px;
+  height: 36px;
+  padding: 0 12px;
+  display: flex; align-items: center; gap: 6px;
+  white-space: nowrap;
+  font-size: 13px; font-weight: 500; color: #fff;
+  z-index: 20;
+  box-shadow: 0px 1px 4px rgba(0,0,0,0.1);
+  animation: fadeIn 0.2s ease;
+}
+.pr-alert-icon { width: 17px; height: 17px; object-fit: contain; filter: brightness(0) invert(1); }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateX(-50%) translateY(-6px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
+.pr-sheet {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 335px;
+  background: #fbfbfb;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  border: 1px solid #f4f6f8;
+  box-shadow: 0px 1px 19.8px rgba(0,0,0,0.15);
+  padding: 0 17px;
+}
+
+.pr-handle {
+  width: 42px; height: 4px;
+  background: #c5bfbb;
+  border-radius: 50px;
+  margin: 11px auto 0;
+}
+
+.pr-stats-row {
+  display: flex; gap: 9px;
+  margin-top: 13px;
+}
+
+.pr-stat-card {
+  flex: 1; height: 72px;
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: -0.5px 1px 4px rgba(0,0,0,0.1);
+  display: flex; align-items: center;
+  padding: 0 12px 0 15px;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.pr-trash-card {
+  display: flex; align-items: center;
+  height: 72px;
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: -0.5px 1px 4px rgba(0,0,0,0.1);
+  padding: 0 12px 0 15px;
+  gap: 10px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+.pr-stat-icon-box {
+  width: 31px; height: 32px;
+  background: #f5f5f5;
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.pr-stat-icon { width: 22px; height: 22px; object-fit: contain; }
+
+.pr-stat-info { display: flex; flex-direction: column; gap: 3px; }
+.pr-stat-label { font-size: 12px; font-weight: 600; color: #323639; }
+.pr-stat-value { font-size: 10px; font-weight: 600; color: #323639; }
+.pr-stat-num { color: #a0cfbd; }
+.pr-stat-value.mint { color: #a0cfbd; }
+
+.pr-chips {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.pr-chip {
+  display: inline-flex; align-items: center;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 5px;
+  font-size: 13px; font-weight: 500; color: #fff;
+  white-space: nowrap;
+}
+
+.pr-stop-btn {
+  display: block;
+  width: 100%;
+  height: 43px;
+  background: #fff;
+  border: 1px solid #a0cfbd;
+  border-radius: 5px;
+  font-size: 15px; font-weight: 700;
+  font-family: 'Pretendard Variable', sans-serif;
+  color: #a0cfbd;
+  cursor: pointer;
+  margin-top: 12px;
+}
+.pr-stop-btn:active { background: #f0faf6; }

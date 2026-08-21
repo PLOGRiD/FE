@@ -18,7 +18,7 @@ export default function MyPage() {
     <>
       {/* Figma 345:1539: 헤더 h=64(웹), border-bottom #e2e2e2 */}
       <header className="mypage-header">
-        <button className="mypage-back-btn" onClick={() => navigate('/')}>
+        <button className="mypage-back-btn" onClick={() => navigate('/mypage')}>
           <img src={backIcon} alt="뒤로" className="mypage-back-icon" />
         </button>
         <span className="mypage-title">마이페이지</span>

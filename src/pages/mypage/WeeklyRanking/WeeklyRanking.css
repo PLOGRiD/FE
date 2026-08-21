@@ -1,0 +1,253 @@
+/* ── 헤더 (고정) ── */
+.ranking-header {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  height: 64px;
+  background: #fff;
+  border-bottom: 1px solid #e2e2e2;
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 10px;
+}
+.ranking-header-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #323639;
+}
+
+/* ── 프로필 섹션 (고정) ── */
+.ranking-profile-section {
+  position: fixed;
+  top: 64px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  height: 97px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 24px 0 26px;
+  z-index: 40;
+}
+.ranking-profile-avatar {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  border: 0.5px solid #d4d4d4;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.ranking-profile-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ranking-profile-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: 16px;
+}
+.ranking-profile-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #323639;
+}
+.ranking-profile-email {
+  font-size: 10px;
+  color: #909ba2;
+}
+.ranking-profile-arrow {
+  width: 20px;
+  height: 22px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ranking-profile-arrow img {
+  width: 11px;
+  height: 22px;
+  object-fit: contain;
+}
+
+/* ── 탭바 (고정) ── */
+.ranking-tabbar {
+  position: fixed;
+  top: 161px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  height: 47px;
+  background: #fff;
+  display: flex;
+  align-items: stretch;
+  z-index: 40;
+}
+.ranking-tab {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 600;
+  color: #323639;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+}
+.ranking-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 64px;
+  height: 3px;
+  background: #a0cfbd;
+  border-radius: 1px;
+}
+
+/* ── 스크롤 콘텐츠 ── */
+.ranking-page {
+  padding-top: 208px;
+  padding-bottom: 90px;
+  padding-left: 18px;
+  padding-right: 18px;
+  background: #f4f6f8;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── 내 랭킹 카드 ── */
+.ranking-my-card {
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: -0.5px 1px 4px 0px rgba(0, 0, 0, 0.05);
+  height: 64px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px 0 17px;
+  gap: 12px;
+}
+.ranking-my-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.ranking-my-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #323639;
+}
+.ranking-my-pts {
+  font-size: 8px;
+  font-weight: 600;
+  color: #a0cfbd;
+}
+.ranking-my-rank {
+  font-size: 13px;
+  font-weight: 600;
+  color: #a0cfbd;
+}
+
+/* ── 공용 아바타 ── */
+.ranking-avatar {
+  border-radius: 50%;
+  border: 0.3px solid #d4d4d4;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.ranking-avatar--md { width: 43px; height: 43px; }
+.ranking-avatar--sm { width: 25px; height: 25px; }
+.ranking-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ── Top 3 섹션 ── */
+.ranking-top-section {
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: -0.5px 1px 4px 0px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+.ranking-top-item {
+  display: flex;
+  align-items: center;
+  height: 42px;
+  padding: 0 13px;
+  gap: 8px;
+}
+.ranking-top-item + .ranking-top-item {
+  border-top: 0.5px solid #f2f2f2;
+}
+.ranking-medal {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.ranking-top-name {
+  flex: 1;
+  font-size: 10px;
+  font-weight: 500;
+  color: #323639;
+}
+.ranking-top-pts {
+  font-size: 10px;
+  font-weight: 600;
+  color: #a0cfbd;
+  min-width: 42px;
+  text-align: right;
+}
+
+/* ── 4~10위 리스트 ── */
+.ranking-list-section {
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: -0.5px 1px 4px 0px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+.ranking-list-item {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 13px;
+  gap: 8px;
+}
+.ranking-list-item + .ranking-list-item {
+  border-top: 0.5px solid #f2f2f2;
+}
+.ranking-list-num {
+  font-size: 12px;
+  font-weight: 500;
+  color: #323639;
+  width: 18px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.ranking-list-name {
+  flex: 1;
+  font-size: 10px;
+  font-weight: 500;
+  color: #323639;
+}
+.ranking-list-pts {
+  font-size: 10px;
+  font-weight: 600;
+  color: #323639;
+  min-width: 42px;
+  text-align: right;
+}

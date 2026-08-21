@@ -1,0 +1,243 @@
+/* ── 헤더 (고정) ── */
+.con-header {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  height: 64px;
+  background: #fff;
+  border-bottom: 1px solid #e2e2e2;
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 10px;
+}
+.con-header-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #323639;
+}
+
+/* ── 프로필 섹션 (고정) ── */
+.con-profile-section {
+  position: fixed;
+  top: 64px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  height: 97px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 24px 0 26px;
+  z-index: 40;
+}
+.con-avatar {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  border: 0.5px solid #d4d4d4;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.con-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.con-profile-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: 16px;
+}
+.con-profile-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #323639;
+}
+.con-profile-email {
+  font-size: 10px;
+  color: #909ba2;
+}
+.con-profile-arrow {
+  width: 20px;
+  height: 22px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.con-profile-arrow img {
+  width: 11px;
+  height: 22px;
+  object-fit: contain;
+}
+
+/* ── 탭바 (고정) ── */
+.con-tabbar {
+  position: fixed;
+  top: 161px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  height: 47px;
+  background: #fff;
+  display: flex;
+  align-items: stretch;
+  z-index: 40;
+}
+.con-tab {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 600;
+  color: #323639;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+}
+.con-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 64px;
+  height: 3px;
+  background: #a0cfbd;
+  border-radius: 1px;
+}
+
+/* ── 스크롤 콘텐츠 ── */
+.con-page {
+  padding-top: 208px;
+  padding-bottom: 90px;
+  padding-left: 18px;
+  padding-right: 18px;
+  background: #f4f6f8;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── 2×2 stat 카드 그리드 ── */
+.con-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+/* 각 stat 카드: 아이콘(좌) + 텍스트(우) 가로 배치 */
+.con-card {
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: -0.5px 1px 4px 0px rgba(0, 0, 0, 0.05);
+  height: 79px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 12px;
+  gap: 10px;
+}
+.con-card-icon-box {
+  width: 31px;
+  height: 32px;
+  background: #f5f5f5;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.con-card-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+.con-card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.con-card-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #323639;
+}
+.con-card-value {
+  font-size: 10px;
+  color: #323639;
+}
+.con-card-num {
+  font-size: 10px;
+  font-weight: 700;
+  color: #a0cfbd;
+}
+.con-card-unit {
+  font-size: 10px;
+  font-weight: 400;
+  color: #323639;
+}
+
+/* ── 차트 섹션 ── */
+.con-chart-section {
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: -0.5px 1px 4px 0px rgba(0, 0, 0, 0.05);
+  padding: 20px 15px 20px;
+}
+.con-chart-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.con-chart-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #323639;
+}
+
+/* 차트 본문: 도넛 이미지(좌) + 범례(우) */
+.con-chart-body {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.con-chart-img {
+  width: 210px;
+  height: 210px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.con-legend {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding-left: 8px;
+}
+.con-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.con-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.con-legend-label {
+  font-size: 8px;
+  font-weight: 600;
+  color: #323639;
+}

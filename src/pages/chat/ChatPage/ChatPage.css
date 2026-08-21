@@ -111,6 +111,48 @@
   border-radius: 10px 3px 10px 10px;
 }
 
+/* 메시지 슬라이드 인 애니메이션 */
+@keyframes slide-from-right {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slide-from-left {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.chat-row.user .chat-bubble { animation: slide-from-right 0.22s ease; }
+.chat-row.bot  .chat-bubble { animation: slide-from-left  0.22s ease; }
+
+/* 빈 화면 안내 */
+.chat-empty {
+  display: flex; flex-direction: column;
+  align-items: center;
+  margin-top: 48px;
+  animation: slide-from-left 0.3s ease;
+}
+.chat-empty-title {
+  font-size: 15px; font-weight: 700; color: #323639;
+}
+.chat-empty-sub {
+  font-size: 12px; font-weight: 500; color: #9b9b9b;
+  margin-top: 6px; text-align: center;
+}
+.chat-empty-chips {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  justify-content: center;
+  margin-top: 20px;
+}
+.chat-chip {
+  padding: 7px 14px;
+  background: #fff;
+  border: 1px solid #a0cfbd;
+  border-radius: 20px;
+  font-size: 12px; font-weight: 500; color: #537467;
+  cursor: pointer; font-family: inherit;
+  transition: background 0.15s;
+}
+.chat-chip:active { background: #e7f3ee; }
+
 /* 타이핑 애니메이션 */
 .chat-typing { display: flex; gap: 4px; align-items: center; min-height: 40px; }
 .chat-typing span {

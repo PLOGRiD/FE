@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import logo from '../../assets/auth/logo.png'
+import defaultAvatar from '../../assets/mypage/default-avatar.png'
 import bannerBird from '../../assets/home/banner-bird.png'
 import ellipseLg from '../../assets/home/ellipse-lg.svg'
 import ellipseSm from '../../assets/home/ellipse-sm.svg'
@@ -27,19 +28,11 @@ import plasticIcon from '../../assets/home/recycling/pet.png'
 import BottomNav from '../../components/BottomNav/BottomNav'
 import './HomePage.css'
 
-const nickname = localStorage.getItem('nickname') ?? '사용자'
-
 const recentActivity = {
   distance: null as number | null,
   duration: null as string | null,
   trashCount: null as number | null,
 }
-
-const rankingData = [
-  { medal: medal1, name: '지구혼자쓰나', pt: '250 pt' },
-  { medal: medal2, name: '이소정', pt: '160 pt' },
-  { medal: medal3, name: '분리수거의악마', pt: '160 pt' },
-]
 
 const RECYCLING_ROW1 = [
   { icon: petIcon, label: '페트' },
@@ -61,6 +54,13 @@ const RECYCLING_ROW2 = [
 
 export default function HomePage() {
   const navigate = useNavigate()
+  const nickname = localStorage.getItem('nickname') ?? '사용자'
+
+  const rankingData = [
+    { medal: medal1, name: '지구혼자쓰나', pt: '250 pt' },
+    { medal: medal2, name: nickname, pt: '160 pt' },
+    { medal: medal3, name: '분리수거의악마', pt: '160 pt' },
+  ]
 
   return (
     <>
@@ -159,13 +159,15 @@ export default function HomePage() {
         {/* 전국 주간 랭킹 */}
         <div className="home-section-header">
           <p className="home-section-title no-margin">전국 주간 랭킹</p>
-          <button className="home-more-btn">더보기</button>
+          <button className="home-more-btn" onClick={() => navigate('/mypage')}>더보기</button>
         </div>
         <div className="home-ranking">
           {rankingData.map(({ medal, name, pt }) => (
             <div key={name} className="ranking-item">
               <img src={medal} alt="" className="ranking-medal" />
-              <div className="ranking-avatar" />
+              <div className="ranking-avatar">
+                <img src={defaultAvatar} alt="" className="ranking-avatar-img" />
+              </div>
               <span className="ranking-name">{name}</span>
               <span className="ranking-pt">{pt}</span>
             </div>
