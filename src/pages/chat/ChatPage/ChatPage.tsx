@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import mascot from '../../../assets/chat/mascot.png'
+import chatBgMascot from '../../../assets/chat/chat-bg-mascot.png'
 import backIcon from '../../../assets/chat/back.svg'
 import attachIcon from '../../../assets/chat/attach.svg'
 import sendBtn from '../../../assets/chat/send-btn.svg'
@@ -70,6 +71,14 @@ export default function ChatPage() {
         </button>
       </header>
 
+      <div className="chat-messages-bg" />
+
+      {!isEmpty && (
+        <div className="chat-bg-mascot">
+          <img src={chatBgMascot} alt="" className="chat-bg-mascot-img" />
+        </div>
+      )}
+
       <div className="chat-messages">
         {isEmpty && (
           <div className="chat-empty">
@@ -115,12 +124,6 @@ export default function ChatPage() {
         )}
         <div ref={bottomRef} />
       </div>
-
-      {!isEmpty && (
-        <div className="chat-bg-mascot">
-          <img src={mascot} alt="" className="chat-bg-mascot-img" />
-        </div>
-      )}
 
       <div className="chat-input-area">
         <div className="chat-input-wrap">

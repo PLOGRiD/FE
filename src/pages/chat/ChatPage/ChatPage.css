@@ -41,7 +41,20 @@
 }
 .chat-session-icon { width: 24px; height: 24px; }
 
-/* ── 메시지 영역 Figma: bg=#f4f6f8 ── */
+/* ── 메시지 영역 배경 (마스코트 뒤에 깔리는 레이어) ── */
+.chat-messages-bg {
+  position: fixed;
+  top: 64px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  bottom: calc(96px + 90px);
+  background: #f4f6f8;
+  z-index: 1;
+}
+
+/* ── 메시지 영역 Figma: bg=#f4f6f8 (배경은 .chat-messages-bg로 분리) ── */
 .chat-messages {
   position: fixed;
   top: 64px;
@@ -51,7 +64,6 @@
   max-width: 430px;
   bottom: calc(96px + 90px);
   overflow-y: auto;
-  background: #f4f6f8;
   padding: 24px 16px 16px;
   display: flex;
   flex-direction: column;
@@ -174,19 +186,14 @@
   width: 234px;
   height: 262px;
   right: calc(50% - 430px/2);
-  bottom: calc(96px + 90px + 10px);
-  opacity: 0.5;
+  bottom: calc(86px + 90px);
   pointer-events: none;
-  overflow: hidden;
   z-index: 5;
 }
-/* Figma: img inside → w=600.88%, h=432.02%, left=-477.71%, top=-312.34% */
 .chat-bg-mascot-img {
-  position: absolute;
-  width: 600.88%;
-  height: 432.02%;
-  left: -477.71%;
-  top: -312.34%;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 /* Figma 345:550: 입력창 bg=white, h=96, shadow 0 -5 4 rgba(0,0,0,0.1) */
