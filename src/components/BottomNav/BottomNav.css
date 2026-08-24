@@ -9,6 +9,7 @@
   background: var(--white);
   border-top: 1px solid #eee9e6;
   display: flex;
+  padding: 0 7.5px;
   z-index: 100;
 }
 
@@ -30,15 +31,6 @@
 .nav-icon {
   width: 22px;
   height: 22px;
-  /* active: green, inactive: gray via filter */
-}
-
-.nav-item.active .nav-icon {
-  filter: invert(27%) sepia(51%) saturate(600%) hue-rotate(82deg) brightness(80%) contrast(90%);
-}
-
-.nav-item:not(.active) .nav-icon {
-  filter: invert(65%) sepia(0%) saturate(0%) brightness(90%);
 }
 
 .nav-label {
