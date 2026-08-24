@@ -2,15 +2,13 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import logo from '../../assets/auth/logo.png'
 import defaultAvatar from '../../assets/mypage/default-avatar.png'
-import bannerBird from '../../assets/home/banner-bird.png'
-import ellipseLg from '../../assets/home/ellipse-lg.svg'
-import ellipseSm from '../../assets/home/ellipse-sm.svg'
+import mainBanner from '../../assets/home/main-banner.png'
+import navNext from '../../assets/home/icons/nav-next.svg'
 import runIcon from '../../assets/home/icons/run.svg'
 import clockIcon from '../../assets/home/icons/clock.svg'
 import trashIcon from '../../assets/home/icons/trash.svg'
-import cloverIcon from '../../assets/home/icons/clover.svg'
-import cameraIcon from '../../assets/home/icons/camera.svg'
-import navNext from '../../assets/home/icons/nav-next.svg'
+import aiBannerImg from '../../assets/home/ai-banner-mascot.png'
+import infoBannerImg from '../../assets/home/start-plogging-banner.png'
 import medal1 from '../../assets/home/icons/medal-1st.svg'
 import medal2 from '../../assets/home/icons/medal-2nd.svg'
 import medal3 from '../../assets/home/icons/medal-3rd.svg'
@@ -81,13 +79,7 @@ export default function HomePage() {
 
         {/* 메인배너 */}
         <div className="home-banner">
-          <img src={ellipseLg} alt="" className="banner-ellipse-lg" />
-          <img src={ellipseSm} alt="" className="banner-ellipse-sm1" />
-          <img src={ellipseSm} alt="" className="banner-ellipse-sm2" />
-          <img src={ellipseSm} alt="" className="banner-ellipse-sm3" />
-          <div className="banner-illust">
-            <img src={bannerBird} alt="캐릭터" className="banner-bird" />
-          </div>
+          <img src={mainBanner} alt="" className="banner-bg" />
           <div className="banner-text">
             <p className="banner-title">
               <span className="banner-name">{nickname}님,</span> 오늘도 화이팅!
@@ -149,16 +141,9 @@ export default function HomePage() {
         </div>
 
         {/* 분리배출 정보 배너 */}
-        <div className="home-info-banner" onClick={() => navigate('/community')}>
-          <div className="info-banner-icon-box">
-            <img src={cloverIcon} alt="" className="info-banner-icon" />
-          </div>
-          <div className="info-banner-text">
-            <p className="info-banner-title">현재, 분리배출 정책은?</p>
-            <p className="info-banner-sub">최신 분리배출 관련 이슈를 알려드려요</p>
-          </div>
-          <img src={navNext} alt="" className="info-banner-arrow" />
-        </div>
+        <button className="home-info-banner" onClick={() => navigate('/plogging')}>
+          <img src={infoBannerImg} alt="지금 플로깅 시작하기 - 우리 동네를 깨끗하게 만들어요" className="info-banner-img" />
+        </button>
 
         {/* 전국 주간 랭킹 */}
         <div className="home-section-header">
@@ -212,13 +197,9 @@ export default function HomePage() {
         </div>
 
         {/* AI 분리배출 안내 배너 */}
-        <div className="home-ai-banner" onClick={() => navigate('/chat')}>
-          <img src={cameraIcon} alt="" className="ai-banner-icon" />
-          <div className="ai-banner-text">
-            <p className="ai-banner-title">AI 분리배출 도우미</p>
-            <p className="ai-banner-sub">사진을 찍으면 플로비가 분리배출 방법을 알려드려요</p>
-          </div>
-        </div>
+        <button className="home-ai-banner" onClick={() => navigate('/chat')}>
+          <img src={aiBannerImg} alt="AI 분리배출 도우미 - 사진을 찍으면 플로비가 분리배출 방법을 알려드려요" className="ai-banner-img" />
+        </button>
 
       </div>
 

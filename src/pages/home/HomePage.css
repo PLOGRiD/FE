@@ -28,72 +28,21 @@
 }
 
 /* ── 메인배너 ── */
-/* Figma: x=14, y=101(→0 after header), w=367, h=111 */
 .home-banner {
   position: relative;
   margin: 14px 13px 0;
   height: 111px;
-  background: #e7f3ee;
   border-radius: 5px;
   overflow: hidden;
 }
 
-/* 데코 ellipse: Figma 좌표 기준 */
-.banner-ellipse-lg {
+.banner-bg {
   position: absolute;
-  left: 241px;
-  top: 42px;
-  width: 129px;
-  height: 118px;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   pointer-events: none;
-}
-
-.banner-ellipse-sm1 {
-  position: absolute;
-  left: 283px;
-  top: 14px;
-  width: 100px;
-  height: 100px;
-  pointer-events: none;
-}
-
-.banner-ellipse-sm2 {
-  position: absolute;
-  left: 210px;
-  top: 19px;
-  width: 100px;
-  height: 100px;
-  pointer-events: none;
-}
-
-.banner-ellipse-sm3 {
-  position: absolute;
-  left: 186px;
-  top: 69px;
-  width: 100px;
-  height: 100px;
-  pointer-events: none;
-}
-
-/* 캐릭터 크롭 컨테이너 */
-/* Figma: left=226, top=16, w=127, h=121 */
-.banner-illust {
-  position: absolute;
-  left: 226px;
-  top: 16px;
-  width: 127px;
-  height: 121px;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-/* Figma 정확한 크롭: w=486.7%, h=411.55%, left=-132.54%, top=-54.4% */
-.banner-bird {
-  position: absolute;
-  width: 486.7%;
-  height: 411.55%;
-  left: -132.54%;
-  top: -54.4%;
 }
 
 /* 배너 텍스트 */
@@ -126,11 +75,10 @@
   color: #537467;
 }
 
-/* Figma: w=82, h=24, rounded=10, overflow hidden */
-/* 텍스트: left=8, w=61, top=5 / 아이콘: left=62, size=19, top=2 */
 .banner-btn {
   position: relative;
-  margin-top: 11px;
+  margin-top: 8px;
+  margin-left: -2px;
   width: 82px;
   height: 24px;
   background: #fff;
@@ -142,8 +90,8 @@
 
 .banner-btn-text {
   position: absolute;
-  left: 8px;
-  top: 5px;
+  left: 6px;
+  top: 6.5px;
   width: 61px;
   font-size: 10px;
   font-weight: 600;
@@ -245,42 +193,21 @@
 
 /* ── 분리배출 정보 배너 ── */
 .home-info-banner {
-  margin: 10px 13px 0;
-  height: 63px;
-  background: var(--gray-bg);
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  padding: 0 14px;
-  gap: 10px;
+  display: block;
+  width: 100%;
+  margin: 10px 0 0;
+  padding: 0 13px;
+  background: none;
+  border: none;
   cursor: pointer;
 }
 
-.info-banner-icon-box {
-  width: 31px;
-  height: 32px;
-  background: #fff;
-  border-radius: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+.info-banner-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
 }
-
-.info-banner-icon { width: 21px; height: 21px; object-fit: contain; }
-
-.info-banner-text { flex: 1; }
-
-.info-banner-title {
-  font-size: 12px;
-  font-weight: 600;
-  color: #323639;
-  margin-bottom: 3px;
-}
-
-.info-banner-sub { font-size: 8px; font-weight: 500; color: #323639; }
-
-.info-banner-arrow { width: 14px; height: 14px; opacity: 0.6; }
 
 /* ── 전국 주간 랭킹 ── */
 .home-section-header {
@@ -379,18 +306,18 @@
 
 /* ── AI 분리배출 배너 ── */
 .home-ai-banner {
-  margin: 9px 14px 0;
-  height: 60px;
-  background: rgba(160, 207, 189, 0.25);
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  padding: 0 11px;
-  gap: 10px;
+  display: block;
+  width: 100%;
+  margin: 9px 0 0;
+  padding: 0 14px;
+  background: none;
+  border: none;
   cursor: pointer;
 }
 
-.ai-banner-icon { width: 37px; height: 37px; object-fit: contain; flex-shrink: 0; }
-
-.ai-banner-title { font-size: 12px; font-weight: 600; color: #323639; margin-bottom: 3px; }
-.ai-banner-sub { font-size: 8px; font-weight: 500; color: #323639; }
+.ai-banner-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
