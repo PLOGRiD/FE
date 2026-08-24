@@ -45,7 +45,7 @@ export default function ChatPage() {
   }, [pendingImage])
 
   async function send(text: string, image?: File) {
-    if ((!text.trim() && !image) || isTyping) return
+    if (!text.trim() || isTyping) return
 
     const userMsg: Message = { id: Date.now(), role: 'user', text, imageUrl: image ? URL.createObjectURL(image) : undefined }
     setMessages(prev => [...prev, userMsg])
@@ -98,9 +98,11 @@ export default function ChatPage() {
                 </div>
               </div>
             )}
-            <div className={`chat-bubble ${msg.role}`} style={{ whiteSpace: 'pre-wrap' }}>
+            <div className="chat-bubble-group">
               {msg.imageUrl && <img src={msg.imageUrl} alt="첨부" className="chat-attached-img" />}
-              {msg.text}
+              <div className={`chat-bubble ${msg.role}`} style={{ whiteSpace: 'pre-wrap' }}>
+                {msg.text}
+              </div>
             </div>
           </div>
         ))}
@@ -146,7 +148,7 @@ export default function ChatPage() {
           <button
             className="chat-send-btn"
             onClick={() => send(input, pendingImage ?? undefined)}
-            disabled={(!input.trim() && !pendingImage) || isTyping}
+            disabled={!input.trim() || isTyping}
           >
             <img src={sendBtn} alt="전송" />
           </button>

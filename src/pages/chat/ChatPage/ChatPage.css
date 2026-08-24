@@ -74,6 +74,10 @@
 .chat-row { display: flex; align-items: flex-start; gap: 10px; }
 .chat-row.user { flex-direction: row-reverse; }
 
+.chat-bubble-group { display: flex; flex-direction: column; gap: 8px; max-width: 246px; }
+.chat-row.bot  .chat-bubble-group { align-items: flex-start; }
+.chat-row.user .chat-bubble-group { align-items: flex-end; }
+
 /* Figma 345:528: size=55, radius=200, border 0.5px #d4d4d4, bg=white, overflow=hidden */
 .chat-bot-avatar {
   position: relative;
@@ -231,7 +235,14 @@
 .chat-send-btn img { width: 47px; height: 46px; object-fit: contain; }
 .chat-send-btn:disabled { opacity: 0.4; }
 
-.chat-attached-img { max-width: 100%; border-radius: 8px; margin-bottom: 6px; display: block; }
+.chat-attached-img {
+  width: 160px;
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 14px;
+  display: block;
+}
 
 /* 첨부 이미지 미리보기 카드 (입력창과 같은 흰 배경 안, 입력 줄 바로 위) */
 .chat-attach-preview {
