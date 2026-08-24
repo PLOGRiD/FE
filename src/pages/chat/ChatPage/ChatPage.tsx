@@ -19,17 +19,30 @@ interface Message {
 
 export default function ChatPage() {
   const navigate = useNavigate()
-  const [messages, setMessages] = useState<Message[]>([])
+  const [messages, setMessages] = useState<Message[]>([
+    { id: 0, role: 'bot', text: '안녕하세요! 저는 PLOGRiD의 플로비라고 해요. 분리배출에 대해 궁금한 것이 있으면 물어봐주세요. 🌍🌱' },
+  ])
   const [input, setInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const [sessionId, setSessionId] = useState<number | undefined>(undefined)
   const [pendingImage, setPendingImage] = useState<File | null>(null)
+  const [pendingPreview, setPendingPreview] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, isTyping])
+
+  useEffect(() => {
+    if (!pendingImage) {
+      setPendingPreview(null)
+      return
+    }
+    const url = URL.createObjectURL(pendingImage)
+    setPendingPreview(url)
+    return () => URL.revokeObjectURL(url)
+  }, [pendingImage])
 
   async function send(text: string, image?: File) {
     if ((!text.trim() && !image) || isTyping) return
@@ -57,8 +70,6 @@ export default function ChatPage() {
     e.target.value = ''
   }
 
-  const isEmpty = messages.length === 0 && !isTyping
-
   return (
     <>
       <header className="chat-header">
@@ -73,27 +84,11 @@ export default function ChatPage() {
 
       <div className="chat-messages-bg" />
 
-      {!isEmpty && (
-        <div className="chat-bg-mascot">
-          <img src={chatBgMascot} alt="" className="chat-bg-mascot-img" />
-        </div>
-      )}
+      <div className="chat-bg-mascot">
+        <img src={chatBgMascot} alt="" className="chat-bg-mascot-img" />
+      </div>
 
       <div className="chat-messages">
-        {isEmpty && (
-          <div className="chat-empty">
-            <p className="chat-empty-title">플로비에게 물어보세요</p>
-            <p className="chat-empty-sub">분리배출 방법이 궁금한 품목을 입력해보세요</p>
-            <div className="chat-empty-chips">
-              {['페트병', '비닐 봉지', '유리병', '건전지', '스티로폼'].map(chip => (
-                <button key={chip} className="chat-chip" onClick={() => send(chip)}>
-                  {chip}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
         {messages.map(msg => (
           <div key={msg.id} className={`chat-row ${msg.role}`}>
             {msg.role === 'bot' && (
@@ -126,27 +121,36 @@ export default function ChatPage() {
       </div>
 
       <div className="chat-input-area">
-        <div className="chat-input-wrap">
-          <button className="chat-attach-btn" onClick={() => fileInputRef.current?.click()}>
-            <img src={attachIcon} alt="" />
+        {pendingPreview && (
+          <div className="chat-attach-preview">
+            <img src={pendingPreview} alt="첨부 이미지" className="chat-attach-preview-img" />
+            <button className="chat-attach-preview-remove" onClick={() => setPendingImage(null)}>
+              ✕
+            </button>
+          </div>
+        )}
+        <div className="chat-input-row">
+          <div className="chat-input-wrap">
+            <button className="chat-attach-btn" onClick={() => fileInputRef.current?.click()}>
+              <img src={attachIcon} alt="" />
+            </button>
+            <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAttach} />
+            <input
+              className="chat-input"
+              placeholder="메시지를 입력하세요"
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && send(input, pendingImage ?? undefined)}
+            />
+          </div>
+          <button
+            className="chat-send-btn"
+            onClick={() => send(input, pendingImage ?? undefined)}
+            disabled={(!input.trim() && !pendingImage) || isTyping}
+          >
+            <img src={sendBtn} alt="전송" />
           </button>
-          <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAttach} />
-          {pendingImage && <span className="chat-pending-img">📎 {pendingImage.name}</span>}
-          <input
-            className="chat-input"
-            placeholder="메시지를 입력하세요"
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && send(input, pendingImage ?? undefined)}
-          />
         </div>
-        <button
-          className="chat-send-btn"
-          onClick={() => send(input, pendingImage ?? undefined)}
-          disabled={(!input.trim() && !pendingImage) || isTyping}
-        >
-          <img src={sendBtn} alt="전송" />
-        </button>
       </div>
 
       <BottomNav />
