@@ -4,19 +4,25 @@ import cloverIcon from '../../../assets/mypage/clover.svg'
 import backIcon from '../../../assets/map/back.svg'
 import navNextIcon from '../../../assets/home/icons/nav-next.svg'
 import BottomNav from '../../../components/BottomNav/BottomNav'
+import { signOut } from '../../../api/auth'
 import './MyPage.css'
 
 export default function MyPage() {
   const navigate = useNavigate()
 
-  function handleLogout() {
-    localStorage.clear()
-    navigate('/login')
+  async function handleLogout() {
+    try {
+      await signOut()
+    } catch {
+      // 토큰 만료 등 실패해도 로컬 초기화 후 이동
+    } finally {
+      localStorage.clear()
+      navigate('/login')
+    }
   }
 
   return (
     <>
-      {/* Figma 345:1539: 헤더 h=64(웹), border-bottom #e2e2e2 */}
       <header className="mypage-header">
         <button className="mypage-back-btn" onClick={() => navigate('/mypage')}>
           <img src={backIcon} alt="뒤로" className="mypage-back-icon" />
@@ -26,7 +32,6 @@ export default function MyPage() {
 
       <div className="mypage-page">
 
-        {/* Figma 345:1568: 메뉴 목록 top=120 */}
         <div className="mypage-menu-section">
           <div className="mypage-menu-item">
             <span className="mypage-menu-label">서비스 이용 약관</span>
@@ -39,7 +44,6 @@ export default function MyPage() {
           </div>
         </div>
 
-        {/* Figma 345:1575: 로그아웃 */}
         <div className="mypage-logout-section">
           <div className="mypage-menu-item" onClick={handleLogout} style={{ cursor: 'pointer' }}>
             <span className="mypage-menu-label">로그아웃</span>
@@ -47,12 +51,10 @@ export default function MyPage() {
           </div>
         </div>
 
-        {/* Figma 345:1579: 배경 마스코트 right side, opacity=40% */}
         <div className="mypage-mascot-wrap">
           <img src={mascotImg} alt="" className="mypage-mascot" />
         </div>
 
-        {/* Figma 345:1563: 하단 브랜딩 */}
         <div className="mypage-footer">
           <img src={cloverIcon} alt="" className="mypage-footer-clover" />
           <p className="mypage-footer-brand">PLOGRiD</p>

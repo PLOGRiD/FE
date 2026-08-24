@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import logo from '../../assets/auth/logo.png'
 import defaultAvatar from '../../assets/mypage/default-avatar.png'
@@ -26,13 +27,12 @@ import clothingIcon from '../../assets/home/recycling/clothing.png'
 import electronicsIcon from '../../assets/home/recycling/electronics.png'
 import plasticIcon from '../../assets/home/recycling/pet.png'
 import BottomNav from '../../components/BottomNav/BottomNav'
+import { getRecentPlogging } from '../../api/plogging'
+import { getRanking } from '../../api/member'
+import type { RankItem } from '../../api/member'
 import './HomePage.css'
 
-const recentActivity = {
-  distance: null as number | null,
-  duration: null as string | null,
-  trashCount: null as number | null,
-}
+const MEDALS = [medal1, medal2, medal3]
 
 const RECYCLING_ROW1 = [
   { icon: petIcon, label: '페트' },
@@ -52,46 +52,50 @@ const RECYCLING_ROW2 = [
   { icon: electronicsIcon, label: '전기전자제품' },
 ]
 
+function formatDuration(seconds: number): string {
+  const h = String(Math.floor(seconds / 3600)).padStart(2, '0')
+  const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0')
+  const s = String(seconds % 60).padStart(2, '0')
+  return `${h} : ${m} : ${s}`
+}
+
 export default function HomePage() {
   const navigate = useNavigate()
   const nickname = localStorage.getItem('nickname') ?? '사용자'
 
-  const rankingData = [
-    { medal: medal1, name: '지구혼자쓰나', pt: '250 pt' },
-    { medal: medal2, name: nickname, pt: '160 pt' },
-    { medal: medal3, name: '분리수거의악마', pt: '160 pt' },
-  ]
+  const [recent, setRecent] = useState<{ distanceMeters: number; durationSeconds: number; trashCount: number } | null>(null)
+  const [topRankings, setTopRankings] = useState<RankItem[]>([])
+
+  useEffect(() => {
+    getRecentPlogging().then(setRecent).catch(() => {})
+    getRanking().then((r) => setTopRankings(r.topRankings.slice(0, 3))).catch(() => {})
+  }, [])
 
   return (
     <>
-      {/* 고정 헤더 */}
       <header className="home-header">
         <img src={logo} alt="PLOGRiD" className="home-logo" />
       </header>
 
-      {/* 스크롤 콘텐츠 */}
       <div className="home-page">
 
-        {/* 메인배너 - Figma: x=14, y=101, w=367, h=111 */}
+        {/* 메인배너 */}
         <div className="home-banner">
-          {/* 데코 ellipse */}
           <img src={ellipseLg} alt="" className="banner-ellipse-lg" />
           <img src={ellipseSm} alt="" className="banner-ellipse-sm1" />
           <img src={ellipseSm} alt="" className="banner-ellipse-sm2" />
           <img src={ellipseSm} alt="" className="banner-ellipse-sm3" />
-
-          {/* 캐릭터: Figma left=226, top=16, w=127, h=121 / img: w=486.7%, h=411.55%, left=-132.54%, top=-54.4% */}
           <div className="banner-illust">
             <img src={bannerBird} alt="캐릭터" className="banner-bird" />
           </div>
-
-          {/* 텍스트 */}
           <div className="banner-text">
             <p className="banner-title">
               <span className="banner-name">{nickname}님,</span> 오늘도 화이팅!
             </p>
             <p className="banner-sub">
-              마지막 플로깅이 <span className="banner-day">15</span>일 전이에요
+              {recent
+                ? `마지막 플로깅 거리 ${(recent.distanceMeters / 1000).toFixed(1)}km`
+                : '아직 플로깅 기록이 없어요'}
             </p>
             <button className="banner-btn" onClick={() => navigate('/map')}>
               <span className="banner-btn-text">전국 현황 확인</span>
@@ -111,8 +115,8 @@ export default function HomePage() {
               <div className="activity-info">
                 <p className="activity-label">이동거리</p>
                 <p className="activity-value">
-                  {recentActivity.distance != null
-                    ? <><span className="activity-num">{recentActivity.distance}</span> km</>
+                  {recent
+                    ? <><span className="activity-num">{(recent.distanceMeters / 1000).toFixed(2)}</span> km</>
                     : <span className="activity-empty">기록 없음</span>}
                 </p>
               </div>
@@ -124,7 +128,7 @@ export default function HomePage() {
               <div className="activity-info">
                 <p className="activity-label">진행시간</p>
                 <p className="activity-value mint">
-                  {recentActivity.duration ?? '00 : 00 : 00'}
+                  {recent ? formatDuration(recent.durationSeconds) : '00 : 00 : 00'}
                 </p>
               </div>
             </div>
@@ -136,8 +140,8 @@ export default function HomePage() {
             <div className="activity-info">
               <p className="activity-label">수거한 쓰레기</p>
               <p className="activity-value">
-                {recentActivity.trashCount != null
-                  ? <><span className="activity-num">{recentActivity.trashCount}</span> 개 수거됨</>
+                {recent
+                  ? <><span className="activity-num">{recent.trashCount}</span> 개 수거됨</>
                   : <span className="activity-empty">기록 없음</span>}
               </p>
             </div>
@@ -145,7 +149,7 @@ export default function HomePage() {
         </div>
 
         {/* 분리배출 정보 배너 */}
-        <div className="home-info-banner">
+        <div className="home-info-banner" onClick={() => navigate('/community')}>
           <div className="info-banner-icon-box">
             <img src={cloverIcon} alt="" className="info-banner-icon" />
           </div>
@@ -162,14 +166,14 @@ export default function HomePage() {
           <button className="home-more-btn" onClick={() => navigate('/mypage')}>더보기</button>
         </div>
         <div className="home-ranking">
-          {rankingData.map(({ medal, name, pt }) => (
-            <div key={name} className="ranking-item">
-              <img src={medal} alt="" className="ranking-medal" />
+          {topRankings.map((item, i) => (
+            <div key={item.memberId} className="ranking-item">
+              <img src={MEDALS[i]} alt={`${item.rank}위`} className="ranking-medal" />
               <div className="ranking-avatar">
                 <img src={defaultAvatar} alt="" className="ranking-avatar-img" />
               </div>
-              <span className="ranking-name">{name}</span>
-              <span className="ranking-pt">{pt}</span>
+              <span className="ranking-name">{item.nickName}</span>
+              <span className="ranking-pt">{item.contributionScore} pt</span>
             </div>
           ))}
         </div>
@@ -179,7 +183,7 @@ export default function HomePage() {
         <div className="home-recycling">
           <div className="recycling-row">
             {RECYCLING_ROW1.map(({ icon, label }) => (
-              <button key={label} className="recycling-item">
+              <button key={label} className="recycling-item" onClick={() => navigate('/chat')}>
                 <div className="recycling-icon-box">
                   <img src={icon} alt={label} className="recycling-icon" />
                 </div>
@@ -189,7 +193,7 @@ export default function HomePage() {
           </div>
           <div className="recycling-row">
             {RECYCLING_ROW2.map(({ icon, label }) => (
-              <button key={label} className="recycling-item">
+              <button key={label} className="recycling-item" onClick={() => navigate('/chat')}>
                 <div className="recycling-icon-box">
                   <img src={icon} alt={label} className="recycling-icon" />
                 </div>
@@ -200,7 +204,7 @@ export default function HomePage() {
         </div>
 
         {/* AI 분리배출 안내 배너 */}
-        <div className="home-ai-banner">
+        <div className="home-ai-banner" onClick={() => navigate('/chat')}>
           <img src={cameraIcon} alt="" className="ai-banner-icon" />
           <div className="ai-banner-text">
             <p className="ai-banner-title">AI 분리배출 도우미</p>

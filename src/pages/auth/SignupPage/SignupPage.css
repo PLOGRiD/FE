@@ -103,3 +103,9 @@
 .signup-submit.active:active {
   opacity: 0.9;
 }
+
+.signup-server-error {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #e05555;
+}

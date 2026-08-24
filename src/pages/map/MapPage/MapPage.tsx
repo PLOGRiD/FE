@@ -1,31 +1,91 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import mapBg from '../../../assets/map/map-bg.png'
-import markerIcon from '../../../assets/map/marker.svg'
-import locationIcon from '../../../assets/map/location.svg'
 import backIcon from '../../../assets/map/back.svg'
-import filterHomeIcon from '../../../assets/map/filter-home.svg'
-import filterBookIcon from '../../../assets/map/filter-book.svg'
-import filterBookmarkIcon from '../../../assets/map/filter-bookmark.svg'
-import filterCafeIcon from '../../../assets/map/filter-cafe.svg'
+import locationIcon from '../../../assets/map/location.svg'
 import BottomNav from '../../../components/BottomNav/BottomNav'
+import { getTrashesInViewport, getTrashDetail } from '../../../api/map'
+import type { TrashMarker, TrashDetail } from '../../../api/map'
 import './MapPage.css'
+
+declare global { interface Window { kakao: any } }
+
+function waitForKakaoMaps(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (!window.kakao) { reject(new Error('kakao undefined')); return }
+    if (window.kakao.maps?.Map) { resolve(); return }
+    window.kakao.maps.load(() => resolve())
+  })
+}
 
 export default function MapPage() {
   const navigate = useNavigate()
-  const [markerOpen, setMarkerOpen] = useState(false)
-  const [activeFilter, setActiveFilter] = useState(3) // Figma에서 '북카페' 활성
+  const mapRef = useRef<any>(null)
+  const markersRef = useRef<any[]>([])
+  const [selected, setSelected] = useState<TrashDetail | null>(null)
+  const [loadingDetail, setLoadingDetail] = useState(false)
 
-  const FILTERS = [
-    { label: '북스테이', icon: filterHomeIcon },
-    { label: '독립서점', icon: filterBookIcon },
-    { label: '공간책갈피', icon: filterBookmarkIcon },
-    { label: '북카페', icon: filterCafeIcon },
-  ]
+  useEffect(() => {
+    let cancelled = false
+
+    waitForKakaoMaps().then(() => {
+      if (cancelled) return
+      const container = document.getElementById('map-kakao')
+      if (!container) return
+      const defaultPos = new window.kakao.maps.LatLng(37.5665, 126.9780)
+      const map = new window.kakao.maps.Map(container, { center: defaultPos, level: 7 })
+      mapRef.current = map
+
+      // 위치 이동
+      navigator.geolocation?.getCurrentPosition(pos => {
+        const latlng = new window.kakao.maps.LatLng(pos.coords.latitude, pos.coords.longitude)
+        map.setCenter(latlng)
+      })
+
+      const loadMarkers = async () => {
+        const bounds = map.getBounds()
+        const sw = bounds.getSouthWest()
+        const ne = bounds.getNorthEast()
+        try {
+          const trashes = await getTrashesInViewport(sw.getLat(), ne.getLat(), sw.getLng(), ne.getLng())
+          // 기존 마커 제거
+          markersRef.current.forEach(m => m.setMap(null))
+          markersRef.current = []
+
+          trashes.forEach((trash: TrashMarker) => {
+            const pos = new window.kakao.maps.LatLng(trash.latitude, trash.longitude)
+            const marker = new window.kakao.maps.Marker({ position: pos, map })
+            window.kakao.maps.event.addListener(marker, 'click', async () => {
+              setLoadingDetail(true)
+              try {
+                const detail = await getTrashDetail(trash.id)
+                setSelected(detail)
+              } catch {
+                setSelected(null)
+              } finally {
+                setLoadingDetail(false)
+              }
+            })
+            markersRef.current.push(marker)
+          })
+        } catch {}
+      }
+
+      loadMarkers()
+      window.kakao.maps.event.addListener(map, 'idle', loadMarkers)
+    }).catch(console.error)
+
+    return () => { cancelled = true }
+  }, [])
+
+  function moveToMyLocation() {
+    navigator.geolocation?.getCurrentPosition(pos => {
+      const latlng = new window.kakao.maps.LatLng(pos.coords.latitude, pos.coords.longitude)
+      mapRef.current?.setCenter(latlng)
+    })
+  }
 
   return (
     <>
-      {/* Figma 345:1087: 헤더 */}
       <header className="map-header">
         <button className="map-back-btn" onClick={() => navigate('/')}>
           <img src={backIcon} alt="뒤로" className="map-back-icon" />
@@ -33,60 +93,38 @@ export default function MapPage() {
         <span className="map-title">전국 현황</span>
       </header>
 
-      {/* Figma 345:1152~1167: 필터 버튼들 top=116 */}
-      <div className="map-filters">
-        {FILTERS.map((f, i) => (
-          <button
-            key={f.label}
-            className={`map-filter-btn ${activeFilter === i ? 'active' : ''}`}
-            onClick={() => setActiveFilter(i)}
-          >
-            <img src={f.icon} alt="" className="map-filter-icon" />
-            <span>{f.label}</span>
-          </button>
-        ))}
-      </div>
+      <div id="map-kakao" className="map-area" onClick={() => setSelected(null)} />
 
-      {/* Figma 345:1086: 지도 이미지 left=-10, top=31 (frame 기준) */}
-      <div className="map-area" onClick={() => setMarkerOpen(false)}>
-        <img src={mapBg} alt="지도" className="map-bg" />
-        {/* Figma 346:209: 마커 inset 20.31% 7.47% 18.47% 3.05% */}
-        <button
-          className="map-marker"
-          onClick={e => { e.stopPropagation(); setMarkerOpen(true) }}
-        >
-          <img src={markerIcon} alt="" className="map-marker-img" />
-        </button>
-      </div>
-
-      {/* Figma 345:1169: 현위치 모달 w=131, h=42, border #a0cfbd, radius=30 */}
-      <div className="map-location-pill">
+      <button className="map-location-pill" onClick={moveToMyLocation}>
         <img src={locationIcon} alt="" className="map-location-icon" />
-        <span className="map-location-text">서울시 강서구</span>
-      </div>
+        <span className="map-location-text">내 위치</span>
+      </button>
 
-      {/* 마커 클릭 바텀시트 (Figma 345:1173 마커클릭 화면) */}
-      {markerOpen && (
-        <div className="map-bottom-sheet">
+      {(selected || loadingDetail) && (
+        <div className="map-bottom-sheet" onClick={e => e.stopPropagation()}>
           <div className="map-sheet-handle" />
-          <p className="map-sheet-region">서울시 강서구</p>
-          <p className="map-sheet-title">이번 주 플로깅 현황</p>
-          <div className="map-sheet-stats">
-            <div className="map-stat">
-              <p className="map-stat-value">128<span>명</span></p>
-              <p className="map-stat-label">참여자 수</p>
-            </div>
-            <div className="map-stat-divider" />
-            <div className="map-stat">
-              <p className="map-stat-value">3.2<span>km</span></p>
-              <p className="map-stat-label">이동거리</p>
-            </div>
-            <div className="map-stat-divider" />
-            <div className="map-stat">
-              <p className="map-stat-value">456<span>개</span></p>
-              <p className="map-stat-label">수거 쓰레기</p>
-            </div>
-          </div>
+          {loadingDetail ? (
+            <p style={{ textAlign: 'center', padding: '16px 0', color: '#999' }}>불러오는 중...</p>
+          ) : selected && (
+            <>
+              <p className="map-sheet-region">{selected.category}</p>
+              <p className="map-sheet-title">수거 쓰레기 상세</p>
+              {selected.imageUrl && (
+                <img src={selected.imageUrl} alt="" style={{ width: '100%', borderRadius: 8, marginTop: 8, objectFit: 'cover', maxHeight: 160 }} />
+              )}
+              <div className="map-sheet-stats">
+                <div className="map-stat">
+                  <p className="map-stat-value">{selected.category}</p>
+                  <p className="map-stat-label">분류</p>
+                </div>
+                <div className="map-stat-divider" />
+                <div className="map-stat">
+                  <p className="map-stat-value" style={{ fontSize: 13 }}>{selected.collectedAt?.slice(0, 10) ?? '-'}</p>
+                  <p className="map-stat-label">수거일</p>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       )}
 

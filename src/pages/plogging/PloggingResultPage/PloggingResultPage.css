@@ -1,5 +1,28 @@
+/* ── 헤더 (고정) ── */
+.plogging-header {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  height: 56px;
+  background: #fff;
+  border-bottom: 1px solid #e2e2e2;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.plogging-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #323639;
+}
+
+/* ── 스크롤 페이지 ── */
 .result-page {
-  padding-top: 44px;
+  padding-top: 56px;
   padding-bottom: 40px;
   background: #fff;
 }
@@ -7,14 +30,13 @@
 /* ── 축하 히어로 ── */
 .result-hero {
   position: relative;
-  height: 110px;
-  overflow: hidden;
+  height: 98px;     /* 피그마 스탯카드 시작점(top:204-header:106=98px) — 새 하단 18px가 스탯카드에 가려짐 */
+  overflow: visible;
 }
-
 .result-congrats {
   position: absolute;
   left: 18px;
-  top: 54px;
+  top: 28px;
 }
 .result-congrats-line {
   font-size: 18px;
@@ -24,31 +46,25 @@
   line-height: 1.4;
 }
 
-.result-illust {
+/* 배경 타원 — 피그마: right=9px, top=-23px(헤더 아래로 숨김), 187×158 */
+.result-ellipse-bg {
   position: absolute;
-  right: 0;
-  top: -20px;
-  width: 200px;
-  height: 180px;
-}
-.result-ellipse {
-  position: absolute;
-  right: 10px;
-  top: 20px;
-  width: 158px;
+  right: 9px;
+  top: -23px;
+  width: 187px;
   height: 158px;
-  object-fit: contain;
 }
-/* 캐릭터 크롭 */
-.result-bird-wrap {
+
+/* 나무/자연 씬 — 피그마 image105: right=33px, top=6px, 121×129 */
+.result-nature-wrap {
   position: absolute;
-  right: 20px;
+  right: 33px;
   top: 6px;
   width: 121px;
   height: 129px;
   overflow: hidden;
 }
-.result-bird {
+.result-nature-img {
   position: absolute;
   width: 638.75%;
   height: 481.37%;
@@ -56,12 +72,49 @@
   top: -354.43%;
 }
 
+/* 새 캐릭터(큰) — 피그마: right=121px, top=6px, 66×110 */
+.result-bird-main-wrap {
+  position: absolute;
+  right: 121px;
+  top: 6px;
+  width: 66px;
+  height: 110px;
+  overflow: hidden;
+}
+.result-bird-main {
+  position: absolute;
+  width: 450.44%;
+  height: 180.6%;
+  left: -120.53%;
+  top: -40.74%;
+}
+
+/* 새 캐릭터(작은, 우상단) — 피그마: right=14px, top=51px, 42×64 */
+.result-bird-sm-wrap {
+  position: absolute;
+  right: 14px;
+  top: 51px;
+  width: 42px;
+  height: 64px;
+  overflow: hidden;
+}
+.result-bird-sm {
+  position: absolute;
+  width: 414.02%;
+  height: 183.18%;
+  left: -7.01%;
+  top: -43.65%;
+}
+
 /* ── 공통 stat 스타일 ── */
 .result-stat-icon-box {
-  width: 31px; height: 32px;
+  width: 31px;
+  height: 32px;
   background: #f5f5f5;
   border-radius: 7px;
-  display: flex; align-items: center; justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
 }
 .result-stat-icon { width: 22px; height: 22px; object-fit: contain; }
@@ -72,15 +125,19 @@
 
 /* ── 이동거리 / 진행시간 ── */
 .result-stats-row {
-  display: flex; gap: 8px;
+  position: relative;
+  display: flex;
+  gap: 8px;
   margin: 0 17px;
 }
 .result-stat-card {
-  flex: 1; height: 72px;
+  flex: 1;
+  height: 72px;
   background: #fff;
   border-radius: 5px;
   box-shadow: -0.5px 1px 4px rgba(0,0,0,0.1);
-  display: flex; align-items: center;
+  display: flex;
+  align-items: center;
   padding: 0 12px 0 15px;
   gap: 10px;
   overflow: hidden;
@@ -95,50 +152,60 @@
   padding: 14px 15px;
 }
 .result-trash-header {
-  display: flex; align-items: center; gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin-bottom: 12px;
 }
 
-/* 사진 그리드 */
+/* 사진 그리드 — 피그마: 4장 84×90px, gap=10px */
 .result-photo-grid {
-  display: flex; gap: 10px;
+  display: flex;
+  gap: 10px;
   margin-bottom: 16px;
 }
 .result-photo-thumb {
-  flex: 1; height: 90px;
+  flex: 1;
+  height: 90px;
   background: #949494;
   border-radius: 10px;
 }
 
-/* 바 차트 */
-.result-charts {
-  display: flex; gap: 8px;
+/* ── 바 차트 — 피그마: 두 컬럼, gap-x=3px, gap-y=7px ── */
+.result-bar-chart {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
 }
-.result-chart-col {
+/* 컬럼 자체를 그리드로 — 모든 행이 같은 컬럼 너비를 공유 */
+.result-bar-col {
   flex: 1;
-  display: flex; flex-direction: column; gap: 7px;
+  display: grid;
+  grid-template-columns: auto 1fr 22px;
+  column-gap: 3px;
+  row-gap: 7px;
+  align-items: center;
 }
-.result-chart-row {
-  display: flex; align-items: center; gap: 3px;
+/* 행은 display:contents — 자식이 부모 그리드에 직접 참여 */
+.result-bar-row {
+  display: contents;
 }
-.result-chart-label {
-  font-size: 5px; font-weight: 500; color: #323639;
-  width: 20px; flex-shrink: 0;
+.result-bar-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: #323639;
+  white-space: nowrap;
 }
-.result-bar-bg {
-  flex: 1; height: 5px;
+.result-bar-track {
+  height: 5px;
   background: #d9d9d9;
   border-radius: 30px;
-  overflow: hidden;
 }
-.result-bar-fill {
-  height: 100%;
-  background: #a0cfbd;
-  border-radius: 30px;
-}
-.result-chart-pct {
-  font-size: 6px; font-weight: 500; color: #323639;
-  width: 22px; text-align: center; flex-shrink: 0;
+.result-bar-pct {
+  font-size: 6px;
+  font-weight: 500;
+  color: #323639;
+  text-align: center;
 }
 
 /* ── AI 배너 ── */
@@ -147,10 +214,12 @@
   height: 60px;
   background: rgba(160,207,189,0.25);
   border-radius: 5px;
-  display: flex; align-items: center;
+  display: flex;
+  align-items: center;
   padding: 0 11px;
   gap: 10px;
   overflow: hidden;
+  cursor: pointer;
 }
 .result-ai-icon { width: 37px; height: 37px; object-fit: contain; flex-shrink: 0; }
 .result-ai-title { font-size: 12px; font-weight: 600; color: #323639; margin-bottom: 2px; }
@@ -163,13 +232,14 @@
   background: #fff;
   border-radius: 5px;
   box-shadow: -0.5px 1px 4px rgba(0,0,0,0.1);
-  display: flex; align-items: center;
+  display: flex;
+  align-items: center;
   padding: 0 12px 0 15px;
   gap: 10px;
   overflow: hidden;
 }
 
-/* ── 확인 버튼 ── */
+/* ── 확인 버튼 — 피그마: width=328px, height=43px, left=35px ── */
 .result-confirm-btn {
   display: block;
   width: calc(100% - 70px);
@@ -177,7 +247,8 @@
   background: #a0cfbd;
   border: none;
   border-radius: 5px;
-  font-size: 16px; font-weight: 600;
+  font-size: 16px;
+  font-weight: 600;
   font-family: 'SUIT Variable', sans-serif;
   color: #fff;
   cursor: pointer;

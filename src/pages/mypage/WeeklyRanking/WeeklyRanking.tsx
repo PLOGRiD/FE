@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import defaultAvatar from '../../../assets/mypage/default-avatar.png'
 import medal1st from '../../../assets/home/icons/medal-1st.svg'
@@ -5,27 +6,28 @@ import medal2nd from '../../../assets/home/icons/medal-2nd.svg'
 import medal3rd from '../../../assets/home/icons/medal-3rd.svg'
 import navNextIcon from '../../../assets/home/icons/nav-next.svg'
 import BottomNav from '../../../components/BottomNav/BottomNav'
+import { getRanking } from '../../../api/member'
+import type { RankItem } from '../../../api/member'
 import './WeeklyRanking.css'
 
-const listRankers = [
-  { rank: 4, name: '지구혼자쓰나', pts: 250 },
-  { rank: 5, name: '야르르르', pts: 160 },
-  { rank: 6, name: '돈주세요', pts: 160 },
-  { rank: 7, name: '힘들어요', pts: 250 },
-  { rank: 8, name: '냐냐냥', pts: 160 },
-  { rank: 9, name: '도레미파', pts: 160 },
-  { rank: 10, name: '멜라토닌', pts: 160 },
-]
+const MEDALS = [medal1st, medal2nd, medal3rd]
 
 export default function WeeklyRanking() {
   const navigate = useNavigate()
   const nickname = localStorage.getItem('nickname') ?? '사용자'
+  const email = localStorage.getItem('email') ?? ''
 
-  const topRankers = [
-    { rank: 1, name: '지구혼자쓰나', pts: 250, medal: medal1st },
-    { rank: 2, name: nickname, pts: 160, medal: medal2nd },
-    { rank: 3, name: '분리수거의악마', pts: 160, medal: medal3rd },
-  ]
+  const [topRankings, setTopRankings] = useState<RankItem[]>([])
+  const [listRankings, setListRankings] = useState<RankItem[]>([])
+  const [myRanking, setMyRanking] = useState<RankItem | null>(null)
+
+  useEffect(() => {
+    getRanking().then((r) => {
+      setTopRankings(r.topRankings.slice(0, 3))
+      setListRankings(r.topRankings.slice(3))
+      setMyRanking(r.myRanking)
+    }).catch(() => {})
+  }, [])
 
   return (
     <>
@@ -39,7 +41,7 @@ export default function WeeklyRanking() {
         </div>
         <div className="ranking-profile-info">
           <span className="ranking-profile-name">{nickname}</span>
-          <span className="ranking-profile-email">ddkkssj123@gmail.com</span>
+          <span className="ranking-profile-email">{email}</span>
         </div>
         <button className="ranking-profile-arrow" onClick={() => navigate('/mypage/etc')}>
           <img src={navNextIcon} alt="더보기" />
@@ -52,39 +54,41 @@ export default function WeeklyRanking() {
       </div>
 
       <div className="ranking-page">
-        <div className="ranking-my-card">
-          <div className="ranking-avatar ranking-avatar--md">
-            <img src={defaultAvatar} alt="" className="ranking-avatar-img" />
+        {myRanking && (
+          <div className="ranking-my-card">
+            <div className="ranking-avatar ranking-avatar--md">
+              <img src={defaultAvatar} alt="" className="ranking-avatar-img" />
+            </div>
+            <div className="ranking-my-info">
+              <span className="ranking-my-name">{myRanking.nickName}</span>
+              <span className="ranking-my-pts">{myRanking.contributionScore} pt</span>
+            </div>
+            <span className="ranking-my-rank">{myRanking.rank.toLocaleString()} 위</span>
           </div>
-          <div className="ranking-my-info">
-            <span className="ranking-my-name">{nickname}</span>
-            <span className="ranking-my-pts">160 pt</span>
-          </div>
-          <span className="ranking-my-rank">68,153 위</span>
-        </div>
+        )}
 
         <div className="ranking-top-section">
-          {topRankers.map((r) => (
-            <div key={r.rank} className="ranking-top-item">
-              <img src={r.medal} alt={`${r.rank}위`} className="ranking-medal" />
+          {topRankings.map((r, i) => (
+            <div key={r.memberId} className="ranking-top-item">
+              <img src={MEDALS[i]} alt={`${r.rank}위`} className="ranking-medal" />
               <div className="ranking-avatar ranking-avatar--sm">
                 <img src={defaultAvatar} alt="" className="ranking-avatar-img" />
               </div>
-              <span className="ranking-top-name">{r.name}</span>
-              <span className="ranking-top-pts">{r.pts} pt</span>
+              <span className="ranking-top-name">{r.nickName}</span>
+              <span className="ranking-top-pts">{r.contributionScore} pt</span>
             </div>
           ))}
         </div>
 
         <div className="ranking-list-section">
-          {listRankers.map((r) => (
-            <div key={r.rank} className="ranking-list-item">
+          {listRankings.map((r) => (
+            <div key={r.memberId} className="ranking-list-item">
               <span className="ranking-list-num">{r.rank}</span>
               <div className="ranking-avatar ranking-avatar--sm">
                 <img src={defaultAvatar} alt="" className="ranking-avatar-img" />
               </div>
-              <span className="ranking-list-name">{r.name}</span>
-              <span className="ranking-list-pts">{r.pts} pt</span>
+              <span className="ranking-list-name">{r.nickName}</span>
+              <span className="ranking-list-pts">{r.contributionScore} pt</span>
             </div>
           ))}
         </div>

@@ -42,6 +42,7 @@ body {
   display: flex;
   justify-content: center;
   min-height: 100vh;
+  overflow-y: scroll; /* 스크롤바 항상 확보 → 너비 변동 방지 */
 }
 
 #root {

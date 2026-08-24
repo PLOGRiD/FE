@@ -4,7 +4,7 @@
   top: 0; left: 50%;
   transform: translateX(-50%);
   width: 100%; max-width: 430px;
-  height: 44px;
+  height: 56px;
   background: #fff;
   border-bottom: 1px solid #e2e2e2;
   z-index: 50;
@@ -22,7 +22,7 @@
 
 /* ── 스크롤 콘텐츠 ── */
 .plogging-page {
-  padding-top: 44px;
+  padding-top: 56px;
   padding-bottom: 90px;
   background: #fff;
   display: flex;

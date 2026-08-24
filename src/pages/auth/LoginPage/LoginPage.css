@@ -98,3 +98,14 @@
   font-family: inherit;
   white-space: nowrap;
 }
+
+.login-error {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #e05555;
+}
+
+.login-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

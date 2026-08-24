@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import bird from '../../../assets/auth/bird-angry.png'
 import chevronLeft from '../../../assets/icons/chevron-left.png'
 import Input from '../../../components/ui/Input/Input'
+import { signUp } from '../../../api/auth'
 import './SignupPage.css'
 
 export default function SignupPage() {
@@ -11,6 +12,8 @@ export default function SignupPage() {
   const [pw, setPw] = useState('')
   const [pwConfirm, setPwConfirm] = useState('')
   const [email, setEmail] = useState('')
+  const [serverError, setServerError] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const idError = id.length > 0 && !/^[a-zA-Z0-9]{6,10}$/.test(id)
     ? '띄어쓰기 없이 영/숫자 6-10자로 입력해주세요' : ''
@@ -24,6 +27,20 @@ export default function SignupPage() {
   const isValid =
     id.length > 0 && pw.length > 0 && pwConfirm.length > 0 && email.length > 0 &&
     !idError && !pwError && !pwConfirmError && !emailError
+
+  async function handleSubmit() {
+    if (!isValid) return
+    setServerError('')
+    setLoading(true)
+    try {
+      await signUp({ username: id, password: pw, passwordConfirm: pwConfirm, email })
+      navigate('/login')
+    } catch (e: any) {
+      setServerError(e?.response?.data?.message ?? '회원가입에 실패했습니다')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="signup-page">
@@ -72,18 +89,15 @@ export default function SignupPage() {
           onChange={setEmail}
           error={emailError}
         />
+        {serverError && <p className="signup-server-error">{serverError}</p>}
       </div>
 
       <button
         className={`signup-submit${isValid ? ' active' : ''}`}
-        disabled={!isValid}
-        onClick={() => {
-          if (!isValid) return
-          localStorage.setItem('nickname', id)
-          navigate('/')
-        }}
+        disabled={!isValid || loading}
+        onClick={handleSubmit}
       >
-        완료
+        {loading ? '처리 중...' : '완료'}
       </button>
     </div>
   )
