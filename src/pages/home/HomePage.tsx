@@ -35,21 +35,21 @@ import './HomePage.css'
 const MEDALS = [medal1, medal2, medal3]
 
 const RECYCLING_ROW1 = [
-  { icon: petIcon, label: '페트' },
-  { icon: paperIcon, label: '종이' },
-  { icon: paperPackIcon, label: '종이팩' },
-  { icon: glassIcon, label: '유리' },
-  { icon: vinylIcon, label: '비닐' },
-  { icon: batteryCellIcon, label: '전지' },
+  { icon: petIcon, label: '페트', link: 'https://xn--oy2b29bd3a601b.kr/front/dischargeMethod/typeItem.do?searchCnd=110103' },
+  { icon: paperIcon, label: '종이', link: 'https://xn--oy2b29bd3a601b.kr/front/dischargeMethod/typeItem.do?searchCnd=110101' },
+  { icon: paperPackIcon, label: '종이팩', link: 'https://xn--oy2b29bd3a601b.kr/front/dischargeMethod/typeItem.do?searchCnd=110102' },
+  { icon: glassIcon, label: '유리', link: 'https://xn--oy2b29bd3a601b.kr/front/dischargeMethod/typeItem.do?searchCnd=110107' },
+  { icon: vinylIcon, label: '비닐', link: 'https://xn--oy2b29bd3a601b.kr/front/dischargeMethod/typeItem.do?searchCnd=110105' },
+  { icon: batteryCellIcon, label: '전지', link: 'https://xn--oy2b29bd3a601b.kr/front/dischargeMethod/typeItem.do?searchCnd=110110' },
 ]
 
 const RECYCLING_ROW2 = [
-  { icon: metalIcon, label: '금속류' },
-  { icon: plasticIcon, label: '플라스틱' },
-  { icon: lampIcon, label: '조명제품' },
-  { icon: foamIcon, label: '발포합성수지' },
-  { icon: clothingIcon, label: '의류/원단' },
-  { icon: electronicsIcon, label: '전기전자제품' },
+  { icon: metalIcon, label: '금속류', link: 'https://xn--oy2b29bd3a601b.kr/front/dischargeMethod/typeItem.do?searchCnd=110108' },
+  { icon: plasticIcon, label: '플라스틱', link: 'https://xn--oy2b29bd3a601b.kr/front/dischargeMethod/typeItem.do?searchCnd=110104' },
+  { icon: lampIcon, label: '조명제품', link: 'https://xn--oy2b29bd3a601b.kr/front/dischargeMethod/typeItem.do?searchCnd=110111' },
+  { icon: foamIcon, label: '발포합성수지', link: 'https://xn--oy2b29bd3a601b.kr/front/dischargeMethod/typeItem.do?searchCnd=110106' },
+  { icon: clothingIcon, label: '의류/원단', link: 'https://xn--oy2b29bd3a601b.kr/front/dischargeMethod/typeItem.do?searchCnd=110109' },
+  { icon: electronicsIcon, label: '전기전자제품', link: 'https://xn--oy2b29bd3a601b.kr/front/dischargeMethod/typeItem.do?searchCnd=110112' },
 ]
 
 function formatDuration(seconds: number): string {
@@ -182,8 +182,12 @@ export default function HomePage() {
         <p className="home-section-title">품목별 분리배출 방법</p>
         <div className="home-recycling">
           <div className="recycling-row">
-            {RECYCLING_ROW1.map(({ icon, label }) => (
-              <button key={label} className="recycling-item" onClick={() => navigate('/chat')}>
+            {RECYCLING_ROW1.map(({ icon, label, link }) => (
+              <button
+                key={label}
+                className="recycling-item"
+                onClick={() => (link ? window.open(link, '_blank', 'noopener,noreferrer') : navigate('/chat'))}
+              >
                 <div className="recycling-icon-box">
                   <img src={icon} alt={label} className="recycling-icon" />
                 </div>
@@ -192,8 +196,12 @@ export default function HomePage() {
             ))}
           </div>
           <div className="recycling-row">
-            {RECYCLING_ROW2.map(({ icon, label }) => (
-              <button key={label} className="recycling-item" onClick={() => navigate('/chat')}>
+            {RECYCLING_ROW2.map(({ icon, label, link }) => (
+              <button
+                key={label}
+                className="recycling-item"
+                onClick={() => (link ? window.open(link, '_blank', 'noopener,noreferrer') : navigate('/chat'))}
+              >
                 <div className="recycling-icon-box">
                   <img src={icon} alt={label} className="recycling-icon" />
                 </div>
