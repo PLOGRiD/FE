@@ -23,7 +23,7 @@
 /* ── 스크롤 콘텐츠 ── */
 .home-page {
   padding-top: 44px;
-  padding-bottom: 90px;
+  padding-bottom: 110px;
   background: #fff;
 }
 
@@ -377,7 +377,7 @@
 
 /* ── AI 분리배출 배너 ── */
 .home-ai-banner {
-  margin: 9px 14px 0;
+  margin: 14px 14px 0;
   height: 60px;
   background: rgba(160, 207, 189, 0.25);
   border-radius: 5px;
