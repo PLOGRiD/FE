@@ -2,6 +2,7 @@ import client from './client'
 
 export interface InfoPost {
   postId: number
+  postTitle: string
   authorNickname: string
   authorProfileImageUrl?: string
   postContent: string
@@ -42,7 +43,7 @@ export async function getInfoList(page = 1, size = 10): Promise<InfoListResult> 
 }
 
 export async function toggleLike(postId: number): Promise<{ isLiked: boolean; likeCount: number }> {
-  const res = await client.patch(`/posts/${postId}/like`)
+  const res = await client.post(`/posts/${postId}/like`)
   return res.data.result
 }
 

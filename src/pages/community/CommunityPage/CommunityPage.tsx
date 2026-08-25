@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import mascot from '../../../assets/chat/mascot.png'
 import heartIcon from '../../../assets/community/heart.svg'
 import locationIcon from '../../../assets/community/location.svg'
 import peopleIcon from '../../../assets/community/people.svg'
@@ -17,9 +18,61 @@ import './CommunityPage.css'
 
 const TABS = ['INFO', '단체 플로깅']
 
+function AuthorAvatar({ src }: { src?: string }) {
+  const [failed, setFailed] = useState(false)
+
+  if (src && !failed) {
+    return (
+      <div className="post-avatar">
+        <img src={src} alt="" className="post-avatar-photo" onError={() => setFailed(true)} />
+      </div>
+    )
+  }
+  return (
+    <div className="post-avatar">
+      <div className="post-avatar-mascot-crop">
+        <img src={mascot} alt="" className="post-avatar-mascot-img" />
+      </div>
+    </div>
+  )
+}
+
+function PostImages({ images }: { images: string[] }) {
+  const [index, setIndex] = useState(0)
+  const startX = useRef<number | null>(null)
+
+  function handlePointerDown(e: React.PointerEvent<HTMLDivElement>) {
+    startX.current = e.clientX
+    e.currentTarget.setPointerCapture(e.pointerId)
+  }
+  function handlePointerUp(e: React.PointerEvent<HTMLDivElement>) {
+    if (startX.current === null) return
+    const delta = e.clientX - startX.current
+    if (delta < -40 && index < images.length - 1) setIndex(i => i + 1)
+    else if (delta > 40 && index > 0) setIndex(i => i - 1)
+    startX.current = null
+  }
+
+  if (images.length === 0) return null
+  return (
+    <div
+      className="post-image-wrap"
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={() => { startX.current = null }}
+    >
+      <div className="post-image-track" style={{ transform: `translateX(-${index * 100}%)` }}>
+        {images.map((src, i) => (
+          <img key={i} src={src} alt="" className="post-image" draggable={false} />
+        ))}
+      </div>
+      {images.length > 1 && <div className="post-slide-badge">{index + 1}/{images.length}</div>}
+    </div>
+  )
+}
+
 type View =
   | { type: 'info-list' }
-  | { type: 'info-detail'; postId: number }
   | { type: 'group-list' }
   | { type: 'group-detail'; eventId: number }
 
@@ -29,8 +82,8 @@ export default function CommunityPage() {
   const [view, setView] = useState<View>({ type: 'info-list' })
 
   const [infoPosts, setInfoPosts] = useState<InfoPost[]>([])
+  const [expandedIds, setExpandedIds] = useState<number[]>([])
   const [recruitments, setRecruitments] = useState<Recruitment[]>([])
-  const [detailPost, setDetailPost] = useState<InfoPost | null>(null)
   const [detailEvent, setDetailEvent] = useState<RecruitmentDetail | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -45,10 +98,6 @@ export default function CommunityPage() {
   }, [activeTab])
 
   useEffect(() => {
-    if (view.type === 'info-detail') {
-      const found = infoPosts.find(p => p.postId === view.postId)
-      if (found) setDetailPost(found)
-    }
     if (view.type === 'group-detail') {
       getRecruitmentDetail(view.eventId).then(setDetailEvent).catch(() => {})
     }
@@ -60,8 +109,7 @@ export default function CommunityPage() {
   }
 
   function handleBack() {
-    if (view.type === 'info-detail') setView({ type: 'info-list' })
-    else if (view.type === 'group-detail') setView({ type: 'group-list' })
+    if (view.type === 'group-detail') setView({ type: 'group-list' })
     else navigate('/')
   }
 
@@ -71,9 +119,6 @@ export default function CommunityPage() {
       setInfoPosts(prev => prev.map(p =>
         p.postId === postId ? { ...p, liked: res.isLiked, likeCount: res.likeCount } : p
       ))
-      if (detailPost?.postId === postId) {
-        setDetailPost(prev => prev ? { ...prev, liked: res.isLiked, likeCount: res.likeCount } : prev)
-      }
     } catch {}
   }
 
@@ -100,41 +145,6 @@ export default function CommunityPage() {
 
   const header = <Header title="커뮤니티" onBack={handleBack} />
   const headerNoBorder = <Header title="커뮤니티" onBack={handleBack} noBorder />
-
-  /* INFO 게시글 상세 */
-  if (view.type === 'info-detail' && detailPost) {
-    return (
-      <>
-        {headerNoBorder}{tabBar}
-        <div className="community-page">
-          <div className="community-post">
-            <div className="post-author-row">
-              {detailPost.authorProfileImageUrl
-                ? <img src={detailPost.authorProfileImageUrl} alt="" className="post-avatar-img" style={{ borderRadius: '50%', width: 32, height: 32 }} />
-                : <div className="post-avatar"><div className="post-avatar-placeholder" /></div>}
-              <span className="post-author-name">{detailPost.authorNickname}</span>
-            </div>
-            {detailPost.imageUrls.length > 0 && (
-              <div className="post-image-wrap">
-                <img src={detailPost.imageUrls[0]} alt="" className="post-image" />
-                {detailPost.imageUrls.length > 1 && (
-                  <div className="post-slide-badge">1/{detailPost.imageUrls.length}</div>
-                )}
-              </div>
-            )}
-            <div className="post-likes-row">
-              <button onClick={() => handleLike(detailPost.postId)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
-                <img src={heartIcon} alt="좋아요" className="post-heart-icon" style={{ opacity: detailPost.liked ? 1 : 0.4 }} />
-              </button>
-              <span className="post-likes">{detailPost.likeCount.toLocaleString()}</span>
-            </div>
-            <p className="post-body post-body-full">{detailPost.postContent}</p>
-          </div>
-        </div>
-        <BottomNav />
-      </>
-    )
-  }
 
   /* 단체 플로깅 상세 */
   if (view.type === 'group-detail' && detailEvent) {
@@ -200,25 +210,39 @@ export default function CommunityPage() {
           {infoPosts.map(post => (
             <div key={post.postId} className="community-post">
               <div className="post-author-row">
-                {post.authorProfileImageUrl
-                  ? <img src={post.authorProfileImageUrl} alt="" className="post-avatar-img" style={{ borderRadius: '50%', width: 32, height: 32 }} />
-                  : <div className="post-avatar"><div className="post-avatar-placeholder" /></div>}
+                <AuthorAvatar src={post.authorProfileImageUrl} />
                 <span className="post-author-name">{post.authorNickname}</span>
               </div>
-              {post.imageUrls.length > 0 && (
-                <div className="post-image-wrap">
-                  <img src={post.imageUrls[0]} alt="" className="post-image" />
-                  {post.imageUrls.length > 1 && <div className="post-slide-badge">1/{post.imageUrls.length}</div>}
-                </div>
-              )}
-              <div className="post-likes-row">
+              <PostImages images={post.imageUrls} />
+              <div className={`post-likes-row ${post.imageUrls.length === 0 ? 'no-image' : ''}`}>
                 <button onClick={() => handleLike(post.postId)} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
                   <img src={heartIcon} alt="좋아요" className="post-heart-icon" style={{ opacity: post.liked ? 1 : 0.4 }} />
                 </button>
                 <span className="post-likes">{post.likeCount.toLocaleString()}</span>
               </div>
-              <p className="post-body">{post.postContent.slice(0, 100)}{post.postContent.length > 100 ? '...' : ''}</p>
-              <button className="post-more-btn" onClick={() => setView({ type: 'info-detail', postId: post.postId })}>더보기</button>
+              <p className="post-title">{post.postTitle}</p>
+              <p className="post-body">
+                {expandedIds.includes(post.postId) || post.postContent.length <= 100
+                  ? post.postContent
+                  : `${post.postContent.slice(0, 100)}...`}
+              </p>
+              {post.postContent.length > 100 && (
+                expandedIds.includes(post.postId) ? (
+                  <button
+                    className="post-more-btn"
+                    onClick={() => setExpandedIds(prev => prev.filter(id => id !== post.postId))}
+                  >
+                    접기
+                  </button>
+                ) : (
+                  <button
+                    className="post-more-btn"
+                    onClick={() => setExpandedIds(prev => [...prev, post.postId])}
+                  >
+                    더보기
+                  </button>
+                )
+              )}
             </div>
           ))}
         </div>
