@@ -145,6 +145,7 @@
   line-height: 1.5;
   white-space: pre-wrap;
 }
+.post-body.no-more { padding-bottom: 20px; }
 
 .post-more-btn {
   font-size: 10px; font-weight: 500; color: #a19e9e;

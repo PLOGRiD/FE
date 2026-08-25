@@ -260,7 +260,7 @@ export default function CommunityPage() {
                 <span className="post-likes">{post.likeCount.toLocaleString()}</span>
               </div>
               <p className="post-title">{post.postTitle}</p>
-              <p className="post-body">
+              <p className={`post-body ${post.postContent.length <= 100 ? 'no-more' : ''}`}>
                 {expandedIds.includes(post.postId) || post.postContent.length <= 100
                   ? post.postContent
                   : `${post.postContent.slice(0, 100)}...`}
