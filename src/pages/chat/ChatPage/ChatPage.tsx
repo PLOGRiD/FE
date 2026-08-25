@@ -129,7 +129,7 @@ export default function ChatPage() {
 
   return (
     <>
-      <Header title="플로비" onBack={() => navigate('/')} rightIcon={sessionIcon} onRightClick={toggleSessions} />
+      <Header title="챗봇" onBack={() => navigate('/')} rightIcon={sessionIcon} onRightClick={toggleSessions} />
 
       {showSessions && (
         <>
