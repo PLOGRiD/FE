@@ -59,7 +59,7 @@ function WasteDonutChart({ segments }: { segments: Segment[] }) {
 
       {/* 도넛 SVG — 피그마: left=42, top=67, 264×261 */}
       <div className="con-chart-svg-wrap">
-        <svg viewBox="0 0 264 261" width="304" height="300">
+        <svg viewBox="0 0 264 261" width="314" height="310">
           {/* 배경 링 — 데이터가 하나도 없을 때만 표시 */}
           {segs.length === 0 && (
             <circle cx={CX} cy={CY} r={R} fill="none" stroke="#f0f0f0" strokeWidth={SW} />

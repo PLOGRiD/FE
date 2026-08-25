@@ -114,7 +114,7 @@
   box-shadow: -0.5px 1px 4px 0px rgba(0, 0, 0, 0.05);
   overflow: hidden;
   position: relative;
-  height: 352px;
+  height: 360px;
 }
 
 /* 헤더 아이콘 박스 — 피그마: left=15, top=20, 31×32 */
@@ -150,17 +150,17 @@
 /* SVG 도넛 래퍼 — 피그마: left=42, top=67, 264×261 */
 .con-chart-svg-wrap {
   position: absolute;
-  left: 22px;
-  top: 48px;
-  width: 304px;
-  height: 300px;
+  left: 17px;
+  top: 43px;
+  width: 314px;
+  height: 310px;
 }
 
 /* 클로버 중앙 이미지 — 피그마: SVG 내부 left=71, top=69, 120×120 */
 .con-chart-center {
   position: absolute;
-  left: 91px;
-  top: 90px;
+  left: 95px;
+  top: 95px;
   width: 120px;
   height: 120px;
   pointer-events: none;
