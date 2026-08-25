@@ -19,11 +19,15 @@ interface Message {
   imageUrl?: string
 }
 
+const GREETING: Message = {
+  id: 0,
+  role: 'bot',
+  text: '안녕하세요! 저는 PLOGRiD의 플로비라고 해요. 분리배출에 대해 궁금한 것이 있으면 물어봐주세요. 🌍🌱',
+}
+
 export default function ChatPage() {
   const navigate = useNavigate()
-  const [messages, setMessages] = useState<Message[]>([
-    { id: 0, role: 'bot', text: '안녕하세요! 저는 PLOGRiD의 플로비라고 해요. 분리배출에 대해 궁금한 것이 있으면 물어봐주세요. 🌍🌱' },
-  ])
+  const [messages, setMessages] = useState<Message[]>([GREETING])
   const [input, setInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const [sessionId, setSessionId] = useState<number | undefined>(undefined)
@@ -114,6 +118,10 @@ export default function ChatPage() {
     try {
       await deleteSessions(selectedIds)
       setSessions(prev => prev.filter(s => !selectedIds.includes(s.chatSessionId)))
+      if (sessionId && selectedIds.includes(sessionId)) {
+        setMessages([GREETING])
+        setSessionId(undefined)
+      }
     } catch {}
     setSelecting(false)
     setSelectedIds([])
