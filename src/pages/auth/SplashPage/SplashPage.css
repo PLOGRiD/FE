@@ -11,7 +11,8 @@
 /* 피그마: x=130, y=284 */
 .splash-tagline {
   position: absolute;
-  left: 130px;
+  left: 50%;
+  transform: translateX(calc(-50% + 5px));
   top: calc(284 / 852 * 100dvh);
   font-size: 15px;
   font-weight: 600;
@@ -23,7 +24,8 @@
 /* 피그마: x=36, y=289, w=298 */
 .splash-logo {
   position: absolute;
-  left: 36px;
+  left: 50%;
+  transform: translateX(-50%);
   top: calc(289 / 852 * 100dvh);
   width: 298px;
   object-fit: contain;
@@ -32,7 +34,8 @@
 /* 피그마: x=15, y=539, w=401, h=424 */
 .splash-bird-wrap {
   position: absolute;
-  left: 15px;
+  left: 50%;
+  transform: translateX(-50%);
   top: calc(539 / 852 * 100dvh);
   width: 401px;
 }
