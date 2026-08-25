@@ -12,9 +12,11 @@ export default function Header({ title, onBack, rightIcon, onRightClick }: Heade
   return (
     <header className="app-header">
       {onBack && (
-        <button className="app-header-back-btn" onClick={onBack}>
-          <img src={backIcon} alt="뒤로" className="app-header-back-icon" />
-        </button>
+        <div className={`app-header-side ${rightIcon ? 'app-header-side-wide' : ''}`}>
+          <button className="app-header-back-btn" onClick={onBack}>
+            <img src={backIcon} alt="뒤로" className="app-header-back-icon" />
+          </button>
+        </div>
       )}
       <span className="app-header-title">{title}</span>
       {rightIcon && (
