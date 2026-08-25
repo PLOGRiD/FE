@@ -1,3 +1,23 @@
+/* ── 토스트 ── */
+.community-toast {
+  position: fixed;
+  top: 66px; left: 50%;
+  transform: translateX(-50%);
+  max-width: 400px;
+  background: rgba(30, 30, 30, 0.85);
+  color: #fff;
+  font-size: 13px; font-weight: 500;
+  padding: 11px 20px;
+  border-radius: 8px;
+  z-index: 200;
+  animation: community-toast-in 0.2s ease;
+  white-space: nowrap;
+}
+@keyframes community-toast-in {
+  from { opacity: 0; transform: translate(-50%, -6px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
 /* ── 탭바 ── */
 .community-tabbar {
   position: fixed;
@@ -146,6 +166,35 @@
 }
 .event-card:active { background: #f9f9f9; }
 
+.event-card-body-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.event-card-text-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.event-card-info-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.event-card-thumb {
+  width: 130px;
+  height: 180px;
+  flex-shrink: 0;
+  border-radius: 3px;
+  border: 1px solid #f0f0f0;
+  overflow: hidden;
+}
+.event-card-thumb-img { width: 100%; height: 100%; object-fit: cover; }
+
 .event-card-dday {
   align-self: flex-start;
   height: 25px;
@@ -160,7 +209,7 @@
 .event-card-dday.ended { background: #7C7C7C; }
 
 .event-card-title {
-  font-size: 18px; font-weight: 700; color: #1e1e1e;
+  font-size: 16px; font-weight: 700; color: #1e1e1e;
   margin-top: 8px;
 }
 
@@ -185,7 +234,7 @@
 
 .event-card-info-text { display: flex; flex-direction: column; gap: 2px; }
 .event-card-info-label { font-size: 12px; font-weight: 600; color: #1e1e1e; }
-.event-card-info-value { font-size: 10px; font-weight: 700; color: var(--mint); }
+.event-card-info-value { font-size: 10px; font-weight: 500; color: var(--mint); }
 
 .event-info-row {
   display: flex; align-items: center; gap: 6px;
@@ -259,6 +308,7 @@
 .event-announce-text {
   font-size: 11px; font-weight: 500; color: #6d6d6d;
   line-height: 1.6;
+  white-space: pre-wrap;
 }
 
 .event-join-btn {
@@ -272,3 +322,7 @@
   margin-top: 4px;
 }
 .event-join-btn:active { background: #8bbda9; }
+.event-join-btn.ended { background: #7C7C7C; cursor: not-allowed; }
+.event-join-btn.ended:active { background: #7C7C7C; }
+.event-join-btn.participating { background: #fff; border: 1px solid #a0cfbd; color: #a0cfbd; }
+.event-join-btn.participating:active { background: #f4faf7; }

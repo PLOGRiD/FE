@@ -33,8 +33,17 @@ export interface Recruitment {
   eventStatus: string
 }
 
-export interface RecruitmentDetail extends Recruitment {
+export interface RecruitmentDetail {
+  title: string
+  hostName: string
+  thumbnailImageUrl?: string
   description: string
+  eventDateTime: string
+  eventLocation: string
+  currentParticipants: number
+  maxParticipants: number
+  eventStatus: string
+  isParticipating: boolean
 }
 
 export async function getInfoList(page = 1, size = 10): Promise<InfoListResult> {

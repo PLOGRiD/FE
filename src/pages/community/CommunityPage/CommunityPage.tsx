@@ -17,6 +17,14 @@ import './CommunityPage.css'
 
 const TABS = ['INFO', '단체 플로깅']
 
+function formatEventDateTime(eventDateTime: string): string {
+  const d = new Date(eventDateTime.replace(' ', 'T'))
+  if (isNaN(d.getTime())) return eventDateTime
+  const hh = String(d.getHours()).padStart(2, '0')
+  const mm = String(d.getMinutes()).padStart(2, '0')
+  return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 ${hh}시 ${mm}분`
+}
+
 function getDday(eventDateTime: string): { label: string; status: 'dday' | 'upcoming' | 'ended' } {
   const event = new Date(eventDateTime.replace(' ', 'T'))
   const eventDay = new Date(event.getFullYear(), event.getMonth(), event.getDate())
@@ -95,6 +103,7 @@ export default function CommunityPage() {
   const [expandedIds, setExpandedIds] = useState<number[]>([])
   const [recruitments, setRecruitments] = useState<Recruitment[]>([])
   const [detailEvent, setDetailEvent] = useState<RecruitmentDetail | null>(null)
+  const [toast, setToast] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -119,8 +128,13 @@ export default function CommunityPage() {
   }
 
   function handleBack() {
-    if (view.type === 'group-detail') setView({ type: 'group-list' })
-    else navigate('/')
+    if (view.type === 'group-detail') {
+      setView({ type: 'group-list' })
+      setLoading(true)
+      getRecruitmentList().then(setRecruitments).catch(() => {}).finally(() => setLoading(false))
+    } else {
+      navigate('/')
+    }
   }
 
   async function handleLike(postId: number) {
@@ -132,14 +146,17 @@ export default function CommunityPage() {
     } catch {}
   }
 
+  function showToast(message: string) {
+    setToast(message)
+    setTimeout(() => setToast(null), 2000)
+  }
+
   async function handleParticipate(recruitmentId: number) {
     try {
       const res = await toggleParticipation(recruitmentId)
-      setDetailEvent(prev => prev ? {
-        ...prev,
-        currentParticipants: res.currentParticipants,
-        maxParticipants: res.maxParticipants,
-      } : prev)
+      const detail = await getRecruitmentDetail(recruitmentId)
+      setDetailEvent(detail)
+      showToast(res.isParticipating ? '참여 신청이 완료되었습니다' : '참여가 취소되었습니다')
     } catch {}
   }
 
@@ -154,14 +171,18 @@ export default function CommunityPage() {
   )
 
   const header = <Header title="커뮤니티" onBack={handleBack} />
+  const toastEl = toast && <div className="community-toast">{toast}</div>
   const headerNoBorder = <Header title="커뮤니티" onBack={handleBack} noBorder />
 
   /* 단체 플로깅 상세 */
   if (view.type === 'group-detail' && detailEvent) {
     const pct = Math.round((detailEvent.currentParticipants / detailEvent.maxParticipants) * 100)
+    const dday = getDday(detailEvent.eventDateTime)
+    const ended = dday.status === 'ended'
     return (
       <>
         {header}
+        {toastEl}
         <div className="event-detail-page">
           {detailEvent.thumbnailImageUrl && (
             <div className="event-detail-image-wrap">
@@ -177,7 +198,7 @@ export default function CommunityPage() {
               </div>
               <div className="event-info-row">
                 <img src={clockIcon} alt="" className="event-info-icon" />
-                <span className="event-info-text">{detailEvent.eventDateTime}</span>
+                <span className="event-info-text">{formatEventDateTime(detailEvent.eventDateTime)}</span>
               </div>
               <div className="event-info-row">
                 <img src={peopleIcon} alt="" className="event-info-icon" />
@@ -196,12 +217,20 @@ export default function CommunityPage() {
               <div className="event-announcement">
                 <img src={megaphoneIcon} alt="" className="event-megaphone-icon" />
                 <div>
-                  <p className="event-announce-label">안내사항</p>
+                  <p className="event-announce-label">활동 소개</p>
                   <p className="event-announce-text">{detailEvent.description}</p>
                 </div>
               </div>
             )}
-            <button className="event-join-btn" onClick={() => handleParticipate(detailEvent.recruitmentId)}>참여하기</button>
+            <button
+              className={`event-join-btn ${ended ? 'ended' : detailEvent.isParticipating ? 'participating' : ''}`}
+              onClick={() => {
+                if (ended) showToast('지금은 참여할 수 없습니다')
+                else if (view.type === 'group-detail') handleParticipate(view.eventId)
+              }}
+            >
+              {ended ? '모집중이 아닙니다' : detailEvent.isParticipating ? '참여 취소' : '참여하기'}
+            </button>
           </div>
         </div>
         <BottomNav />
@@ -264,37 +293,50 @@ export default function CommunityPage() {
             return (
               <div key={event.recruitmentId} className="event-card" onClick={() => setView({ type: 'group-detail', eventId: event.recruitmentId })}>
                 <span className={`event-card-dday ${dday.status}`}>{dday.label}</span>
-                <p className="event-card-title">{event.title}</p>
-                <p className="event-card-host">{event.hostName}</p>
 
-                <div className="event-card-info-row">
-                  <div className="event-card-icon-box">
-                    <img src={clockIcon} alt="" className="event-card-icon" />
-                  </div>
-                  <div className="event-card-info-text">
-                    <p className="event-card-info-label">이벤트 일시</p>
-                    <p className="event-card-info-value">{event.eventDateTime}</p>
-                  </div>
-                </div>
+                <div className="event-card-body-row">
+                  <div className="event-card-text-col">
+                    <p className="event-card-title">{event.title}</p>
+                    <p className="event-card-host">{event.hostName}</p>
 
-                <div className="event-card-info-row">
-                  <div className="event-card-icon-box">
-                    <img src={locationIcon} alt="" className="event-card-icon" />
-                  </div>
-                  <div className="event-card-info-text">
-                    <p className="event-card-info-label">이벤트 장소</p>
-                    <p className="event-card-info-value">{event.eventLocation}</p>
-                  </div>
-                </div>
+                    <div className="event-card-info-list">
+                      <div className="event-card-info-row">
+                        <div className="event-card-icon-box">
+                          <img src={clockIcon} alt="" className="event-card-icon" />
+                        </div>
+                        <div className="event-card-info-text">
+                          <p className="event-card-info-label">이벤트 일시</p>
+                          <p className="event-card-info-value">{formatEventDateTime(event.eventDateTime)}</p>
+                        </div>
+                      </div>
 
-                <div className="event-card-info-row">
-                  <div className="event-card-icon-box">
-                    <img src={peopleIcon} alt="" className="event-card-icon" />
+                      <div className="event-card-info-row">
+                        <div className="event-card-icon-box">
+                          <img src={locationIcon} alt="" className="event-card-icon" />
+                        </div>
+                        <div className="event-card-info-text">
+                          <p className="event-card-info-label">이벤트 장소</p>
+                          <p className="event-card-info-value">{event.eventLocation}</p>
+                        </div>
+                      </div>
+
+                      <div className="event-card-info-row">
+                        <div className="event-card-icon-box">
+                          <img src={peopleIcon} alt="" className="event-card-icon" />
+                        </div>
+                        <div className="event-card-info-text">
+                          <p className="event-card-info-label">참여 인원</p>
+                          <p className="event-card-info-value">{event.currentParticipants} / {event.maxParticipants || '제한 없음'}</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="event-card-info-text">
-                    <p className="event-card-info-label">참여 인원</p>
-                    <p className="event-card-info-value">{event.currentParticipants} / {event.maxParticipants || '제한 없음'}</p>
-                  </div>
+
+                  {event.thumbnailImageUrl && (
+                    <div className="event-card-thumb">
+                      <img src={event.thumbnailImageUrl} alt="" className="event-card-thumb-img" />
+                    </div>
+                  )}
                 </div>
               </div>
             )
