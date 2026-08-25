@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import defaultAvatar from '../../../assets/mypage/default-avatar.png'
-import navNextIcon from '../../../assets/home/icons/nav-next.svg'
 import iconClover from '../../../assets/mypage/icon-clover.svg'
+import iconCloverLight from '../../../assets/mypage/icon-clover-light.svg'
 import iconRun from '../../../assets/mypage/icon-run.svg'
 import iconTrash from '../../../assets/mypage/icon-trash.svg'
 import iconCoin from '../../../assets/mypage/icon-coin.svg'
 import iconPie from '../../../assets/mypage/icon-pie.svg'
 import BottomNav from '../../../components/BottomNav/BottomNav'
 import Header from '../../../components/Header/Header'
+import MyPageProfile from '../../../components/MyPageProfile/MyPageProfile'
 import { getMyContribution } from '../../../api/member'
 import type { MyContribution } from '../../../api/member'
 import './Contribution.css'
@@ -27,15 +27,18 @@ const CATEGORIES = [
 interface Segment { label: string; pct: number; color: string }
 
 // 피그마 스펙: viewBox 264×261, 링 center (130.7, 130.7), R=93.75, SW=67.5
-const CX = 130.7, CY = 130.7, R = 93.75, SW = 67.5
+const CX = 130.7, CY = 130.7, R = 88, SW = 32
+
+const SEGMENT_GAP = 0
 
 function WasteDonutChart({ segments }: { segments: Segment[] }) {
   const circ = 2 * Math.PI * R
+  const usableCirc = circ - SEGMENT_GAP * segments.length
   let offset = 0
   const segs = segments.map(s => {
-    const dash = (s.pct / 100) * circ
+    const dash = (s.pct / 100) * usableCirc
     const seg = { ...s, dash, gap: circ - dash, offset }
-    offset += dash
+    offset += dash + SEGMENT_GAP
     return seg
   })
 
@@ -56,9 +59,11 @@ function WasteDonutChart({ segments }: { segments: Segment[] }) {
 
       {/* 도넛 SVG — 피그마: left=42, top=67, 264×261 */}
       <div className="con-chart-svg-wrap">
-        <svg viewBox="0 0 264 261" width="264" height="261">
-          {/* 배경 링 */}
-          <circle cx={CX} cy={CY} r={R} fill="none" stroke="#f0f0f0" strokeWidth={SW} />
+        <svg viewBox="0 0 264 261" width="304" height="300">
+          {/* 배경 링 — 데이터가 하나도 없을 때만 표시 */}
+          {segs.length === 0 && (
+            <circle cx={CX} cy={CY} r={R} fill="none" stroke="#f0f0f0" strokeWidth={SW} />
+          )}
           {/* 데이터 세그먼트 */}
           {segs.map(s => (
             <circle
@@ -81,7 +86,7 @@ function WasteDonutChart({ segments }: { segments: Segment[] }) {
                 x={pos.x} y={pos.y}
                 textAnchor="middle"
                 dominantBaseline="middle"
-                fontSize="10"
+                fontSize="8"
                 fontWeight="700"
                 fill="#fff"
               >
@@ -91,7 +96,7 @@ function WasteDonutChart({ segments }: { segments: Segment[] }) {
           })}
         </svg>
         {/* 클로버 중앙 — 피그마: left=71, top=69, 120×120 */}
-        <img src={iconClover} alt="" className="con-chart-center" />
+        <img src={iconCloverLight} alt="" className="con-chart-center" />
       </div>
 
       {/* 범례 — 피그마: 카드 내 left=297, top=12 (right=0) */}
@@ -109,8 +114,6 @@ function WasteDonutChart({ segments }: { segments: Segment[] }) {
 
 export default function Contribution() {
   const navigate = useNavigate()
-  const nickname = localStorage.getItem('nickname') ?? '사용자'
-  const email = localStorage.getItem('email') ?? ''
 
   const [data, setData] = useState<MyContribution | null>(null)
 
@@ -139,18 +142,7 @@ export default function Contribution() {
     <>
       <Header title="마이페이지" />
 
-      <div className="con-profile-section">
-        <div className="con-avatar">
-          <img src={defaultAvatar} alt="프로필" className="con-avatar-img" />
-        </div>
-        <div className="con-profile-info">
-          <span className="con-profile-name">{nickname}</span>
-          <span className="con-profile-email">{email}</span>
-        </div>
-        <button className="con-profile-arrow" onClick={() => navigate('/mypage/etc')}>
-          <img src={navNextIcon} alt="더보기" />
-        </button>
-      </div>
+      <MyPageProfile />
 
       <div className="con-tabbar">
         <button className="con-tab active">환경 기여</button>

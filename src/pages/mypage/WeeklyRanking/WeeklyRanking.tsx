@@ -4,9 +4,9 @@ import defaultAvatar from '../../../assets/mypage/default-avatar.png'
 import medal1st from '../../../assets/home/icons/medal-1st.svg'
 import medal2nd from '../../../assets/home/icons/medal-2nd.svg'
 import medal3rd from '../../../assets/home/icons/medal-3rd.svg'
-import navNextIcon from '../../../assets/home/icons/nav-next.svg'
 import BottomNav from '../../../components/BottomNav/BottomNav'
 import Header from '../../../components/Header/Header'
+import MyPageProfile from '../../../components/MyPageProfile/MyPageProfile'
 import { getRanking } from '../../../api/member'
 import type { RankItem } from '../../../api/member'
 import './WeeklyRanking.css'
@@ -15,8 +15,6 @@ const MEDALS = [medal1st, medal2nd, medal3rd]
 
 export default function WeeklyRanking() {
   const navigate = useNavigate()
-  const nickname = localStorage.getItem('nickname') ?? '사용자'
-  const email = localStorage.getItem('email') ?? ''
 
   const [topRankings, setTopRankings] = useState<RankItem[]>([])
   const [listRankings, setListRankings] = useState<RankItem[]>([])
@@ -34,18 +32,7 @@ export default function WeeklyRanking() {
     <>
       <Header title="마이페이지" />
 
-      <div className="ranking-profile-section">
-        <div className="ranking-profile-avatar">
-          <img src={defaultAvatar} alt="프로필" className="ranking-profile-avatar-img" />
-        </div>
-        <div className="ranking-profile-info">
-          <span className="ranking-profile-name">{nickname}</span>
-          <span className="ranking-profile-email">{email}</span>
-        </div>
-        <button className="ranking-profile-arrow" onClick={() => navigate('/mypage/etc')}>
-          <img src={navNextIcon} alt="더보기" />
-        </button>
-      </div>
+      <MyPageProfile />
 
       <div className="ranking-tabbar">
         <button className="ranking-tab" onClick={() => navigate('/mypage/contribution')}>환경 기여</button>

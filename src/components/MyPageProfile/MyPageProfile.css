@@ -1,0 +1,70 @@
+.mypage-profile-section {
+  position: fixed;
+  top: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  height: 97px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 24px 0 26px;
+  z-index: 40;
+}
+.mypage-profile-avatar {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  border: 0.5px solid #d4d4d4;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.mypage-profile-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.mypage-profile-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: 16px;
+}
+.mypage-profile-name-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.mypage-profile-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #323639;
+}
+.mypage-profile-leaf-icon {
+  width: 15px;
+  height: 12px;
+  object-fit: contain;
+}
+.mypage-profile-email {
+  font-size: 10px;
+  color: #909ba2;
+}
+.mypage-profile-arrow {
+  width: 36px;
+  height: 44px;
+  margin-top: 3px;
+  padding: 0;
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.mypage-profile-arrow img {
+  width: 30px;
+  height: 40px;
+  object-fit: contain;
+}
