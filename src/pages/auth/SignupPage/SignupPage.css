@@ -12,7 +12,7 @@
 /* 피그마: y=73 → padding-top으로 눌러줌 */
 .back-btn {
   align-self: flex-start;
-  margin-top: 73px;
+  margin-top: 28px;
   margin-left: 28px;
   background: none;
   border: none;
@@ -33,7 +33,7 @@
 
 /* 피그마: y=97, back button bottom=97 → gap=0 */
 .signup-bird {
-  margin-top: 0;
+  margin-top: 5px;
   width: 112px;
   height: 117px;
 }
