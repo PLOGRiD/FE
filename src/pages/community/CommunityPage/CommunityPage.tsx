@@ -6,7 +6,6 @@ import locationIcon from '../../../assets/community/location.svg'
 import peopleIcon from '../../../assets/community/people.svg'
 import clockIcon from '../../../assets/community/clock.svg'
 import megaphoneIcon from '../../../assets/community/megaphone.svg'
-import navNextIcon from '../../../assets/home/icons/nav-next.svg'
 import BottomNav from '../../../components/BottomNav/BottomNav'
 import Header from '../../../components/Header/Header'
 import {
@@ -17,6 +16,17 @@ import type { InfoPost, Recruitment, RecruitmentDetail } from '../../../api/comm
 import './CommunityPage.css'
 
 const TABS = ['INFO', '단체 플로깅']
+
+function getDday(eventDateTime: string): { label: string; status: 'dday' | 'upcoming' | 'ended' } {
+  const event = new Date(eventDateTime.replace(' ', 'T'))
+  const eventDay = new Date(event.getFullYear(), event.getMonth(), event.getDate())
+  const today = new Date()
+  const todayDay = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+  const diffDays = Math.round((eventDay.getTime() - todayDay.getTime()) / 86400000)
+  if (diffDays < 0) return { label: '이벤트 종료', status: 'ended' }
+  if (diffDays === 0) return { label: 'D-Day', status: 'dday' }
+  return { label: `D-${diffDays}`, status: 'upcoming' }
+}
 
 function AuthorAvatar({ src }: { src?: string }) {
   const [failed, setFailed] = useState(false)
@@ -249,32 +259,46 @@ export default function CommunityPage() {
       ) : (
         <div className="community-page group-page">
           {loading && <p style={{ textAlign: 'center', padding: 24, color: '#999' }}>불러오는 중...</p>}
-          {recruitments.map(event => (
-            <div key={event.recruitmentId} className="event-card" onClick={() => setView({ type: 'group-detail', eventId: event.recruitmentId })}>
-              {event.thumbnailImageUrl && (
-                <div className="event-card-image-wrap">
-                  <img src={event.thumbnailImageUrl} alt={event.title} className="event-card-image" />
-                  <div className="event-card-badge">{event.currentParticipants}/{event.maxParticipants}명</div>
-                </div>
-              )}
-              <div className="event-card-body">
+          {recruitments.map(event => {
+            const dday = getDday(event.eventDateTime)
+            return (
+              <div key={event.recruitmentId} className="event-card" onClick={() => setView({ type: 'group-detail', eventId: event.recruitmentId })}>
+                <span className={`event-card-dday ${dday.status}`}>{dday.label}</span>
                 <p className="event-card-title">{event.title}</p>
-                <div className="event-info-row">
-                  <img src={locationIcon} alt="" className="event-info-icon" />
-                  <span className="event-info-text">{event.eventLocation}</span>
+                <p className="event-card-host">{event.hostName}</p>
+
+                <div className="event-card-info-row">
+                  <div className="event-card-icon-box">
+                    <img src={clockIcon} alt="" className="event-card-icon" />
+                  </div>
+                  <div className="event-card-info-text">
+                    <p className="event-card-info-label">이벤트 일시</p>
+                    <p className="event-card-info-value">{event.eventDateTime}</p>
+                  </div>
                 </div>
-                <div className="event-info-row">
-                  <img src={clockIcon} alt="" className="event-info-icon" />
-                  <span className="event-info-text">{event.eventDateTime}</span>
+
+                <div className="event-card-info-row">
+                  <div className="event-card-icon-box">
+                    <img src={locationIcon} alt="" className="event-card-icon" />
+                  </div>
+                  <div className="event-card-info-text">
+                    <p className="event-card-info-label">이벤트 장소</p>
+                    <p className="event-card-info-value">{event.eventLocation}</p>
+                  </div>
                 </div>
-                <div className="event-info-row">
-                  <img src={peopleIcon} alt="" className="event-info-icon" />
-                  <span className="event-info-text">{event.maxParticipants}명 모집</span>
+
+                <div className="event-card-info-row">
+                  <div className="event-card-icon-box">
+                    <img src={peopleIcon} alt="" className="event-card-icon" />
+                  </div>
+                  <div className="event-card-info-text">
+                    <p className="event-card-info-label">참여 인원</p>
+                    <p className="event-card-info-value">{event.currentParticipants} / {event.maxParticipants || '제한 없음'}</p>
+                  </div>
                 </div>
               </div>
-              <img src={navNextIcon} alt="" className="event-card-arrow" />
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
 
