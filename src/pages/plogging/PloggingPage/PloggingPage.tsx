@@ -366,7 +366,7 @@ export default function PloggingPage() {
         </div>
 
         {stage === 'idle' && (
-          <button className="plogging-done-btn" style={{ marginTop: 28 }} onClick={() => setStage('waiting')}>
+          <button className="plogging-done-btn plogging-qr-start-btn" style={{ marginTop: 28 }} onClick={() => setStage('waiting')}>
             QR 스캔 시작
           </button>
         )}

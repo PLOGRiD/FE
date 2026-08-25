@@ -198,6 +198,10 @@
 }
 .plogging-done-btn:active { background: #8bbda9; }
 
+.plogging-qr-start-btn {
+  width: calc(85% - 70px);
+}
+
 /* ── 플로깅 진행 중 ── */
 .plogging-running-page {
   justify-content: flex-start;
