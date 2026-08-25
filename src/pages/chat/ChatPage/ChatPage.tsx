@@ -60,8 +60,12 @@ export default function ChatPage() {
     setIsTyping(true)
 
     try {
+      const isNewSession = !sessionId
       const res = await sendChat(text, sessionId, image)
-      if (!sessionId) setSessionId(res.chatSessionId)
+      if (isNewSession) {
+        setSessionId(res.chatSessionId)
+        getSessions().then(setSessions).catch(() => {})
+      }
       setMessages(prev => [...prev, { id: Date.now() + 1, role: 'bot', text: res.message }])
     } catch {
       setMessages(prev => [...prev, { id: Date.now() + 1, role: 'bot', text: '일시적인 오류가 발생했어요. 잠시 후 다시 시도해주세요.' }])
