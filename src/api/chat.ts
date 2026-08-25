@@ -2,9 +2,9 @@ import client from './client'
 
 export interface ChatMessage {
   chatLogId: number
-  chatRole: 'USER' | 'BOT'
+  chatRole: 'USER' | 'ASSISTANT'
   message: string
-  imageUrl?: string
+  imageUrl?: string | null
   messageType: string
   createdAt: string
 }

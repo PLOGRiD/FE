@@ -1,5 +1,5 @@
 
-/* ── 메시지 영역 배경 (마스코트 뒤에 깔리는 레이어) ── */
+/* ?�?� 메시지 ?�역 배경 (마스코트 ?�에 깔리???�이?? ?�?� */
 .chat-messages-bg {
   position: fixed;
   top: 56px;
@@ -12,7 +12,7 @@
   z-index: 1;
 }
 
-/* ── 메시지 영역 Figma: bg=#f4f6f8 (배경은 .chat-messages-bg로 분리) ── */
+/* ?�?� 메시지 ?�역 Figma: bg=#f4f6f8 (배경?� .chat-messages-bg�?분리) ?�?� */
 .chat-messages {
   position: fixed;
   top: 56px;
@@ -47,7 +47,7 @@
   flex-shrink: 0;
 }
 
-/* Figma 345:529: image 105 → w=73, h=66, left=-9.5, top=1.5 */
+/* Figma 345:529: image 105 ??w=73, h=66, left=-9.5, top=1.5 */
 .chat-avatar-inner {
   position: absolute;
   width: 73px; height: 66px;
@@ -55,7 +55,7 @@
   overflow: hidden;
 }
 
-/* Figma: img inside 345:529 → w=544.95%, h=483.96%, left=-284.84%, top=-356.06% */
+/* Figma: img inside 345:529 ??w=544.95%, h=483.96%, left=-284.84%, top=-356.06% */
 .chat-avatar-img {
   position: absolute;
   width: 544.95%;
@@ -64,7 +64,7 @@
   top: -356.06%;
 }
 
-/* Figma 345:555: 봇 bubble bg=white, shadow, radius 3/10/10/10 */
+/* Figma 345:555: �?bubble bg=white, shadow, radius 3/10/10/10 */
 .chat-bubble {
   max-width: 246px;
   padding: 13px 14px;
@@ -78,14 +78,14 @@
 }
 .chat-bubble.bot { background: #fff; margin-top: 8px; }
 
-/* Figma 345:565: 유저 bubble bg=#a0cfbd, radius 10/3/10/10 */
+/* Figma 345:565: ?��? bubble bg=#a0cfbd, radius 10/3/10/10 */
 .chat-bubble.user {
   background: #a0cfbd;
   color: #fff;
   border-radius: 10px 3px 10px 10px;
 }
 
-/* 메시지 슬라이드 인 애니메이션 */
+/* 메시지 ?�라?�드 ???�니메이??*/
 @keyframes slide-from-right {
   from { opacity: 0; transform: translateX(16px); }
   to   { opacity: 1; transform: translateX(0); }
@@ -97,7 +97,7 @@
 .chat-row.user .chat-bubble { animation: slide-from-right 0.22s ease; }
 .chat-row.bot  .chat-bubble { animation: slide-from-left  0.22s ease; }
 
-/* 타이핑 애니메이션 */
+/* ?�?�핑 ?�니메이??*/
 .chat-typing { display: flex; gap: 4px; align-items: center; min-height: 40px; }
 .chat-typing span {
   width: 5px; height: 5px;
@@ -112,12 +112,12 @@
 }
 
 /* Figma 345:518: BackgroundMascot w=234, h=262, opacity=50%
-   frame 기준 left=calc(33.33%+25px), top=492 */
+   frame 기�? left=calc(33.33%+25px), top=492 */
 .chat-bg-mascot {
   position: fixed;
   width: 234px;
   height: 262px;
-  right: calc(50% - 430px/2);
+  right: max(0px, calc(50% - 430px/2));
   bottom: calc(71px + 90px);
   pointer-events: none;
   z-index: 5;
@@ -128,7 +128,7 @@
   object-fit: contain;
 }
 
-/* Figma 345:550: 입력창 bg=white, h=96, shadow 0 -5 4 rgba(0,0,0,0.1) */
+/* Figma 345:550: ?�력�?bg=white, h=96, shadow 0 -5 4 rgba(0,0,0,0.1) */
 .chat-input-area {
   position: fixed;
   bottom: 90px;
@@ -165,7 +165,7 @@
   gap: 10px;
 }
 
-/* Figma 345:553: 이미지 첨부 버튼 size=24 */
+/* Figma 345:553: ?��?지 첨�? 버튼 size=24 */
 .chat-attach-btn {
   width: 24px; height: 24px;
   flex-shrink: 0;
@@ -202,7 +202,7 @@
   display: block;
 }
 
-/* 첨부 이미지 미리보기 카드 (입력창과 같은 흰 배경 안, 입력 줄 바로 위) */
+/* 첨�? ?��?지 미리보기 카드 (?�력창과 같�? ??배경 ?? ?�력 �?바로 ?? */
 .chat-attach-preview {
   position: relative;
   padding: 0 19px;
@@ -229,3 +229,126 @@
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
 }
+
+/* ?�?� 채팅 ?�션 목록 ?�널 ?�?� */
+.chat-sessions-backdrop {
+  position: fixed;
+  top: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.15);
+  z-index: 41;
+}
+
+.chat-sessions-panel {
+  position: fixed;
+  top: 56px;
+  right: max(0px, calc(50% - 430px/2));
+  width: 70%;
+  max-width: 300px;
+  bottom: 0;
+  background: #fff;
+  border-bottom-left-radius: 16px;
+  box-shadow: -2px 4px 12px rgba(0, 0, 0, 0.12);
+  z-index: 42;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chat-sessions-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 16px 12px;
+  border-bottom: 1px solid #f0f0f0;
+  flex-shrink: 0;
+}
+.chat-sessions-title { font-size: 14px; font-weight: 700; color: #323639; }
+.chat-sessions-close {
+  background: none; border: none; padding: 4px;
+  font-size: 14px; color: #9b9b9b; cursor: pointer;
+  margin-right: 10px;
+}
+
+.chat-sessions-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.chat-session-item {
+  width: 100%;
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  background: none; border: none; border-bottom: 1px solid #f5f5f5;
+  cursor: pointer; text-align: left;
+  font-family: inherit;
+}
+.chat-session-item-icon {
+  width: 24px; height: 24px; flex-shrink: 0;
+  background: #e7f3ee; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+}
+.chat-session-item-icon img { width: 14px; height: 14px; }
+.chat-session-item-title {
+  flex: 1;
+  font-size: 12px; font-weight: 500; color: #323639;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.chat-session-item-time { font-size: 10px; color: #9b9b9b; flex-shrink: 0; margin-right: 15px; }
+
+.chat-session-checkbox {
+  width: 18px; height: 18px; flex-shrink: 0;
+  border: 1.5px solid #d0d0d0;
+  border-radius: 4px;
+  position: relative;
+}
+.chat-session-checkbox.checked {
+  background: #a0cfbd;
+  border-color: #a0cfbd;
+}
+.chat-session-checkbox.checked::after {
+  content: '';
+  position: absolute;
+  left: 5px; top: 2px;
+  width: 4px; height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.chat-sessions-actions {
+  display: flex;
+  align-self: center;
+  gap: 8px;
+  width: calc(100% - 35px);
+  margin: 12px 0 calc(90px + 12px);
+  flex-shrink: 0;
+}
+.chat-sessions-cancel,
+.chat-sessions-delete-selected {
+  flex: 1;
+  padding: 12px;
+  border: none; border-radius: 5px;
+  font-size: 12px; font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+.chat-sessions-cancel { background: #f5f5f5; color: #6d6d6d; }
+.chat-sessions-delete-selected { background: var(--mint); color: #fff; }
+.chat-sessions-delete-selected:disabled { background: #f5f5f5; color: #b1b7bc; cursor: not-allowed; }
+
+.chat-sessions-delete-all {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  align-self: center;
+  width: calc(100% - 35px);
+  margin: 12px 0 calc(90px + 12px);
+  padding: 12px;
+  background: #f5f5f5;
+  border: none; border-radius: 5px;
+  font-size: 12px; font-weight: 600; color: #6d6d6d;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.chat-sessions-delete-all img { width: 14px; height: 14px; }

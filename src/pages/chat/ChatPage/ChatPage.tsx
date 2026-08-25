@@ -5,9 +5,11 @@ import chatBgMascot from '../../../assets/chat/chat-bg-mascot.png'
 import attachIcon from '../../../assets/chat/attach.svg'
 import sendBtn from '../../../assets/chat/send-btn.svg'
 import sessionIcon from '../../../assets/chat/session-icon.svg'
+import trashIcon from '../../../assets/home/icons/trash.svg'
 import BottomNav from '../../../components/BottomNav/BottomNav'
 import Header from '../../../components/Header/Header'
-import { sendChat } from '../../../api/chat'
+import { sendChat, getSessions, getSessionMessages, deleteSessions } from '../../../api/chat'
+import type { ChatSession } from '../../../api/chat'
 import './ChatPage.css'
 
 interface Message {
@@ -27,6 +29,10 @@ export default function ChatPage() {
   const [sessionId, setSessionId] = useState<number | undefined>(undefined)
   const [pendingImage, setPendingImage] = useState<File | null>(null)
   const [pendingPreview, setPendingPreview] = useState<string | null>(null)
+  const [showSessions, setShowSessions] = useState(false)
+  const [sessions, setSessions] = useState<ChatSession[]>([])
+  const [selecting, setSelecting] = useState(false)
+  const [selectedIds, setSelectedIds] = useState<number[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
 
@@ -70,9 +76,97 @@ export default function ChatPage() {
     e.target.value = ''
   }
 
+  function toggleSessions() {
+    if (!showSessions) getSessions().then(setSessions).catch(() => {})
+    setSelecting(false)
+    setSelectedIds([])
+    setShowSessions(prev => !prev)
+  }
+
+  async function openSession(id: number) {
+    setShowSessions(false)
+    try {
+      const msgs = await getSessionMessages(id)
+      setMessages(msgs.map(m => ({
+        id: m.chatLogId,
+        role: m.chatRole === 'USER' ? 'user' : 'bot',
+        text: m.message,
+        imageUrl: m.imageUrl,
+      })))
+      setSessionId(id)
+    } catch {}
+  }
+
+  function toggleSelect(id: number) {
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])
+  }
+
+  function cancelSelecting() {
+    setSelecting(false)
+    setSelectedIds([])
+  }
+
+  async function handleDeleteSelected() {
+    try {
+      await deleteSessions(selectedIds)
+      setSessions(prev => prev.filter(s => !selectedIds.includes(s.chatSessionId)))
+    } catch {}
+    setSelecting(false)
+    setSelectedIds([])
+  }
+
   return (
     <>
-      <Header title="플로비" onBack={() => navigate('/')} rightIcon={sessionIcon} />
+      <Header title="플로비" onBack={() => navigate('/')} rightIcon={sessionIcon} onRightClick={toggleSessions} />
+
+      {showSessions && (
+        <>
+          <div className="chat-sessions-backdrop" onClick={() => setShowSessions(false)} />
+          <div className="chat-sessions-panel">
+            <div className="chat-sessions-header">
+              <span className="chat-sessions-title">최근 채팅 세션</span>
+              <button className="chat-sessions-close" onClick={() => setShowSessions(false)}>✕</button>
+            </div>
+            <div className="chat-sessions-list">
+              {sessions.map(s => (
+                <div
+                  key={s.chatSessionId}
+                  className="chat-session-item"
+                  onClick={() => selecting ? toggleSelect(s.chatSessionId) : openSession(s.chatSessionId)}
+                >
+                  {selecting && (
+                    <span className={`chat-session-checkbox ${selectedIds.includes(s.chatSessionId) ? 'checked' : ''}`} />
+                  )}
+                  <span className="chat-session-item-icon">
+                    <img src={sessionIcon} alt="" />
+                  </span>
+                  <span className="chat-session-item-title">{s.sessionTitle}</span>
+                  <span className="chat-session-item-time">{s.lastMessageAt}</span>
+                </div>
+              ))}
+            </div>
+            {sessions.length > 0 && (
+              selecting ? (
+                <div className="chat-sessions-actions">
+                  <button className="chat-sessions-cancel" onClick={cancelSelecting}>취소</button>
+                  <button
+                    className="chat-sessions-delete-selected"
+                    onClick={handleDeleteSelected}
+                    disabled={selectedIds.length === 0}
+                  >
+                    삭제{selectedIds.length > 0 ? ` (${selectedIds.length})` : ''}
+                  </button>
+                </div>
+              ) : (
+                <button className="chat-sessions-delete-all" onClick={() => setSelecting(true)}>
+                  <img src={trashIcon} alt="" />
+                  채팅 세션 삭제하기
+                </button>
+              )
+            )}
+          </div>
+        </>
+      )}
 
       <div className="chat-messages-bg" />
 
