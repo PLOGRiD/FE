@@ -44,7 +44,7 @@
 /* Figma 345:1575: 로그아웃 섹션 */
 .mypage-logout-section {
   background: #fff;
-  margin-top: 8px;
+  margin-top: 4px;
   overflow: hidden;
 }
 
@@ -52,7 +52,7 @@
 .mypage-mascot-wrap {
   position: absolute;
   right: 0;
-  top: calc(64px + 139px + 55px + 120px);
+  top: calc(64px + 139px + 55px + 120px + 60px);
   width: 174px;
   height: 165px;
   opacity: 0.4;
@@ -63,20 +63,21 @@
   position: absolute;
   width: 483.25%;
   height: 410.52%;
-  left: -250.09%;
+  left: -248.37%;
   top: -54.24%;
 }
 
 /* Figma 345:1563: 하단 브랜딩 left=23, top=691 */
 .mypage-footer {
   position: absolute;
-  left: 23px;
-  bottom: 100px;
+  left: 17px;
+  bottom: 101px;
   display: flex;
   flex-direction: row;
   align-items: center;
   flex-wrap: wrap;
-  gap: 6px;
+  column-gap: 6px;
+  row-gap: 2px;
 }
 
 .mypage-footer-clover {
