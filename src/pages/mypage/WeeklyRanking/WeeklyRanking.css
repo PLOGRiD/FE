@@ -57,7 +57,7 @@
   height: 64px;
   display: flex;
   align-items: center;
-  padding: 0 20px 0 7px;
+  padding: 0 20px 0 10px;
   gap: 12px;
 }
 .ranking-my-info {
@@ -117,7 +117,7 @@
 .ranking-medal {
   width: 18px;
   height: 18px;
-  margin-right: -9px;
+  margin-right: -4px;
   object-fit: contain;
   flex-shrink: 0;
 }
@@ -157,7 +157,7 @@
   font-weight: 500;
   color: #323639;
   width: 18px;
-  margin-right: -9px;
+  margin-right: -3px;
   text-align: center;
   flex-shrink: 0;
 }

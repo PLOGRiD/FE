@@ -241,19 +241,19 @@
   height: 30px;
 }
 
-.ranking-medal { width: 18px; height: 18px; object-fit: contain; flex-shrink: 0; }
+.home-ranking-medal { width: 18px; height: 18px; object-fit: contain; flex-shrink: 0; }
 
-.ranking-avatar {
+.home-ranking-avatar {
   width: 25px;
   height: 24px;
   border-radius: 200px;
   border: 0.3px solid #d4d4d4;
-  margin-left: 8px;
+  margin-left: 7px;
   flex-shrink: 0;
   overflow: hidden;
 }
 
-.ranking-avatar-img {
+.home-ranking-avatar-img {
   width: 100%;
   height: 100%;
   object-fit: cover;

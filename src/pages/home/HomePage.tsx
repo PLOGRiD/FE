@@ -153,9 +153,9 @@ export default function HomePage() {
         <div className="home-ranking">
           {topRankings.map((item, i) => (
             <div key={item.memberId} className="ranking-item">
-              <img src={MEDALS[i]} alt={`${item.rank}위`} className="ranking-medal" />
-              <div className="ranking-avatar">
-                <img src={defaultAvatar} alt="" className="ranking-avatar-img" />
+              <img src={MEDALS[i]} alt={`${item.rank}위`} className="home-ranking-medal" />
+              <div className="home-ranking-avatar">
+                <img src={defaultAvatar} alt="" className="home-ranking-avatar-img" />
               </div>
               <span className="ranking-name">{item.nickName}</span>
               <span className="ranking-pt">{item.contributionScore} pt</span>
