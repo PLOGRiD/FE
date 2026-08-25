@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import SplashPage from './pages/auth/SplashPage/SplashPage'
 import LoginPage from './pages/auth/LoginPage/LoginPage'
 import SignupPage from './pages/auth/SignupPage/SignupPage'
@@ -19,12 +19,21 @@ function ScrollToTop() {
   return null
 }
 
+function RootGate() {
+  const [firstVisit] = useState(() => {
+    if (sessionStorage.getItem('splashShown')) return false
+    sessionStorage.setItem('splashShown', '1')
+    return true
+  })
+  return firstVisit ? <SplashPage /> : <HomePage />
+}
+
 export default function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<RootGate />} />
         <Route path="/splash" element={<SplashPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />

@@ -4,13 +4,18 @@ import logo from '../../../assets/auth/logo.png'
 import bird from '../../../assets/auth/bird.png'
 import './SplashPage.css'
 
-export default function SplashPage() {
+interface SplashPageProps {
+  to?: string
+  delay?: number
+}
+
+export default function SplashPage({ to = '/login', delay = 2500 }: SplashPageProps) {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const timer = setTimeout(() => navigate('/login', { replace: true }), 2500)
+    const timer = setTimeout(() => navigate(to, { replace: true }), delay)
     return () => clearTimeout(timer)
-  }, [navigate])
+  }, [navigate, to, delay])
 
   return (
     <div className="splash-page">
