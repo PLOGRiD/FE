@@ -6,16 +6,11 @@ interface HeaderProps {
   onBack?: () => void
   rightIcon?: string
   onRightClick?: () => void
-  height?: number
-  variant?: 'center' | 'end'
 }
 
-export default function Header({ title, onBack, rightIcon, onRightClick, height, variant = 'center' }: HeaderProps) {
+export default function Header({ title, onBack, rightIcon, onRightClick }: HeaderProps) {
   return (
-    <header
-      className={`app-header ${variant === 'end' ? 'app-header-end' : ''}`}
-      style={height ? { height } : undefined}
-    >
+    <header className="app-header">
       {onBack && (
         <button className="app-header-back-btn" onClick={onBack}>
           <img src={backIcon} alt="뒤로" className="app-header-back-icon" />

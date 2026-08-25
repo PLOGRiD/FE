@@ -1,7 +1,7 @@
 /* ── 탭바 ── */
 .community-tabbar {
   position: fixed;
-  top: 64px; left: 50%;
+  top: 56px; left: 50%;
   transform: translateX(-50%);
   width: 100%; max-width: 430px;
   height: 36px;
@@ -27,7 +27,7 @@
 
 /* ── 스크롤 콘텐츠 ── */
 .community-page {
-  padding-top: calc(64px + 36px);
+  padding-top: calc(56px + 36px);
   padding-bottom: 90px;
   background: #f4f6f8;
   display: flex;
@@ -162,7 +162,7 @@
 
 /* ── 단체 플로깅 상세 ── */
 .event-detail-page {
-  padding-top: 64px;
+  padding-top: 56px;
   padding-bottom: 90px;
   background: #fff;
 }

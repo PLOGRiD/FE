@@ -98,7 +98,7 @@ export default function CommunityPage() {
     </div>
   )
 
-  const header = <Header title="커뮤니티" onBack={handleBack} variant="end" />
+  const header = <Header title="커뮤니티" onBack={handleBack} />
 
   /* INFO 게시글 상세 */
   if (view.type === 'info-detail' && detailPost) {

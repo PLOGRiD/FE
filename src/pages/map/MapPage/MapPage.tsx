@@ -86,7 +86,7 @@ export default function MapPage() {
 
   return (
     <>
-      <Header title="전국 현황" onBack={() => navigate('/')} variant="end" />
+      <Header title="전국 현황" onBack={() => navigate('/')} />
 
       <div id="map-kakao" className="map-area" onClick={() => setSelected(null)} />
 

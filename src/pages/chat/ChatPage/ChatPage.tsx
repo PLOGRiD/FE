@@ -72,7 +72,7 @@ export default function ChatPage() {
 
   return (
     <>
-      <Header title="플로비" onBack={() => navigate('/')} rightIcon={sessionIcon} variant="end" />
+      <Header title="플로비" onBack={() => navigate('/')} rightIcon={sessionIcon} />
 
       <div className="chat-messages-bg" />
 

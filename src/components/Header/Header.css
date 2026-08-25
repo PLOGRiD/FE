@@ -14,12 +14,6 @@
   padding: 0 15px;
 }
 
-.app-header-end {
-  height: 64px;
-  align-items: flex-end;
-  padding: 0 15px 10px;
-}
-
 .app-header-back-btn {
   background: none; border: none; padding: 0;
   width: 11px; height: 22px; flex-shrink: 0;

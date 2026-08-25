@@ -1,6 +1,6 @@
 .map-area {
   position: fixed;
-  top: 64px;
+  top: 56px;
   left: 50%; transform: translateX(-50%);
   width: 100%; max-width: 430px;
   bottom: 90px;

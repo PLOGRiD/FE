@@ -2,7 +2,7 @@
 /* ── 메시지 영역 배경 (마스코트 뒤에 깔리는 레이어) ── */
 .chat-messages-bg {
   position: fixed;
-  top: 64px;
+  top: 56px;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
@@ -15,7 +15,7 @@
 /* ── 메시지 영역 Figma: bg=#f4f6f8 (배경은 .chat-messages-bg로 분리) ── */
 .chat-messages {
   position: fixed;
-  top: 64px;
+  top: 56px;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
