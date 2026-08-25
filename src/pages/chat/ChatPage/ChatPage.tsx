@@ -99,7 +99,7 @@ export default function ChatPage() {
         id: m.chatLogId,
         role: m.chatRole === 'USER' ? 'user' : 'bot',
         text: m.message,
-        imageUrl: m.imageUrl,
+        imageUrl: m.imageUrl ?? undefined,
       })))
       setSessionId(id)
     } catch {}
