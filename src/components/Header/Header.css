@@ -14,6 +14,8 @@
   padding: 0 15px;
 }
 
+.app-header-no-border { border-bottom: none; }
+
 .app-header-side {
   flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;

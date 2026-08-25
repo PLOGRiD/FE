@@ -99,12 +99,13 @@ export default function CommunityPage() {
   )
 
   const header = <Header title="커뮤니티" onBack={handleBack} />
+  const headerNoBorder = <Header title="커뮤니티" onBack={handleBack} noBorder />
 
   /* INFO 게시글 상세 */
   if (view.type === 'info-detail' && detailPost) {
     return (
       <>
-        {header}{tabBar}
+        {headerNoBorder}{tabBar}
         <div className="community-page">
           <div className="community-post">
             <div className="post-author-row">
@@ -191,7 +192,7 @@ export default function CommunityPage() {
   /* 리스트 뷰 */
   return (
     <>
-      {header}{tabBar}
+      {headerNoBorder}{tabBar}
 
       {activeTab === 0 ? (
         <div className="community-page">
