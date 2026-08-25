@@ -11,18 +11,26 @@
   z-index: 49;
 }
 .community-tab {
+  position: relative;
   flex: 1;
   font-size: 15px; font-weight: 700;
   font-family: 'SUIT Variable', sans-serif;
   color: #9b9b9b;
   background: none; border: none;
-  border-bottom: 3px solid transparent;
   cursor: pointer;
-  transition: border-color 0.15s, color 0.15s;
+  transition: color 0.15s;
 }
 .community-tab.active {
-  border-bottom-color: #a0cfbd;
   color: #323639;
+}
+.community-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 35%;
+  height: 2px;
+  background: #a0cfbd;
 }
 
 /* ── 스크롤 콘텐츠 ── */
