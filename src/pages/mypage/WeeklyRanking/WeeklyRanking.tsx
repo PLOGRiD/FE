@@ -6,6 +6,7 @@ import medal2nd from '../../../assets/home/icons/medal-2nd.svg'
 import medal3rd from '../../../assets/home/icons/medal-3rd.svg'
 import navNextIcon from '../../../assets/home/icons/nav-next.svg'
 import BottomNav from '../../../components/BottomNav/BottomNav'
+import Header from '../../../components/Header/Header'
 import { getRanking } from '../../../api/member'
 import type { RankItem } from '../../../api/member'
 import './WeeklyRanking.css'
@@ -31,9 +32,7 @@ export default function WeeklyRanking() {
 
   return (
     <>
-      <header className="ranking-header">
-        <span className="ranking-header-title">마이페이지</span>
-      </header>
+      <Header title="마이페이지" />
 
       <div className="ranking-profile-section">
         <div className="ranking-profile-avatar">

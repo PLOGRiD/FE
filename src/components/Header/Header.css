@@ -1,0 +1,44 @@
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  height: 56px;
+  background: #fff;
+  border-bottom: 1px solid #e2e2e2;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+}
+
+.app-header-end {
+  height: 64px;
+  align-items: flex-end;
+  padding: 0 15px 10px;
+}
+
+.app-header-back-btn {
+  background: none; border: none; padding: 0;
+  width: 11px; height: 22px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.app-header-back-icon { width: 11px; height: 22px; object-fit: contain; display: block; }
+
+.app-header-title {
+  flex: 1;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'SUIT Variable', sans-serif;
+  color: #323639;
+}
+
+.app-header-right-btn {
+  width: 31px; height: 32px;
+  background: #f5f5f5; border-radius: 7px; border: none;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.app-header-right-icon { width: 24px; height: 24px; }

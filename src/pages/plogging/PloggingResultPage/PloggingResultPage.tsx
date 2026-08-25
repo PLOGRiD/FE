@@ -10,6 +10,7 @@ import cameraIcon from '../../../assets/home/icons/camera.svg'
 import clockIcon from '../../../assets/home/icons/clock.svg'
 import type { PloggingResult } from '../../../api/plogging'
 import { getMyContribution } from '../../../api/member'
+import Header from '../../../components/Header/Header'
 import './PloggingResultPage.css'
 
 function formatDuration(seconds: number): string {
@@ -95,9 +96,7 @@ export default function PloggingResultPage() {
 
   return (
     <>
-      <header className="plogging-header">
-        <span className="plogging-title">플로깅</span>
-      </header>
+      <Header title="플로깅" />
 
       <div className="result-page">
         <div className="result-hero">

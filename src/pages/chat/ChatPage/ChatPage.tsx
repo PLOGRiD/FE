@@ -2,11 +2,11 @@ import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import mascot from '../../../assets/chat/mascot.png'
 import chatBgMascot from '../../../assets/chat/chat-bg-mascot.png'
-import backIcon from '../../../assets/chat/back.svg'
 import attachIcon from '../../../assets/chat/attach.svg'
 import sendBtn from '../../../assets/chat/send-btn.svg'
 import sessionIcon from '../../../assets/chat/session-icon.svg'
 import BottomNav from '../../../components/BottomNav/BottomNav'
+import Header from '../../../components/Header/Header'
 import { sendChat } from '../../../api/chat'
 import './ChatPage.css'
 
@@ -72,15 +72,7 @@ export default function ChatPage() {
 
   return (
     <>
-      <header className="chat-header">
-        <button className="chat-back-btn" onClick={() => navigate('/')}>
-          <img src={backIcon} alt="뒤로" className="chat-back-icon" />
-        </button>
-        <span className="chat-title">플로비</span>
-        <button className="chat-session-btn">
-          <img src={sessionIcon} alt="" className="chat-session-icon" />
-        </button>
-      </header>
+      <Header title="플로비" onBack={() => navigate('/')} rightIcon={sessionIcon} variant="end" />
 
       <div className="chat-messages-bg" />
 

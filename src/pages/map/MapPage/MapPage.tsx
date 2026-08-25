@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import backIcon from '../../../assets/map/back.svg'
 import locationIcon from '../../../assets/map/location.svg'
 import BottomNav from '../../../components/BottomNav/BottomNav'
+import Header from '../../../components/Header/Header'
 import { getTrashesInViewport, getTrashDetail } from '../../../api/map'
 import type { TrashMarker, TrashDetail } from '../../../api/map'
 import './MapPage.css'
@@ -86,12 +86,7 @@ export default function MapPage() {
 
   return (
     <>
-      <header className="map-header">
-        <button className="map-back-btn" onClick={() => navigate('/')}>
-          <img src={backIcon} alt="뒤로" className="map-back-icon" />
-        </button>
-        <span className="map-title">전국 현황</span>
-      </header>
+      <Header title="전국 현황" onBack={() => navigate('/')} variant="end" />
 
       <div id="map-kakao" className="map-area" onClick={() => setSelected(null)} />
 

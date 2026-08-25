@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom'
 import mascotImg from '../../../assets/mypage/mascot.png'
 import cloverIcon from '../../../assets/mypage/clover.svg'
-import backIcon from '../../../assets/map/back.svg'
 import navNextIcon from '../../../assets/home/icons/nav-next.svg'
 import BottomNav from '../../../components/BottomNav/BottomNav'
+import Header from '../../../components/Header/Header'
 import { signOut } from '../../../api/auth'
 import './MyPage.css'
 
@@ -23,12 +23,7 @@ export default function MyPage() {
 
   return (
     <>
-      <header className="mypage-header">
-        <button className="mypage-back-btn" onClick={() => navigate('/mypage')}>
-          <img src={backIcon} alt="뒤로" className="mypage-back-icon" />
-        </button>
-        <span className="mypage-title">마이페이지</span>
-      </header>
+      <Header title="마이페이지" onBack={() => navigate('/mypage')} />
 
       <div className="mypage-page">
 

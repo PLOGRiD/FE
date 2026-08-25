@@ -5,9 +5,9 @@ import locationIcon from '../../../assets/community/location.svg'
 import peopleIcon from '../../../assets/community/people.svg'
 import clockIcon from '../../../assets/community/clock.svg'
 import megaphoneIcon from '../../../assets/community/megaphone.svg'
-import backIcon from '../../../assets/map/back.svg'
 import navNextIcon from '../../../assets/home/icons/nav-next.svg'
 import BottomNav from '../../../components/BottomNav/BottomNav'
+import Header from '../../../components/Header/Header'
 import {
   getInfoList, toggleLike,
   getRecruitmentList, getRecruitmentDetail, toggleParticipation,
@@ -98,14 +98,7 @@ export default function CommunityPage() {
     </div>
   )
 
-  const header = (
-    <header className="community-header">
-      <button className="community-back-btn" onClick={handleBack}>
-        <img src={backIcon} alt="뒤로" className="community-back-icon" />
-      </button>
-      <span className="community-title">커뮤니티</span>
-    </header>
-  )
+  const header = <Header title="커뮤니티" onBack={handleBack} variant="end" />
 
   /* INFO 게시글 상세 */
   if (view.type === 'info-detail' && detailPost) {

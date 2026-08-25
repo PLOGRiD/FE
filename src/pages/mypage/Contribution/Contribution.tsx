@@ -8,6 +8,7 @@ import iconTrash from '../../../assets/mypage/icon-trash.svg'
 import iconCoin from '../../../assets/mypage/icon-coin.svg'
 import iconPie from '../../../assets/mypage/icon-pie.svg'
 import BottomNav from '../../../components/BottomNav/BottomNav'
+import Header from '../../../components/Header/Header'
 import { getMyContribution } from '../../../api/member'
 import type { MyContribution } from '../../../api/member'
 import './Contribution.css'
@@ -136,9 +137,7 @@ export default function Contribution() {
 
   return (
     <>
-      <header className="con-header">
-        <span className="con-header-title">마이페이지</span>
-      </header>
+      <Header title="마이페이지" />
 
       <div className="con-profile-section">
         <div className="con-avatar">

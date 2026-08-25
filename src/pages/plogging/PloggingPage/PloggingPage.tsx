@@ -5,12 +5,12 @@ import bagImg from '../../../assets/plogging/bag.png'
 import ellipseImg from '../../../assets/plogging/ellipse.svg'
 import loadingIcon from '../../../assets/plogging/loading.svg'
 import checkIcon from '../../../assets/plogging/check.svg'
-import backIcon from '../../../assets/map/back.svg'
 import runIcon from '../../../assets/plogging/run.svg'
 import trashIcon from '../../../assets/plogging/trash.svg'
 import bellIcon from '../../../assets/plogging/bell.svg'
 import clockIcon from '../../../assets/home/icons/clock.svg'
 import BottomNav from '../../../components/BottomNav/BottomNav'
+import Header from '../../../components/Header/Header'
 import { startPlogging, updateLocation, endPlogging, linkDevice, BASE_URL } from '../../../api/plogging'
 import './PloggingPage.css'
 
@@ -290,9 +290,7 @@ export default function PloggingPage() {
   if (stage === 'running') {
     return (
       <div className="pr-running-wrap">
-        <header className="plogging-header">
-          <span className="plogging-title">플로깅</span>
-        </header>
+        <Header title="플로깅" />
 
         <div id="kakao-map" className="pr-map" />
 
@@ -349,12 +347,7 @@ export default function PloggingPage() {
   /* 연결 흐름 */
   return (
     <>
-      <header className="plogging-header">
-        <button className="plogging-back-btn" onClick={() => navigate('/')}>
-          <img src={backIcon} alt="뒤로" className="plogging-back-icon" />
-        </button>
-        <span className="plogging-title">플로깅</span>
-      </header>
+      <Header title="플로깅" onBack={() => navigate('/')} />
 
       <div className="plogging-page">
         <p className="plogging-main-title">디바이스 연결</p>
