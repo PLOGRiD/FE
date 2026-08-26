@@ -41,6 +41,11 @@
   width: 121px;
   height: 129px;
   overflow: hidden;
+  animation: result-bird-float 2.4s ease-in-out infinite;
+}
+@keyframes result-bird-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
 }
 .result-nature-img {
   position: absolute;
@@ -137,22 +142,38 @@
 }
 
 /* 사진 그리드 — 피그마: 4장 84×90px, gap=10px */
+.result-trash-empty {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: #a9a9a9;
+}
+
 .result-photo-grid {
   display: flex;
   gap: 10px;
   margin-bottom: 16px;
 }
 .result-photo-thumb {
+  position: relative;
   flex: 1;
   height: 90px;
   background: #949494;
   border-radius: 10px;
+  overflow: hidden;
+}
+.result-photo-badge {
+  position: absolute;
+  top: 6px; left: 6px;
+  width: 22px; height: 22px;
+  object-fit: contain;
 }
 
 /* ── 바 차트 — 피그마: 두 컬럼, gap-x=3px, gap-y=7px ── */
 .result-bar-chart {
   display: flex;
-  gap: 8px;
+  gap: 22px;
   margin-top: 16px;
 }
 /* 컬럼 자체를 그리드로 — 모든 행이 같은 컬럼 너비를 공유 */
@@ -175,33 +196,33 @@
   white-space: nowrap;
 }
 .result-bar-track {
+  width: calc(100% - 3px);
   height: 5px;
   background: #d9d9d9;
   border-radius: 30px;
+  overflow: hidden;
+  margin-left: 2px;
+}
+.result-bar-fill {
+  height: 100%;
+  border-radius: 30px;
 }
 .result-bar-pct {
-  font-size: 6px;
+  font-size: 10px;
   font-weight: 500;
   color: #323639;
   text-align: center;
+  margin-left: -6px;
 }
 
 /* ── AI 배너 ── */
 .result-ai-banner {
+  display: block;
+  width: calc(100% - 30px);
   margin: 12px 15px 0;
-  height: 60px;
-  background: rgba(160,207,189,0.25);
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  padding: 0 11px;
-  gap: 10px;
-  overflow: hidden;
-  cursor: pointer;
+  padding: 0;
 }
-.result-ai-icon { width: 37px; height: 37px; object-fit: contain; flex-shrink: 0; }
-.result-ai-title { font-size: 12px; font-weight: 600; color: #323639; margin-bottom: 2px; }
-.result-ai-sub { font-size: 8px; font-weight: 500; color: #323639; }
+.result-ai-banner-img { display: block; width: 100%; height: auto; }
 
 /* ── 환경 기여 점수 ── */
 .result-score-card {

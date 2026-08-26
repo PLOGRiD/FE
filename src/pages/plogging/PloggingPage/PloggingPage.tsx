@@ -38,6 +38,7 @@ interface TrashChip { label: string; count: number; color: string }
 export default function PloggingPage() {
   const navigate = useNavigate()
   const [stage, setStage] = useState<Stage>('idle')
+  const [connectedDeviceId, setConnectedDeviceId] = useState<number | null>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
 
@@ -47,6 +48,7 @@ export default function PloggingPage() {
   const [totalTrash, setTotalTrash] = useState(0)
   const [showAlert, setShowAlert] = useState(false)
   const [alertMsg, setAlertMsg] = useState('')
+  const [starting, setStarting] = useState(false)
 
   const ploggingIdRef = useRef<number | null>(null)
   const mapRef = useRef<any>(null)
@@ -68,9 +70,10 @@ export default function PloggingPage() {
     return () => clearInterval(id)
   }, [stage])
 
-  // 카카오맵 + 위치 추적
+  // 카카오맵 + 위치 추적 — '플로깅 시작' 클릭 시점(starting)부터 미리 로딩해서
+  // 지도가 준비된 뒤에 running 화면으로 전환함
   useEffect(() => {
-    if (stage !== 'running') return
+    if (!starting) return
     let cancelled = false
 
     const startTracking = (map: any, marker: any) => {
@@ -82,28 +85,7 @@ export default function PloggingPage() {
         marker.setPosition(latlng)
         pathRef.current = [{ lat, lng }]
       })
-      watchIdRef.current = navigator.geolocation.watchPosition(pos => {
-        const { latitude: lat, longitude: lng } = pos.coords
-        const latlng = new window.kakao.maps.LatLng(lat, lng)
-        marker.setPosition(latlng)
-        map.panTo(latlng)
-        pathRef.current = [...pathRef.current, { lat, lng }]
-        if (pathRef.current.length >= 2) {
-          let total = 0
-          for (let i = 1; i < pathRef.current.length; i++) {
-            const a = pathRef.current[i - 1], b = pathRef.current[i]
-            total += haversine(a.lat, a.lng, b.lat, b.lng)
-          }
-          setDistance(total)
-        }
-        polylineRef.current?.setMap(null)
-        const poly = new window.kakao.maps.Polyline({
-          path: pathRef.current.map(p => new window.kakao.maps.LatLng(p.lat, p.lng)),
-          strokeWeight: 4, strokeColor: '#a0cfbd', strokeOpacity: 0.9, strokeStyle: 'solid',
-        })
-        poly.setMap(map)
-        polylineRef.current = poly
-      }, undefined, { enableHighAccuracy: true, maximumAge: 2000 })
+      // 실시간 위치 추적(마커 이동/지도 패닝/이동거리 갱신) 비활성화
     }
 
     const getInitialPos = (): Promise<{ lat: number; lng: number }> =>
@@ -123,6 +105,9 @@ export default function PloggingPage() {
       const map = new window.kakao.maps.Map(container, { center: initialLatLng, level: 3 })
       map.relayout()
       mapRef.current = map
+      const enterRunning = () => { if (!cancelled) setStage('running') }
+      window.kakao.maps.event.addListener(map, 'tilesloaded', enterRunning)
+      setTimeout(enterRunning, 4000)
       const marker = new window.kakao.maps.Marker({ position: initialLatLng, map })
       markerRef.current = marker
       pathRef.current = [pos]
@@ -136,7 +121,7 @@ export default function PloggingPage() {
         watchIdRef.current = -1
       }
     }
-  }, [stage])
+  }, [starting])
 
   // API 위치 전송 (10초마다)
   useEffect(() => {
@@ -197,6 +182,7 @@ export default function PloggingPage() {
     const deviceId = parseDeviceId(text)
     if (deviceId !== null) {
       try { await linkDevice(deviceId) } catch {}
+      setConnectedDeviceId(deviceId)
     }
     setStage('connected')
   }, [])
@@ -278,17 +264,18 @@ export default function PloggingPage() {
   }
 
   async function handleStart() {
+    setStarting(true)
     try {
       const id = await startPlogging()
       ploggingIdRef.current = id
     } catch {}
-    setStage('running')
+    // 지도 로딩이 끝나면(맵 useEffect 안에서) stage가 'running'으로 바뀜
   }
 
-  /* 플로깅 진행 중 */
-  if (stage === 'running') {
-    return (
-      <div className="pr-running-wrap">
+  /* 플로깅 진행 중 — starting부터 지도를 미리 로딩해두고, 준비되면 stage가 running으로 바뀜.
+     그 전까지는 화면에 그리지 않고 숨겨서(visibility) 지도만 백그라운드에서 로딩됨 */
+  const runningView = starting && (
+    <div className="pr-running-wrap" style={{ visibility: stage === 'running' ? 'visible' : 'hidden' }}>
         <Header title="플로깅" />
 
         <div id="kakao-map" className="pr-map" />
@@ -302,19 +289,20 @@ export default function PloggingPage() {
 
         <div className="pr-sheet">
           <div className="pr-handle" />
+          <div className="pr-sheet-body">
           <div className="pr-stats-row">
-            <div className="pr-stat-card">
-              <div className="pr-stat-icon-box"><img src={runIcon} alt="" className="pr-stat-icon" /></div>
-              <div className="pr-stat-info">
-                <p className="pr-stat-label">이동거리</p>
-                <p className="pr-stat-value"><span className="pr-stat-num">{(distance * 1000).toFixed(0)}</span> m</p>
-              </div>
-            </div>
             <div className="pr-stat-card">
               <div className="pr-stat-icon-box"><img src={clockIcon} alt="" className="pr-stat-icon" /></div>
               <div className="pr-stat-info">
                 <p className="pr-stat-label">진행시간</p>
                 <p className="pr-stat-value mint">{timerDisplay}</p>
+              </div>
+            </div>
+            <div className="pr-stat-card">
+              <div className="pr-stat-icon-box"><img src={runIcon} alt="" className="pr-stat-icon" /></div>
+              <div className="pr-stat-info">
+                <p className="pr-stat-label">이동거리</p>
+                <p className="pr-stat-value"><span className="pr-stat-num">{(distance * 1000).toFixed(0)}</span> m</p>
               </div>
             </div>
           </div>
@@ -338,22 +326,26 @@ export default function PloggingPage() {
           )}
 
           <button className="pr-stop-btn" onClick={handleStop}>■ 플로깅 종료</button>
+          </div>
         </div>
-      </div>
-    )
+    </div>
+  )
+
+  if (stage === 'running') {
+    return runningView
   }
 
   /* 연결 흐름 */
   return (
     <>
+      {runningView}
+
       <Header title="플로깅" onBack={() => navigate('/')} />
 
       <div className="plogging-page">
         <p className="plogging-main-title">디바이스 연결</p>
 
-        {(stage === 'idle' || stage === 'waiting' || stage === 'camera') && (
-          <p className="plogging-sub">카메라에 전용 스마트 수거 디바이스의<br />QR 코드를 비추어 주세요</p>
-        )}
+        <p className="plogging-sub">카메라에 전용 스마트 수거 디바이스의<br />QR 코드를 비추어 주세요</p>
 
         <div className="plogging-bag-area">
           <div className="plogging-bag-container">
@@ -364,6 +356,7 @@ export default function PloggingPage() {
           </div>
         </div>
 
+        <div className="plogging-stage-content">
         {stage === 'idle' && (
           <button className="plogging-done-btn plogging-qr-start-btn" style={{ marginTop: 28 }} onClick={() => setStage('waiting')}>
             QR 스캔 시작
@@ -403,23 +396,31 @@ export default function PloggingPage() {
                 <span className="qr-corner tl" /><span className="qr-corner tr" />
                 <span className="qr-corner bl" /><span className="qr-corner br" />
               </div>
+              <span className="plogging-scan-line" />
               <p className="plogging-scanning-text">스캔 중...</p>
             </div>
           </>
         )}
 
         {stage === 'connected' && (
-          <>
-            <p className="plogging-connected-title">연결 완료 - 156</p>
-            <div className="plogging-connected-check">
+          <div className="plogging-connected-block">
+            <div className="plogging-connected-header">
+              <p className="plogging-connected-title">연결 완료{connectedDeviceId !== null ? ` - ${connectedDeviceId}` : ''}</p>
               <img src={checkIcon} alt="" className="plogging-check-icon" />
             </div>
             <p className="plogging-connected-sub">스마트 수거 디바이스 연동에 성공하였습니다</p>
             <p className="plogging-connected-sub2">이제 플로깅을 시작할 수 있어요</p>
-            <button className="plogging-done-btn" onClick={handleStart}>플로깅 시작</button>
-          </>
+            <button className="plogging-done-btn" onClick={handleStart} disabled={starting}>
+              {starting ? '준비 중...' : '플로깅 시작'}
+            </button>
+          </div>
         )}
+        </div>
       </div>
+
+      {starting && (
+        <div className="plogging-map-loading-toast">지도를 불러오는 중...</div>
+      )}
 
       <BottomNav />
     </>

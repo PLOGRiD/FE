@@ -1,11 +1,23 @@
 /* ── 스크롤 콘텐츠 ── */
 .plogging-page {
   padding-top: 56px;
-  padding-bottom: 90px;
+  padding-bottom: 110px;
+  min-height: 100vh;
   background: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+/* 상단(제목/안내문구/가방)은 모든 단계에서 위치 고정, 그 아래 단계별 콘텐츠만
+   남은 공간 안에서 세로 중앙 정렬되게 함 */
+.plogging-stage-content {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ── 디바이스 연결 타이틀 ── */
@@ -150,6 +162,23 @@
 .qr-corner.bl { bottom: 12px; left: 12px; border-width: 0 0 3px 3px; }
 .qr-corner.br { bottom: 12px; right: 12px; border-width: 0 3px 3px 0; }
 
+/* 스캔 중 움직이는 라인 */
+.plogging-scan-line {
+  position: absolute;
+  left: 12px; right: 12px;
+  top: 12px;
+  height: 2px;
+  border-radius: 1px;
+  background: linear-gradient(90deg, transparent, #a0cfbd, transparent);
+  box-shadow: 0 0 8px 1px rgba(160, 207, 189, 0.8);
+  animation: scan-line-move 2.2s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes scan-line-move {
+  0%, 100% { top: 12px; }
+  50% { top: calc(100% - 14px); }
+}
+
 .plogging-scanning-text {
   position: absolute;
   bottom: 12px; left: 0; right: 0;
@@ -160,18 +189,25 @@
 }
 
 /* ── 연결 완료 ── */
+.plogging-connected-block {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translateY(-20px);
+}
+.plogging-connected-header {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px;
+  margin-top: 13px;
+  transform: translateY(-10px);
+}
 .plogging-connected-title {
   font-size: 20px; font-weight: 600;
   color: #5c9a82;
   text-align: center;
-  margin-top: 28px;
 }
-
-.plogging-connected-check {
-  margin-top: 8px;
-  display: flex; align-items: center; justify-content: center;
-}
-.plogging-check-icon { width: 24px; height: 24px; }
+.plogging-check-icon { width: 18px; height: 18px; }
 
 .plogging-connected-sub {
   font-size: 13px; font-weight: 600; color: #323639;
@@ -193,9 +229,10 @@
   font-family: 'SUIT Variable', sans-serif;
   color: #fff;
   cursor: pointer;
-  margin-top: 28px;
+  margin-top: 16px;
 }
 .plogging-done-btn:active { background: #8bbda9; }
+.plogging-done-btn:disabled { opacity: 0.6; cursor: default; }
 
 .plogging-qr-start-btn {
   width: calc(85% - 70px);
@@ -285,7 +322,7 @@
   position: absolute;
   top: 44px;
   left: 0; right: 0;
-  bottom: 335px;
+  bottom: 0;
 }
 
 .pr-alert {
@@ -308,16 +345,41 @@
 
 @keyframes fadeIn { from { opacity: 0; transform: translateX(-50%) translateY(-6px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
 
+.plogging-map-loading-toast {
+  position: fixed;
+  top: 66px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(30, 30, 30, 0.75);
+  border-radius: 20px;
+  height: 36px;
+  padding: 0 16px;
+  display: flex; align-items: center;
+  white-space: nowrap;
+  font-size: 13px; font-weight: 500; color: #fff;
+  z-index: 50;
+  box-shadow: 0px 1px 4px rgba(0,0,0,0.1);
+  animation: fadeIn 0.2s ease;
+}
+
 .pr-sheet {
   position: absolute;
   bottom: 0; left: 0; right: 0;
-  height: 335px;
+  height: 300px;
   background: #fbfbfb;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   border: 1px solid #f4f6f8;
   box-shadow: 0px 1px 19.8px rgba(0,0,0,0.15);
   padding: 0 17px;
+  display: flex;
+  flex-direction: column;
+  z-index: 30;
+}
+
+.pr-sheet-body {
+  display: flex;
+  flex-direction: column;
 }
 
 .pr-handle {
