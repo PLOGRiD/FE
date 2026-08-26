@@ -43,15 +43,18 @@
 .community-tab.active {
   color: #323639;
 }
-.community-tab.active::after {
-  content: '';
+.community-tab-indicator {
   position: absolute;
-  bottom: 0; left: 50%;
-  transform: translateX(-50%);
-  width: 35%;
+  bottom: 0;
+  left: 25%;
+  width: 64px;
   height: 2px;
   background: #a0cfbd;
+  border-radius: 1px;
+  transform: translateX(-50%);
+  transition: left 0.24s cubic-bezier(0.22, 1, 0.36, 1);
 }
+.community-tab-indicator.pos-1 { left: 75%; }
 
 /* ── 스크롤 콘텐츠 ── */
 .community-page {

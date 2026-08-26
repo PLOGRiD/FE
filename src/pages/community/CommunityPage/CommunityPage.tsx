@@ -94,25 +94,30 @@ type View =
   | { type: 'group-list' }
   | { type: 'group-detail'; eventId: number }
 
+let infoListCache: InfoPost[] | null = null
+let recruitmentListCache: Recruitment[] | null = null
+
 export default function CommunityPage() {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState(0)
   const [view, setView] = useState<View>({ type: 'info-list' })
 
-  const [infoPosts, setInfoPosts] = useState<InfoPost[]>([])
+  const [infoPosts, setInfoPosts] = useState<InfoPost[]>(infoListCache ?? [])
   const [expandedIds, setExpandedIds] = useState<number[]>([])
-  const [recruitments, setRecruitments] = useState<Recruitment[]>([])
+  const [recruitments, setRecruitments] = useState<Recruitment[]>(recruitmentListCache ?? [])
   const [detailEvent, setDetailEvent] = useState<RecruitmentDetail | null>(null)
   const [toast, setToast] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (activeTab === 0) {
+      if (infoListCache) return
       setLoading(true)
-      getInfoList().then(r => setInfoPosts(r.infos)).catch(() => {}).finally(() => setLoading(false))
+      getInfoList().then(r => { infoListCache = r.infos; setInfoPosts(r.infos) }).catch(() => {}).finally(() => setLoading(false))
     } else {
+      if (recruitmentListCache) return
       setLoading(true)
-      getRecruitmentList().then(setRecruitments).catch(() => {}).finally(() => setLoading(false))
+      getRecruitmentList().then(r => { recruitmentListCache = r; setRecruitments(r) }).catch(() => {}).finally(() => setLoading(false))
     }
   }, [activeTab])
 
@@ -131,7 +136,7 @@ export default function CommunityPage() {
     if (view.type === 'group-detail') {
       setView({ type: 'group-list' })
       setLoading(true)
-      getRecruitmentList().then(setRecruitments).catch(() => {}).finally(() => setLoading(false))
+      getRecruitmentList().then(r => { recruitmentListCache = r; setRecruitments(r) }).catch(() => {}).finally(() => setLoading(false))
     } else {
       navigate('/')
     }
@@ -140,9 +145,13 @@ export default function CommunityPage() {
   async function handleLike(postId: number) {
     try {
       const res = await toggleLike(postId)
-      setInfoPosts(prev => prev.map(p =>
-        p.postId === postId ? { ...p, liked: res.isLiked, likeCount: res.likeCount } : p
-      ))
+      setInfoPosts(prev => {
+        const next = prev.map(p =>
+          p.postId === postId ? { ...p, liked: res.isLiked, likeCount: res.likeCount } : p
+        )
+        infoListCache = next
+        return next
+      })
     } catch {}
   }
 
@@ -167,6 +176,7 @@ export default function CommunityPage() {
           {tab}
         </button>
       ))}
+      <span className={`community-tab-indicator pos-${activeTab}`} />
     </div>
   )
 
