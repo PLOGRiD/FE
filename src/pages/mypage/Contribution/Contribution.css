@@ -17,22 +17,36 @@
   flex: 1;
   font-size: 15px;
   font-weight: 600;
-  color: #323639;
+  color: #909BA2;
   background: none;
   border: none;
   cursor: pointer;
   position: relative;
+  transition: color 0.15s ease;
 }
-.con-tab.active::after {
-  content: '';
+.con-tab.active {
+  color: #323639;
+}
+.tab-indicator {
   position: absolute;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
   width: 64px;
   height: 3px;
   background: #a0cfbd;
   border-radius: 1px;
+  transform: translateX(-50%);
+}
+.tab-indicator.pos-left { left: 25%; }
+.tab-indicator.pos-right { left: 75%; }
+.tab-indicator.enter-from-left { animation: indicatorFromLeft 0.24s cubic-bezier(0.22, 1, 0.36, 1); }
+.tab-indicator.enter-from-right { animation: indicatorFromRight 0.24s cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes indicatorFromLeft {
+  from { left: 25%; }
+  to { left: 75%; }
+}
+@keyframes indicatorFromRight {
+  from { left: 75%; }
+  to { left: 25%; }
 }
 
 /* ── 스크롤 콘텐츠 ── */

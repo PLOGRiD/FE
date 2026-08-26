@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import iconClover from '../../../assets/mypage/icon-clover.svg'
 import iconCloverLight from '../../../assets/mypage/icon-clover-light.svg'
 import iconRun from '../../../assets/mypage/icon-run.svg'
@@ -112,13 +112,21 @@ function WasteDonutChart({ segments }: { segments: Segment[] }) {
   )
 }
 
+let contributionCache: MyContribution | null = null
+
 export default function Contribution() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const enterDir = (location.state as { dir?: 'left' | 'right' } | null)?.dir
 
-  const [data, setData] = useState<MyContribution | null>(null)
+  const [data, setData] = useState<MyContribution | null>(contributionCache)
 
   useEffect(() => {
-    getMyContribution().then(setData).catch(() => {})
+    if (contributionCache) return
+    getMyContribution().then((d) => {
+      contributionCache = d
+      setData(d)
+    }).catch(() => {})
   }, [])
 
   const statCards = [
@@ -146,7 +154,8 @@ export default function Contribution() {
 
       <div className="con-tabbar">
         <button className="con-tab active">환경 기여</button>
-        <button className="con-tab" onClick={() => navigate('/mypage')}>주간 랭킹</button>
+        <button className="con-tab" onClick={() => navigate('/mypage', { state: { dir: 'right' } })}>주간 랭킹</button>
+        <span className={`tab-indicator pos-left${enterDir === 'left' ? ' enter-from-right' : ''}`} />
       </div>
 
       <div className="con-page">

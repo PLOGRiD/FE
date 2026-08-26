@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import defaultAvatar from '../../../assets/mypage/default-avatar.png'
 import medal1st from '../../../assets/home/icons/medal-1st.svg'
 import medal2nd from '../../../assets/home/icons/medal-2nd.svg'
@@ -8,20 +8,26 @@ import BottomNav from '../../../components/BottomNav/BottomNav'
 import Header from '../../../components/Header/Header'
 import MyPageProfile from '../../../components/MyPageProfile/MyPageProfile'
 import { getRanking } from '../../../api/member'
-import type { RankItem } from '../../../api/member'
+import type { RankingResult, RankItem } from '../../../api/member'
 import './WeeklyRanking.css'
 
 const MEDALS = [medal1st, medal2nd, medal3rd]
 
+let rankingCache: RankingResult | null = null
+
 export default function WeeklyRanking() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const enterDir = (location.state as { dir?: 'left' | 'right' } | null)?.dir
 
-  const [topRankings, setTopRankings] = useState<RankItem[]>([])
-  const [listRankings, setListRankings] = useState<RankItem[]>([])
-  const [myRanking, setMyRanking] = useState<RankItem | null>(null)
+  const [topRankings, setTopRankings] = useState<RankItem[]>(rankingCache ? rankingCache.topRankings.slice(0, 3) : [])
+  const [listRankings, setListRankings] = useState<RankItem[]>(rankingCache ? rankingCache.topRankings.slice(3) : [])
+  const [myRanking, setMyRanking] = useState<RankItem | null>(rankingCache?.myRanking ?? null)
 
   useEffect(() => {
+    if (rankingCache) return
     getRanking().then((r) => {
+      rankingCache = r
       setTopRankings(r.topRankings.slice(0, 3))
       setListRankings(r.topRankings.slice(3))
       setMyRanking(r.myRanking)
@@ -35,8 +41,9 @@ export default function WeeklyRanking() {
       <MyPageProfile />
 
       <div className="ranking-tabbar">
-        <button className="ranking-tab" onClick={() => navigate('/mypage/contribution')}>환경 기여</button>
+        <button className="ranking-tab" onClick={() => navigate('/mypage/contribution', { state: { dir: 'left' } })}>환경 기여</button>
         <button className="ranking-tab active">주간 랭킹</button>
+        <span className={`tab-indicator pos-right${enterDir === 'right' ? ' enter-from-left' : ''}`} />
       </div>
 
       <div className="ranking-page">
