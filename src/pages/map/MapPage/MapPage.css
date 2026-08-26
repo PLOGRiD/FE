@@ -9,52 +9,86 @@
 
 .map-location-pill {
   position: fixed;
-  bottom: calc(90px + 17px);
-  left: 50%; transform: translateX(-50%);
-  width: 131px; height: 42px;
+  bottom: calc(90px + 16px);
+  /* #root는 flex 중앙 정렬(max-width:430px)이라, position:fixed는 뷰포트 기준이라 그대로 right를 쓰면
+     넓은 화면에서 앱 프레임 밖으로 벗어남 → 프레임 우측 모서리 기준으로 계산 */
+  left: calc(50% + min(50%, 215px) - 21px - 40px);
+  width: 40px; height: 40px;
   background: #fff;
-  border: 1px solid #a0cfbd;
-  border-radius: 30px;
-  display: flex; align-items: center;
-  padding: 0 10px; gap: 0;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  display: flex; align-items: center; justify-content: center;
   z-index: 20;
   cursor: pointer;
 }
-.map-location-icon { width: 19px; height: 19px; }
-.map-location-text {
-  flex: 1; font-size: 16px; font-weight: 600;
-  color: #323639; text-align: center; white-space: nowrap;
+.map-location-icon { width: 24px; height: 24px; }
+
+.map-detail-card {
+  position: fixed;
+  bottom: calc(90px + 17px);
+  left: 50%; transform: translateX(-50%);
+  width: calc(100% - 40px);
+  max-width: 390px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  display: flex;
+  gap: 14px;
+  z-index: 30;
+  animation: detail-pop 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes detail-pop {
+  from { opacity: 0; transform: translateX(-50%) translateY(70px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
-.map-bottom-sheet {
-  position: fixed;
-  bottom: 90px;
-  left: 50%; transform: translateX(-50%);
-  width: 100%; max-width: 430px;
-  background: #fff;
-  border-radius: 16px 16px 0 0;
-  padding: 12px 20px 24px;
-  box-shadow: 0 -4px 20px rgba(0,0,0,0.12);
-  z-index: 30;
-  animation: sheet-up 0.2s ease;
+.map-detail-photo {
+  width: 135px; height: 135px;
+  border-radius: 5px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #f0f0f0;
 }
-@keyframes sheet-up {
-  from { transform: translateX(-50%) translateY(100%); }
-  to { transform: translateX(-50%) translateY(0); }
+
+.map-detail-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-right: 20px;
 }
-.map-sheet-handle {
-  width: 36px; height: 4px;
-  background: #e0e0e0; border-radius: 2px;
-  margin: 0 auto 16px;
+
+.map-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 3px;
 }
-.map-sheet-region { font-size: 11px; font-weight: 600; color: #a0cfbd; margin-bottom: 4px; }
-.map-sheet-title { font-size: 16px; font-weight: 700; color: #323639; margin-bottom: 16px; }
-.map-sheet-stats {
-  display: flex; align-items: center;
-  background: #f8f8f8; border-radius: 10px; padding: 16px 0;
+.map-detail-badge { width: 24px; height: 24px; flex-shrink: 0; }
+.map-detail-category { font-size: 15px; font-weight: 700; color: #323639; }
+
+/* 커뮤니티 이벤트 카드의 icon-box + label/value 패턴 재사용 */
+.map-detail-row { display: flex; align-items: center; gap: 10px; }
+.map-detail-icon-box {
+  width: 35px; height: 35px;
+  border-radius: 7px;
+  background: #f5f5f5;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
 }
-.map-stat { flex: 1; text-align: center; }
-.map-stat-value { font-size: 18px; font-weight: 700; color: #323639; }
-.map-stat-value span { font-size: 12px; font-weight: 500; margin-left: 2px; }
-.map-stat-label { font-size: 10px; font-weight: 500; color: #81878b; margin-top: 4px; }
-.map-stat-divider { width: 1px; height: 36px; background: #dee4e9; }
+.map-detail-icon { width: 23px; height: 23px; object-fit: contain; }
+.map-detail-text { display: flex; flex-direction: column; gap: 2px; }
+.map-detail-label { font-size: 12px; font-weight: 600; color: #1e1e1e; }
+.map-detail-value { font-size: 12px; font-weight: 500; color: var(--mint); }
+
+.map-detail-close {
+  position: absolute;
+  top: 10px; right: 14px;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  color: #b3b3b3;
+  background: none; border: none; padding: 0; cursor: pointer;
+}

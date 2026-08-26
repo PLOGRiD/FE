@@ -1,10 +1,13 @@
 import client from './client'
 
+export type TrashCategory =
+  | 'PLASTIC' | 'GLASS' | 'PAPER' | 'CAN' | 'STYROFOAM' | 'VINYL' | 'CIGARETTE' | 'PET_BOTTLE'
+
 export interface TrashMarker {
   id: number
   latitude: number
   longitude: number
-  category: string
+  category: TrashCategory
 }
 
 export interface TrashDetail extends TrashMarker {
