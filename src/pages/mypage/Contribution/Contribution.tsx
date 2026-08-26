@@ -26,12 +26,14 @@ const CATEGORIES = [
 
 interface Segment { label: string; pct: number; color: string }
 
-// 피그마 스펙: viewBox 264×261, 링 center (130.7, 130.7), R=93.75, SW=67.5
-const CX = 130.7, CY = 130.7, R = 88, SW = 32
+// 정사각 viewBox로 링 중심을 정확히 정중앙에 배치
+const CX = 130, CY = 130, R = 98, SW = 40
 
 const SEGMENT_GAP = 0
 
 function WasteDonutChart({ segments }: { segments: Segment[] }) {
+  const [selected, setSelected] = useState<string | null>(null)
+
   const circ = 2 * Math.PI * R
   const usableCirc = circ - SEGMENT_GAP * segments.length
   let offset = 0
@@ -41,6 +43,12 @@ function WasteDonutChart({ segments }: { segments: Segment[] }) {
     offset += dash + SEGMENT_GAP
     return seg
   })
+
+  const selectedSeg = segs.find(s => s.label === selected)
+
+  function toggleSelect(label: string) {
+    setSelected(prev => (prev === label ? null : label))
+  }
 
   const getTextPos = (segOffset: number, dash: number) => {
     const midAngle = ((segOffset + dash / 2) / circ) * 360 - 90
@@ -59,7 +67,7 @@ function WasteDonutChart({ segments }: { segments: Segment[] }) {
 
       {/* 도넛 SVG — 피그마: left=42, top=67, 264×261 */}
       <div className="con-chart-svg-wrap">
-        <svg viewBox="0 0 264 261" width="314" height="310">
+        <svg viewBox="0 0 260 260" width="320" height="320">
           {/* 배경 링 — 데이터가 하나도 없을 때만 표시 */}
           {segs.length === 0 && (
             <circle cx={CX} cy={CY} r={R} fill="none" stroke="#f0f0f0" strokeWidth={SW} />
@@ -68,6 +76,7 @@ function WasteDonutChart({ segments }: { segments: Segment[] }) {
           {segs.map(s => (
             <circle
               key={s.label}
+              className={`donut-segment ${selected === s.label ? 'selected' : ''} ${selected && selected !== s.label ? 'dimmed' : ''}`}
               cx={CX} cy={CY} r={R}
               fill="none"
               stroke={s.color}
@@ -75,6 +84,7 @@ function WasteDonutChart({ segments }: { segments: Segment[] }) {
               strokeDasharray={`${s.dash} ${s.gap}`}
               strokeDashoffset={circ / 4 - s.offset}
               strokeLinecap="butt"
+              onClick={() => toggleSelect(s.label)}
             />
           ))}
           {/* 10% 이상 세그먼트에 퍼센트 텍스트 */}
@@ -96,17 +106,32 @@ function WasteDonutChart({ segments }: { segments: Segment[] }) {
           })}
         </svg>
         {/* 클로버 중앙 — 피그마: left=71, top=69, 120×120 */}
-        <img src={iconCloverLight} alt="" className="con-chart-center" />
+        {selectedSeg ? (
+          <div className="con-chart-center-info">
+            <span className="con-chart-center-label">{selectedSeg.label}</span>
+            <span className="con-chart-center-pct">{selectedSeg.pct}%</span>
+          </div>
+        ) : (
+          <img src={iconCloverLight} alt="" className="con-chart-center" />
+        )}
       </div>
 
       {/* 범례 — 피그마: 카드 내 left=297, top=12 (right=0) */}
       <div className="con-legend">
-        {CATEGORIES.map(item => (
-          <div key={item.label} className="con-legend-item">
-            <span className="con-legend-dot" style={{ background: item.color }} />
-            <span className="con-legend-label">{item.label}</span>
-          </div>
-        ))}
+        {CATEGORIES.map(item => {
+          const hasData = segs.some(s => s.label === item.label)
+          return (
+            <div
+              key={item.label}
+              className={`con-legend-item ${selected === item.label ? 'selected' : ''} ${selected && selected !== item.label ? 'dimmed' : ''}`}
+              onClick={hasData ? () => toggleSelect(item.label) : undefined}
+              style={{ cursor: hasData ? 'pointer' : 'default' }}
+            >
+              <span className="con-legend-dot" style={{ background: item.color }} />
+              <span className="con-legend-label">{item.label}</span>
+            </div>
+          )
+        })}
       </div>
     </div>
   )

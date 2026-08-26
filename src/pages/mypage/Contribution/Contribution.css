@@ -128,7 +128,7 @@
   box-shadow: -0.5px 1px 4px 0px rgba(0, 0, 0, 0.05);
   overflow: hidden;
   position: relative;
-  height: 360px;
+  height: 380px;
 }
 
 /* 헤더 아이콘 박스 — 피그마: left=15, top=20, 31×32 */
@@ -161,23 +161,60 @@
   margin: 0;
 }
 
-/* SVG 도넛 래퍼 — 피그마: left=42, top=67, 264×261 */
+/* SVG 도넛 래퍼 */
 .con-chart-svg-wrap {
   position: absolute;
   left: 17px;
   top: 43px;
-  width: 314px;
-  height: 310px;
+  width: 320px;
+  height: 320px;
 }
 
-/* 클로버 중앙 이미지 — 피그마: SVG 내부 left=71, top=69, 120×120 */
+/* 클로버 중앙 이미지 — inset+margin:auto로 래퍼 정중앙에 고정 */
 .con-chart-center {
   position: absolute;
-  left: 95px;
-  top: 95px;
-  width: 120px;
-  height: 120px;
+  inset: 0;
+  margin: auto;
+  width: 130px;
+  height: 130px;
   pointer-events: none;
+}
+
+/* 세그먼트 선택 시 중앙에 표시되는 항목명/퍼센트 — 클로버와 동일하게 정중앙 고정 */
+.con-chart-center-info {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 130px;
+  height: 130px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  pointer-events: none;
+}
+.con-chart-center-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #323639;
+}
+.con-chart-center-pct {
+  font-size: 22px;
+  font-weight: 700;
+  color: #a0cfbd;
+}
+
+/* 도넛 세그먼트 인터랙션 */
+.donut-segment {
+  cursor: pointer;
+  transition: opacity 0.2s ease, filter 0.2s ease;
+}
+.donut-segment.dimmed {
+  opacity: 0.35;
+}
+.donut-segment.selected {
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.25));
 }
 
 /* 범례 — 피그마: 카드 left=297(→right=0), top=12 */
@@ -195,6 +232,14 @@
   align-items: center;
   height: 13px;
   gap: 5px;
+  transition: opacity 0.2s ease;
+}
+.con-legend-item.dimmed {
+  opacity: 0.4;
+}
+.con-legend-item.selected .con-legend-label {
+  font-weight: 700;
+  color: #1e1e1e;
 }
 .con-legend-dot {
   width: 10px;
