@@ -24,7 +24,7 @@ const CATEGORIES = [
   { label: '기타',    key: 'etcCount'            as const, color: '#e0c0d0' },
 ]
 
-interface Segment { label: string; pct: number; color: string }
+interface Segment { label: string; pct: number; raw: number; color: string }
 
 // 정사각 viewBox로 링 중심을 정확히 정중앙에 배치
 const CX = 130, CY = 130, R = 98, SW = 40
@@ -38,7 +38,8 @@ function WasteDonutChart({ segments }: { segments: Segment[] }) {
   const usableCirc = circ - SEGMENT_GAP * segments.length
   let offset = 0
   const segs = segments.map(s => {
-    const dash = (s.pct / 100) * usableCirc
+    // 링 길이는 반올림 안 한 raw 비율로 그려서 표시용 pct(반올림) 합이 100이 안 돼도 빈틈이 안 생기게 함
+    const dash = (s.raw / 100) * usableCirc
     const seg = { ...s, dash, gap: circ - dash, offset }
     offset += dash + SEGMENT_GAP
     return seg
@@ -168,7 +169,12 @@ export default function Contribution() {
     if (total === 0) return []
     return CATEGORIES
       .filter(c => (cat[c.key] ?? 0) > 0)
-      .map(c => ({ label: c.label, color: c.color, pct: Math.round((cat[c.key] / total) * 100) }))
+      .map(c => ({
+        label: c.label,
+        color: c.color,
+        raw: (cat[c.key] / total) * 100,
+        pct: Math.round((cat[c.key] / total) * 100),
+      }))
   })()
 
   return (

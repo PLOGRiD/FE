@@ -61,6 +61,21 @@ const SUMMARY_FIELD_TO_CATEGORY: [string, string][] = [
   ['petBottleCount', 'PET_BOTTLE'], ['plasticCount', 'PLASTIC'], ['cigaretteCount', 'CIGARETTE'], ['styrofoamCount', 'STYROFOAM'],
 ]
 
+// 새로고침해도 진행 중이던 플로깅이 끊기지 않도록 세션 id/시작 시각을 저장
+const ACTIVE_PLOGGING_KEY = 'activePlogging'
+
+function readActivePlogging(): { ploggingId: number; startedAt: number } | null {
+  try {
+    const raw = localStorage.getItem(ACTIVE_PLOGGING_KEY)
+    if (!raw) return null
+    const parsed = JSON.parse(raw)
+    if (typeof parsed.ploggingId === 'number' && typeof parsed.startedAt === 'number') return parsed
+    return null
+  } catch {
+    return null
+  }
+}
+
 export default function PloggingPage() {
   const navigate = useNavigate()
   const [stage, setStage] = useState<Stage>('idle')
@@ -69,15 +84,19 @@ export default function PloggingPage() {
   const videoRef = useRef<HTMLVideoElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
 
-  const [seconds, setSeconds] = useState(0)
+  const [seconds, setSeconds] = useState(() => {
+    const active = readActivePlogging()
+    return active ? Math.max(0, Math.floor((Date.now() - active.startedAt) / 1000)) : 0
+  })
   const [distance, setDistance] = useState(0)
   const [trashChips, setTrashChips] = useState<TrashChip[]>([])
   const [totalTrash, setTotalTrash] = useState(0)
   const [showAlert, setShowAlert] = useState(false)
   const [alertMsg, setAlertMsg] = useState('')
-  const [starting, setStarting] = useState(false)
+  // 새로고침 시 진행 중이던 세션이 있었으면 바로 이어서 로딩 시작
+  const [starting, setStarting] = useState(() => readActivePlogging() !== null)
 
-  const ploggingIdRef = useRef<number | null>(null)
+  const ploggingIdRef = useRef<number | null>(readActivePlogging()?.ploggingId ?? null)
   const mapRef = useRef<any>(null)
   const markerRef = useRef<any>(null)
   const polylineRef = useRef<any>(null)
@@ -370,6 +389,7 @@ export default function PloggingPage() {
     if (watchIdRef.current !== -1) navigator.geolocation.clearWatch(watchIdRef.current)
     sseRef.current?.close()
     if (locationIntervalRef.current) clearInterval(locationIntervalRef.current)
+    localStorage.removeItem(ACTIVE_PLOGGING_KEY)
 
     try {
       const result = await endPlogging()
@@ -391,6 +411,7 @@ export default function PloggingPage() {
     try {
       const id = await startPlogging()
       ploggingIdRef.current = id
+      localStorage.setItem(ACTIVE_PLOGGING_KEY, JSON.stringify({ ploggingId: id, startedAt: Date.now() }))
     } catch {}
     // 지도 로딩이 끝나면(맵 useEffect 안에서) stage가 'running'으로 바뀜
   }
