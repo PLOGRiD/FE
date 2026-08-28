@@ -1,0 +1,8 @@
+/* 입력창도 하단바도 없는 페이지라 ChatPage.css의 예약 높이(입력창 76px + 하단바 90px)를 다 뺌 */
+.chat-messages-bg.waste-guide-bg,
+.chat-messages.waste-guide-messages {
+  bottom: 0;
+}
+.chat-bg-mascot.waste-guide-mascot {
+  bottom: 0;
+}

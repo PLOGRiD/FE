@@ -48,3 +48,9 @@ export async function getSessionMessages(chatSessionId: number): Promise<ChatMes
 export async function deleteSessions(chatSessionIds: number[]): Promise<void> {
   await client.delete('/chats', { data: { chatSessionIds } })
 }
+
+// 단일 이미지로 분리배출 방법만 단발성 조회 — 채팅 세션/대화내역 생성 안 함
+export async function getWasteSortingGuide(imageUrl: string): Promise<string> {
+  const res = await client.post('/chats/wastes', { imageUrl })
+  return res.data.result.message
+}

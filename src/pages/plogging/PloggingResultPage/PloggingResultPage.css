@@ -41,7 +41,7 @@
   width: 121px;
   height: 129px;
   overflow: hidden;
-  animation: result-bird-float 2.4s ease-in-out infinite;
+  animation: result-bird-float 1.8s ease-in-out infinite;
 }
 @keyframes result-bird-float {
   0%, 100% { transform: translateY(0); }
@@ -154,10 +154,18 @@
   display: flex;
   gap: 10px;
   margin-bottom: 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.result-photo-grid::-webkit-scrollbar {
+  display: none;
 }
 .result-photo-thumb {
   position: relative;
-  flex: 1;
+  flex: 0 0 90px;
+  width: 90px;
   height: 90px;
   background: #949494;
   border-radius: 10px;
@@ -179,8 +187,9 @@
 /* 컬럼 자체를 그리드로 — 모든 행이 같은 컬럼 너비를 공유 */
 .result-bar-col {
   flex: 1;
+  min-width: 0;
   display: grid;
-  grid-template-columns: auto 1fr 22px;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   column-gap: 3px;
   row-gap: 7px;
   align-items: center;
@@ -211,8 +220,8 @@
   font-size: 10px;
   font-weight: 500;
   color: #323639;
-  text-align: center;
-  margin-left: -6px;
+  text-align: right;
+  white-space: nowrap;
 }
 
 /* ── AI 배너 ── */

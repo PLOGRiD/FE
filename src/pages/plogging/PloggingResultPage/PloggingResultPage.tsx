@@ -116,7 +116,7 @@ export default function PloggingResultPage() {
     return rows.length > 0 ? rows : CHART_CATEGORIES.map(c => ({ label: c.label, pct: 0, color: c.color }))
   })()
 
-  const photos = result?.trashes?.slice(0, 4) ?? []
+  const photos = result?.trashes ?? []
 
   return (
     <>
@@ -179,7 +179,12 @@ export default function PloggingResultPage() {
           {photos.length > 0 ? (
             <div className="result-photo-grid">
               {photos.map(t => (
-                <div key={t.trashId} className="result-photo-thumb">
+                <div
+                  key={t.trashId}
+                  className="result-photo-thumb"
+                  onClick={t.imageUrl ? () => navigate('/chat/waste-guide', { state: { wasteImageUrl: t.imageUrl } }) : undefined}
+                  style={{ cursor: t.imageUrl ? 'pointer' : 'default' }}
+                >
                   {t.imageUrl && (
                     <img src={t.imageUrl} alt={t.category}
                       style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }} />

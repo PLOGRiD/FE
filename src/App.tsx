@@ -5,6 +5,7 @@ import LoginPage from './pages/auth/LoginPage/LoginPage'
 import SignupPage from './pages/auth/SignupPage/SignupPage'
 import HomePage from './pages/home/HomePage'
 import ChatPage from './pages/chat/ChatPage/ChatPage'
+import WasteGuidePage from './pages/chat/WasteGuidePage/WasteGuidePage'
 import MapPage from './pages/map/MapPage/MapPage'
 import PloggingPage from './pages/plogging/PloggingPage/PloggingPage'
 import PloggingResultPage from './pages/plogging/PloggingResultPage/PloggingResultPage'
@@ -38,6 +39,7 @@ export default function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/chat" element={<ChatPage />} />
+        <Route path="/chat/waste-guide" element={<WasteGuidePage />} />
         <Route path="/map" element={<MapPage />} />
         <Route path="/plogging" element={<PloggingPage />} />
         <Route path="/plogging/result" element={<PloggingResultPage />} />

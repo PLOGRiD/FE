@@ -8,6 +8,14 @@ import runIcon from '../../../assets/plogging/run.svg'
 import trashIcon from '../../../assets/plogging/trash.svg'
 import bellIcon from '../../../assets/plogging/bell.svg'
 import clockIcon from '../../../assets/home/icons/clock.svg'
+import iconPlastic from '../../../assets/map/plastic.svg'
+import iconGlass from '../../../assets/map/glass.svg'
+import iconPaper from '../../../assets/map/paper.svg'
+import iconCan from '../../../assets/map/can.svg'
+import iconStyrofoam from '../../../assets/map/styrofoam.svg'
+import iconVinyl from '../../../assets/map/vinyl.svg'
+import iconCigarette from '../../../assets/map/cigarette.svg'
+import iconPetBottle from '../../../assets/map/pet-bottle.svg'
 import BottomNav from '../../../components/BottomNav/BottomNav'
 import Header from '../../../components/Header/Header'
 import { startPlogging, updateLocation, endPlogging, linkDevice, BASE_URL } from '../../../api/plogging'
@@ -35,10 +43,29 @@ function haversine(lat1: number, lng1: number, lat2: number, lng2: number) {
 
 interface TrashChip { label: string; count: number; color: string }
 
+// SSE trash-added/plogging-in-progress에서 오는 category 코드 → 라벨/색상/지도 배지 아이콘
+const CATEGORY_META: Record<string, { label: string; color: string; icon: string }> = {
+  VINYL: { label: '비닐', color: '#a0cfbd', icon: iconVinyl },
+  GLASS: { label: '유리', color: '#9aced8', icon: iconGlass },
+  PAPER: { label: '종이', color: '#d8aaa3', icon: iconPaper },
+  CAN: { label: '캔', color: '#d6d3a0', icon: iconCan },
+  PET_BOTTLE: { label: '페트', color: '#b7d9a8', icon: iconPetBottle },
+  PLASTIC: { label: '플라스틱', color: '#a8c2e2', icon: iconPlastic },
+  CIGARETTE: { label: '담배꽁초', color: '#c8b6df', icon: iconCigarette },
+  STYROFOAM: { label: '스티로폼', color: '#e0c0d0', icon: iconStyrofoam },
+}
+
+// plogging-in-progress의 trashSummary 필드명 → CATEGORY_META 키
+const SUMMARY_FIELD_TO_CATEGORY: [string, string][] = [
+  ['vinylCount', 'VINYL'], ['paperCount', 'PAPER'], ['glassCount', 'GLASS'], ['canCount', 'CAN'],
+  ['petBottleCount', 'PET_BOTTLE'], ['plasticCount', 'PLASTIC'], ['cigaretteCount', 'CIGARETTE'], ['styrofoamCount', 'STYROFOAM'],
+]
+
 export default function PloggingPage() {
   const navigate = useNavigate()
   const [stage, setStage] = useState<Stage>('idle')
   const [connectedDeviceId, setConnectedDeviceId] = useState<number | null>(null)
+  const [linkErrorToast, setLinkErrorToast] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
 
@@ -54,6 +81,7 @@ export default function PloggingPage() {
   const mapRef = useRef<any>(null)
   const markerRef = useRef<any>(null)
   const polylineRef = useRef<any>(null)
+  const trashMarkersRef = useRef<any[]>([])
   const pathRef = useRef<{ lat: number; lng: number }[]>([])
   const watchIdRef = useRef<number>(-1)
   const sseRef = useRef<EventSource | null>(null)
@@ -85,7 +113,28 @@ export default function PloggingPage() {
         marker.setPosition(latlng)
         pathRef.current = [{ lat, lng }]
       })
-      // 실시간 위치 추적(마커 이동/지도 패닝/이동거리 갱신) 비활성화
+      watchIdRef.current = navigator.geolocation.watchPosition(pos => {
+        const { latitude: lat, longitude: lng } = pos.coords
+        const latlng = new window.kakao.maps.LatLng(lat, lng)
+        marker.setPosition(latlng)
+        map.panTo(latlng)
+        pathRef.current = [...pathRef.current, { lat, lng }]
+        if (pathRef.current.length >= 2) {
+          let total = 0
+          for (let i = 1; i < pathRef.current.length; i++) {
+            const a = pathRef.current[i - 1], b = pathRef.current[i]
+            total += haversine(a.lat, a.lng, b.lat, b.lng)
+          }
+          setDistance(total)
+        }
+        polylineRef.current?.setMap(null)
+        const poly = new window.kakao.maps.Polyline({
+          path: pathRef.current.map(p => new window.kakao.maps.LatLng(p.lat, p.lng)),
+          strokeWeight: 4, strokeColor: '#a0cfbd', strokeOpacity: 0.9, strokeStyle: 'solid',
+        })
+        poly.setMap(map)
+        polylineRef.current = poly
+      }, undefined, { enableHighAccuracy: true, maximumAge: 2000 })
     }
 
     const getInitialPos = (): Promise<{ lat: number; lng: number }> =>
@@ -136,7 +185,8 @@ export default function PloggingPage() {
     }
   }, [stage])
 
-  // SSE 쓰레기 감지
+  // SSE 쓰레기 감지 — 백엔드가 event: 필드로 이름 붙여서 보내므로 onmessage(unnamed)가 아니라
+  // addEventListener로 각 이벤트 이름별로 받아야 함
   useEffect(() => {
     if (stage !== 'running' || !ploggingIdRef.current) return
     const token = localStorage.getItem('accessToken')
@@ -144,23 +194,86 @@ export default function PloggingPage() {
       `${BASE_URL}/ploggings/${ploggingIdRef.current}/events?token=${token}`
     )
     sseRef.current = es
-    es.onmessage = (e) => {
-      try {
-        const data = JSON.parse(e.data)
-        const category: string = data.category ?? '기타'
-        setTrashChips(prev => {
-          const existing = prev.find(c => c.label === category)
-          if (existing) return prev.map(c => c.label === category ? { ...c, count: c.count + 1 } : c)
-          const colors = ['#a0cfbd', '#d6d3a0', '#9aced8', '#b7d9a8', '#d8aaa3', '#c8b6df']
-          return [...prev, { label: category, count: 1, color: colors[prev.length % colors.length] }]
-        })
-        setTotalTrash(n => n + 1)
-        setAlertMsg(`${category} 수거가 감지되었어요!`)
-        setShowAlert(true)
-        setTimeout(() => setShowAlert(false), 3000)
-      } catch {}
+
+    const on = (name: string, handler: (raw: string) => void) => {
+      es.addEventListener(name, (e) => handler((e as MessageEvent).data))
     }
-    return () => { es.close(); sseRef.current = null }
+
+    const addTrashMarker = (loc: { latitude: number; longitude: number; category: string }) => {
+      const map = mapRef.current
+      if (!map || !window.kakao) return
+      const icon = CATEGORY_META[loc.category]?.icon
+      const pos = new window.kakao.maps.LatLng(loc.latitude, loc.longitude)
+      const marker = new window.kakao.maps.Marker({
+        position: pos,
+        map,
+        image: icon ? new window.kakao.maps.MarkerImage(icon, new window.kakao.maps.Size(26, 26)) : undefined,
+      })
+      trashMarkersRef.current.push(marker)
+    }
+
+    const bumpCategory = (category: string) => {
+      const meta = CATEGORY_META[category]
+      const label = meta?.label ?? category
+      setTrashChips(prev => {
+        const existing = prev.find(c => c.label === label)
+        if (existing) return prev.map(c => c.label === label ? { ...c, count: c.count + 1 } : c)
+        return [...prev, { label, count: 1, color: meta?.color ?? '#a9a9a9' }]
+      })
+      setTotalTrash(n => n + 1)
+    }
+
+    // 최초 접속 시 지금까지 수거된 현황 스냅샷
+    on('plogging-in-progress', (raw) => {
+      try {
+        const data = JSON.parse(raw)
+        const summary = data.trashSummary
+        if (summary) {
+          setTotalTrash(summary.totalCount ?? 0)
+          setTrashChips(
+            SUMMARY_FIELD_TO_CATEGORY
+              .filter(([field]) => (summary[field] ?? 0) > 0)
+              .map(([field, category]) => ({
+                label: CATEGORY_META[category].label,
+                count: summary[field],
+                color: CATEGORY_META[category].color,
+              }))
+          )
+        }
+        ;(data.trashLocations ?? []).forEach(addTrashMarker)
+      } catch {}
+    })
+
+    // 서버가 계산한 이동거리로 갱신
+    on('plogging-distance-updated', (raw) => {
+      try {
+        const data = JSON.parse(raw)
+        if (typeof data.distanceMeters === 'number') setDistance(data.distanceMeters / 1000)
+      } catch {}
+    })
+
+    // 쓰레기 투입 감지 알림 토스트 (plain text)
+    on('trash-detective-event', (raw) => {
+      setAlertMsg(raw)
+      setShowAlert(true)
+      setTimeout(() => setShowAlert(false), 3000)
+    })
+
+    // 실제 수거 확정 — 카운트/칩/지도 마커 반영
+    on('trash-added', (raw) => {
+      try {
+        const data = JSON.parse(raw)
+        bumpCategory(data.category)
+        addTrashMarker(data)
+      } catch {}
+    })
+
+    return () => {
+      es.close()
+      sseRef.current = null
+      trashMarkersRef.current.forEach(m => m.setMap(null))
+      trashMarkersRef.current = []
+    }
   }, [stage])
 
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -180,11 +293,21 @@ export default function PloggingPage() {
     streamRef.current = null
     cancelAnimationFrame(rafRef.current)
     const deviceId = parseDeviceId(text)
-    if (deviceId !== null) {
-      try { await linkDevice(deviceId) } catch {}
-      setConnectedDeviceId(deviceId)
+    if (deviceId === null) {
+      setLinkErrorToast(true)
+      setTimeout(() => setLinkErrorToast(false), 3000)
+      setStage('waiting')
+      return
     }
-    setStage('connected')
+    try {
+      await linkDevice(deviceId)
+      setConnectedDeviceId(deviceId)
+      setStage('connected')
+    } catch {
+      setLinkErrorToast(true)
+      setTimeout(() => setLinkErrorToast(false), 3000)
+      setStage('waiting')
+    }
   }, [])
 
   const scanFrame = useCallback(async (video: HTMLVideoElement, canvas: HTMLCanvasElement, detector: any) => {
@@ -420,6 +543,10 @@ export default function PloggingPage() {
 
       {starting && (
         <div className="plogging-map-loading-toast">지도를 불러오는 중...</div>
+      )}
+
+      {linkErrorToast && (
+        <div className="plogging-map-loading-toast">디바이스 연동에 실패했습니다</div>
       )}
 
       <BottomNav />
