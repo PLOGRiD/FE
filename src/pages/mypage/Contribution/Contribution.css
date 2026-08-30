@@ -222,7 +222,7 @@
   position: absolute;
   right: 0;
   top: 12px;
-  width: 60px;
+  width: 52px;
   display: flex;
   flex-direction: column;
   gap: 1px;
@@ -230,8 +230,8 @@
 .con-legend-item {
   display: flex;
   align-items: center;
-  height: 13px;
-  gap: 5px;
+  height: 11px;
+  gap: 4px;
   transition: opacity 0.2s ease;
 }
 .con-legend-item.dimmed {
@@ -242,13 +242,13 @@
   color: #1e1e1e;
 }
 .con-legend-dot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 .con-legend-label {
-  font-size: 8px;
+  font-size: 7px;
   font-weight: 600;
   color: #323639;
   white-space: nowrap;
