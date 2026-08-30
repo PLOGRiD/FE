@@ -67,6 +67,10 @@ const SUMMARY_FIELD_TO_CATEGORY: [string, string][] = [
   ['petBottleCount', 'PET_BOTTLE'], ['plasticCount', 'PLASTIC'], ['cigaretteCount', 'CIGARETTE'], ['styrofoamCount', 'STYROFOAM'],
 ]
 
+// 위치 전송 주기 - API 문서 스펙(약 3초). 간격이 길수록 서버가 두 점을 직선으로 이어
+// 누적하기 때문에 실제 경로보다 짧게 계산됨
+const LOCATION_INTERVAL_MS = 3000
+
 // 새로고침해도 진행 중이던 플로깅이 끊기지 않도록 세션 id/시작 시각을 저장
 const ACTIVE_PLOGGING_KEY = 'activePlogging'
 
@@ -87,6 +91,7 @@ export default function PloggingPage() {
   const [stage, setStage] = useState<Stage>('idle')
   const [connectedDeviceId, setConnectedDeviceId] = useState<number | null>(null)
   const [linkErrorToast, setLinkErrorToast] = useState(false)
+  const [sessionGoneToast, setSessionGoneToast] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
 
@@ -208,18 +213,39 @@ export default function PloggingPage() {
     }
   }, [starting])
 
-  // API 위치 전송 (10초마다)
+  // 서버에 진행 중인 플로깅이 없으면(PLOGGING404_1) 더 보낼 이유가 없으므로
+  // 위치 전송/추적을 멈추고 연결 화면으로 되돌림
+  const abortInactivePlogging = useCallback(() => {
+    if (locationIntervalRef.current) {
+      clearInterval(locationIntervalRef.current)
+      locationIntervalRef.current = null
+    }
+    if (watchIdRef.current !== -1) {
+      navigator.geolocation.clearWatch(watchIdRef.current)
+      watchIdRef.current = -1
+    }
+    localStorage.removeItem(ACTIVE_PLOGGING_KEY)
+    ploggingIdRef.current = null
+    setStarting(false)
+    setStage('idle')
+    setSessionGoneToast(true)
+    setTimeout(() => setSessionGoneToast(false), 3000)
+  }, [])
+
+  // API 위치 전송 (3초마다)
   useEffect(() => {
     if (stage !== 'running') return
     locationIntervalRef.current = setInterval(() => {
       if (pathRef.current.length === 0) return
       const last = pathRef.current[pathRef.current.length - 1]
-      updateLocation(last.lat, last.lng).catch(() => {})
-    }, 10000)
+      updateLocation(last.lat, last.lng).catch((err: any) => {
+        if (err?.response?.data?.code === 'PLOGGING404_1') abortInactivePlogging()
+      })
+    }, LOCATION_INTERVAL_MS)
     return () => {
       if (locationIntervalRef.current) clearInterval(locationIntervalRef.current)
     }
-  }, [stage])
+  }, [stage, abortInactivePlogging])
 
   // SSE 쓰레기 감지 — 백엔드가 event: 필드로 이름 붙여서 보내므로 onmessage(unnamed)가 아니라
   // addEventListener로 각 이벤트 이름별로 받아야 함
@@ -588,6 +614,10 @@ export default function PloggingPage() {
 
       {linkErrorToast && (
         <div className="plogging-map-loading-toast">디바이스 연동에 실패했습니다</div>
+      )}
+
+      {sessionGoneToast && (
+        <div className="plogging-map-loading-toast">진행 중인 플로깅이 없어 처음 화면으로 돌아왔어요</div>
       )}
 
       <BottomNav />
