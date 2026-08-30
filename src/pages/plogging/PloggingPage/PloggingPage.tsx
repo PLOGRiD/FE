@@ -41,6 +41,8 @@ function haversine(lat1: number, lng1: number, lat2: number, lng2: number) {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 }
 
+const MIN_STEP_M = 5 // 직전 점과 이만큼도 안 움직였으면 GPS 흔들림으로 간주하고 경로에 반영하지 않음
+
 interface TrashChip { label: string; count: number; color: string }
 
 // SSE trash-added/plogging-in-progress에서 오는 category 코드 → 라벨/색상/지도 배지 아이콘
@@ -104,7 +106,6 @@ export default function PloggingPage() {
   const ploggingIdRef = useRef<number | null>(readActivePlogging()?.ploggingId ?? null)
   const mapRef = useRef<any>(null)
   const markerRef = useRef<any>(null)
-  const polylineRef = useRef<any>(null)
   const trashMarkersRef = useRef<any[]>([])
   const pathRef = useRef<{ lat: number; lng: number }[]>([])
   const lastFixRef = useRef<{ lat: number; lng: number; t: number } | null>(null)
@@ -144,7 +145,10 @@ export default function PloggingPage() {
         const t = pos.timestamp || Date.now()
         const prev = lastFixRef.current
         if (prev) {
-          clientDistanceRef.current += haversine(prev.lat, prev.lng, lat, lng)
+          const stepKm = haversine(prev.lat, prev.lng, lat, lng)
+          // 제자리에서도 GPS 좌표가 몇 m씩 흔들려서 그대로 이으면 경로에 지렁이 모양이 그려짐
+          if (stepKm * 1000 < MIN_STEP_M) return
+          clientDistanceRef.current += stepKm
         }
         lastFixRef.current = { lat, lng, t }
         pathRef.current = [...pathRef.current, { lat, lng }]
@@ -158,14 +162,6 @@ export default function PloggingPage() {
         if (!hasServerDistanceRef.current) {
           setDistance(d => Math.max(d, clientDistanceRef.current))
         }
-
-        polylineRef.current?.setMap(null)
-        const poly = new window.kakao.maps.Polyline({
-          path: pathRef.current.map(p => new window.kakao.maps.LatLng(p.lat, p.lng)),
-          strokeWeight: 4, strokeColor: '#a0cfbd', strokeOpacity: 0.9, strokeStyle: 'solid',
-        })
-        poly.setMap(map)
-        polylineRef.current = poly
       }, undefined, { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 })
     }
 
