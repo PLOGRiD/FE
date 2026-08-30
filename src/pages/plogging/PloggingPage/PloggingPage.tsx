@@ -41,12 +41,6 @@ function haversine(lat1: number, lng1: number, lat2: number, lng2: number) {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 }
 
-// GPS 노이즈 필터 - 모든 fix를 그대로 누적하면 제자리에 서 있어도 거리가 계속 늘고,
-// 실내/터널에서 섞여 들어오는 부정확한 fix 때문에 한 번에 수백 m씩 튐
-const MAX_ACCURACY_M = 30   // 이보다 부정확한 위치는 경로에 반영하지 않음
-const MIN_STEP_M = 5        // 직전 점과 이만큼도 안 움직였으면 GPS 흔들림으로 간주
-const MAX_SPEED_MPS = 10    // 사람이 낼 수 없는 속도로 이동한 점은 이상치
-
 interface TrashChip { label: string; count: number; color: string }
 
 // SSE trash-added/plogging-in-progress에서 오는 category 코드 → 라벨/색상/지도 배지 아이콘
@@ -146,18 +140,11 @@ export default function PloggingPage() {
     const startTracking = (map: any, marker: any) => {
       if (!navigator.geolocation) return
       watchIdRef.current = navigator.geolocation.watchPosition(pos => {
-        const { latitude: lat, longitude: lng, accuracy } = pos.coords
-        if (typeof accuracy === 'number' && accuracy > MAX_ACCURACY_M) return
-
+        const { latitude: lat, longitude: lng } = pos.coords
         const t = pos.timestamp || Date.now()
         const prev = lastFixRef.current
         if (prev) {
-          const stepKm = haversine(prev.lat, prev.lng, lat, lng)
-          const stepM = stepKm * 1000
-          if (stepM < MIN_STEP_M) return
-          const dtSec = Math.max((t - prev.t) / 1000, 0.001)
-          if (stepM / dtSec > MAX_SPEED_MPS) return
-          clientDistanceRef.current += stepKm
+          clientDistanceRef.current += haversine(prev.lat, prev.lng, lat, lng)
         }
         lastFixRef.current = { lat, lng, t }
         pathRef.current = [...pathRef.current, { lat, lng }]
@@ -166,8 +153,11 @@ export default function PloggingPage() {
         marker.setPosition(latlng)
         map.panTo(latlng)
 
-        // 서버 거리 이벤트가 도착하기 전까지만 클라이언트 추정치를 보여줌
-        if (!hasServerDistanceRef.current) setDistance(clientDistanceRef.current)
+        // 서버 거리 이벤트가 도착하기 전까지만 클라이언트 추정치를 보여줌. 화면에 이미 표기된
+        // 값보다 작아지는 갱신은 버림 (거리는 줄어들 수 없음)
+        if (!hasServerDistanceRef.current) {
+          setDistance(d => Math.max(d, clientDistanceRef.current))
+        }
 
         polylineRef.current?.setMap(null)
         const poly = new window.kakao.maps.Polyline({
@@ -201,7 +191,7 @@ export default function PloggingPage() {
       const enterRunning = () => { if (!cancelled) setStage('running') }
       window.kakao.maps.event.addListener(map, 'tilesloaded', enterRunning)
       setTimeout(enterRunning, 4000)
-      const marker = new window.kakao.maps.Marker({ position: initialLatLng, map })
+      const marker = new window.kakao.maps.Marker({ position: initialLatLng })
       markerRef.current = marker
       startTracking(map, marker)
     }).catch(console.error)
