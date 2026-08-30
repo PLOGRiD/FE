@@ -21,7 +21,7 @@ const CATEGORIES = [
   { label: '페트',    key: 'petCount'            as const, color: '#b7d9a8' },
   { label: '플라스틱', key: 'plasticCount'       as const, color: '#a8c2e2' },
   { label: '담배꽁초', key: 'cigaretteButtCount' as const, color: '#c8b6df' },
-  { label: '기타',    key: 'etcCount'            as const, color: '#e0c0d0' },
+  { label: '스티로폼', key: 'etcCount'            as const, color: '#e0c0d0' },
 ]
 
 interface Segment { label: string; pct: number; raw: number; color: string }
