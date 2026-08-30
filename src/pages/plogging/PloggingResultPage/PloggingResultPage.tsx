@@ -111,7 +111,7 @@ export default function PloggingResultPage() {
   const chartRows: ChartRow[] = (() => {
     const summary = result?.trashSummary
     const rows = summary
-      ? CHART_CATEGORIES.filter(c => (summary[c.key] ?? 0) > 0).map(c => ({ label: c.label, pct: summary[c.key], color: c.color }))
+      ? CHART_CATEGORIES.filter(c => (summary[c.key] ?? 0) > 0).map(c => ({ label: c.label, pct: Math.round(summary[c.key]), color: c.color }))
       : []
     return rows.length > 0 ? rows : CHART_CATEGORIES.map(c => ({ label: c.label, pct: 0, color: c.color }))
   })()
