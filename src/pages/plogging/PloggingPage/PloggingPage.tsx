@@ -33,16 +33,6 @@ function waitForKakaoMaps(): Promise<void> {
 
 type Stage = 'idle' | 'waiting' | 'camera' | 'connected' | 'running'
 
-function haversine(lat1: number, lng1: number, lat2: number, lng2: number) {
-  const R = 6371
-  const dLat = ((lat2 - lat1) * Math.PI) / 180
-  const dLng = ((lng2 - lng1) * Math.PI) / 180
-  const a = Math.sin(dLat / 2) ** 2 + Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLng / 2) ** 2
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-}
-
-const MIN_STEP_M = 5 // 직전 점과 이만큼도 안 움직였으면 GPS 흔들림으로 간주하고 경로에 반영하지 않음
-
 interface TrashChip { label: string; count: number; color: string }
 
 // SSE trash-added/plogging-in-progress에서 오는 category 코드 → 라벨/색상/지도 배지 아이콘
@@ -63,9 +53,9 @@ const SUMMARY_FIELD_TO_CATEGORY: [string, string][] = [
   ['petBottleCount', 'PET_BOTTLE'], ['plasticCount', 'PLASTIC'], ['cigaretteCount', 'CIGARETTE'], ['styrofoamCount', 'STYROFOAM'],
 ]
 
-// 위치 전송 주기 - API 문서 스펙(약 3초). 간격이 길수록 서버가 두 점을 직선으로 이어
+// 위치 전송 주기. 간격이 길수록 서버가 두 점을 직선으로 이어
 // 누적하기 때문에 실제 경로보다 짧게 계산됨
-const LOCATION_INTERVAL_MS = 3000
+const LOCATION_INTERVAL_MS = 10000
 
 // 새로고침해도 진행 중이던 플로깅이 끊기지 않도록 세션 id/시작 시각을 저장
 const ACTIVE_PLOGGING_KEY = 'activePlogging'
@@ -109,9 +99,8 @@ export default function PloggingPage() {
   const trashMarkersRef = useRef<any[]>([])
   const pathRef = useRef<{ lat: number; lng: number }[]>([])
   const lastFixRef = useRef<{ lat: number; lng: number; t: number } | null>(null)
-  const clientDistanceRef = useRef(0)
-  // 서버 거리 이벤트를 한 번이라도 받으면 그 뒤로는 서버 값만 사용
-  // (클라이언트 누적치와 서버 계산치가 서로 덮어쓰면 숫자가 위아래로 튐)
+  // 화면에 표시하는 이동거리는 항상 서버 값만 사용 (프론트에서 임의 계산 안 함).
+  // 이전보다 작은 값이 뒤늦게 와서 숫자가 역행하는 것만 막기 위한 플래그
   const hasServerDistanceRef = useRef(false)
   // 마지막으로 화면에 반영한 서버 거리(km) - 순서 역전 판별용
   const serverDistanceKmRef = useRef(0)
@@ -143,25 +132,13 @@ export default function PloggingPage() {
       watchIdRef.current = navigator.geolocation.watchPosition(pos => {
         const { latitude: lat, longitude: lng } = pos.coords
         const t = pos.timestamp || Date.now()
-        const prev = lastFixRef.current
-        if (prev) {
-          const stepKm = haversine(prev.lat, prev.lng, lat, lng)
-          // 제자리에서도 GPS 좌표가 몇 m씩 흔들려서 그대로 이으면 경로에 지렁이 모양이 그려짐
-          if (stepKm * 1000 < MIN_STEP_M) return
-          clientDistanceRef.current += stepKm
-        }
         lastFixRef.current = { lat, lng, t }
         pathRef.current = [...pathRef.current, { lat, lng }]
 
         const latlng = new window.kakao.maps.LatLng(lat, lng)
         marker.setPosition(latlng)
         map.panTo(latlng)
-
-        // 서버 거리 이벤트가 도착하기 전까지만 클라이언트 추정치를 보여줌. 화면에 이미 표기된
-        // 값보다 작아지는 갱신은 버림 (거리는 줄어들 수 없음)
-        if (!hasServerDistanceRef.current) {
-          setDistance(d => Math.max(d, clientDistanceRef.current))
-        }
+        // 이동거리는 프론트에서 계산하지 않고 서버가 보내주는 값만 표시함 (아래 plogging-distance-updated)
       }, undefined, { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 })
     }
 
@@ -217,7 +194,6 @@ export default function PloggingPage() {
     // 다음 세션이 이전 거리를 물려받지 않도록 누적 상태를 모두 초기화
     pathRef.current = []
     lastFixRef.current = null
-    clientDistanceRef.current = 0
     hasServerDistanceRef.current = false
     serverDistanceKmRef.current = 0
     setDistance(0)
