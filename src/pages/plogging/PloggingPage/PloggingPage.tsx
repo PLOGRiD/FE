@@ -55,7 +55,7 @@ const SUMMARY_FIELD_TO_CATEGORY: [string, string][] = [
 
 // 위치 전송 주기. 간격이 길수록 서버가 두 점을 직선으로 이어
 // 누적하기 때문에 실제 경로보다 짧게 계산됨
-const LOCATION_INTERVAL_MS = 10000
+const LOCATION_INTERVAL_MS = 5000
 
 // 새로고침해도 진행 중이던 플로깅이 끊기지 않도록 세션 id/시작 시각을 저장
 const ACTIVE_PLOGGING_KEY = 'activePlogging'
