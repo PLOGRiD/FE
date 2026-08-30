@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import resultBird from '../../../assets/plogging/result-bird.png'
 import resultNature from '../../../assets/plogging/result-nature.png'
@@ -17,7 +16,6 @@ import iconVinyl from '../../../assets/map/vinyl.svg'
 import iconCigarette from '../../../assets/map/cigarette.svg'
 import iconPetBottle from '../../../assets/map/pet-bottle.svg'
 import type { PloggingResult } from '../../../api/plogging'
-import { getMyContribution } from '../../../api/member'
 import Header from '../../../components/Header/Header'
 import './PloggingResultPage.css'
 
@@ -98,14 +96,8 @@ export default function PloggingResultPage() {
   const duration = result ? formatDuration(result.durationSeconds) : '00 : 00 : 00'
   const trashCount = result?.trashSummary?.totalCount ?? 0
 
-  // GET /members/me/contribution → 누적 환경 기여 점수
-  const [totalScore, setTotalScore] = useState<number | null>(null)
-  useEffect(() => {
-    getMyContribution()
-      .then(data => setTotalScore(data.contributionScore))
-      .catch(() => {})
-  }, [])
-  const score = totalScore ?? result?.contributionScore ?? 0
+  // 이번 세션에서 얻은 점수 (endPlogging 응답) — 누적 총점 아님
+  const score = result?.contributionScore ?? 0
 
   // API trashSummary 퍼센트 필드를 바로 사용 — 수거된 게 없으면 전체 카테고리를 0%로 표시
   const chartRows: ChartRow[] = (() => {
