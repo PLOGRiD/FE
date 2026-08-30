@@ -112,7 +112,7 @@
 }
 
 /* Figma 345:518: BackgroundMascot w=234, h=262, opacity=50%
-   frame 기준 left=calc(33.33%+25px), top=492
+   frame 기준 left=calc(33.33%+25px), top=492 */
 .chat-bg-mascot {
   position: fixed;
   width: 234px;
