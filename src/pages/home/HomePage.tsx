@@ -32,6 +32,12 @@ import './HomePage.css'
 
 const MEDALS = [medal1, medal2, medal3]
 
+function daysAgo(dateStr: string): number {
+  const then = new Date(dateStr).getTime()
+  const diffMs = Date.now() - then
+  return Math.max(0, Math.floor(diffMs / (24 * 60 * 60 * 1000)))
+}
+
 const RECYCLING_ROW1 = [
   { icon: petIcon, label: '페트', link: 'https://xn--oy2b29bd3a601b.kr/front/dischargeMethod/typeItem.do?searchCnd=110103' },
   { icon: paperIcon, label: '종이', link: 'https://xn--oy2b29bd3a601b.kr/front/dischargeMethod/typeItem.do?searchCnd=110101' },
@@ -86,7 +92,7 @@ export default function HomePage() {
             </p>
             <p className="banner-sub">
               {recent
-                ? `마지막 플로깅 거리 ${(recent.distanceMeters / 1000).toFixed(1)}km`
+                ? `마지막 플로깅이 ${daysAgo(recent.createdAt)}일 전이에요`
                 : '아직 플로깅 기록이 없어요'}
             </p>
             <button className="banner-btn" onClick={() => navigate('/map')}>

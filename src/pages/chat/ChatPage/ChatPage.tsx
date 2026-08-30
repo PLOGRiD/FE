@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import mascot from '../../../assets/chat/mascot.png'
 import chatBgMascot from '../../../assets/chat/chat-bg-mascot.png'
 import attachIcon from '../../../assets/chat/attach.svg'
@@ -26,7 +25,6 @@ const GREETING: Message = {
 }
 
 export default function ChatPage() {
-  const navigate = useNavigate()
   const [messages, setMessages] = useState<Message[]>([GREETING])
   const [input, setInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
@@ -129,7 +127,7 @@ export default function ChatPage() {
 
   return (
     <>
-      <Header title="챗봇" onBack={() => navigate('/')} rightIcon={sessionIcon} onRightClick={toggleSessions} />
+      <Header title="챗봇" rightIcon={sessionIcon} onRightClick={toggleSessions} />
 
       {showSessions && (
         <>

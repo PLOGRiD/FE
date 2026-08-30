@@ -182,7 +182,7 @@ export default function CommunityPage() {
 
   const header = <Header title="커뮤니티" onBack={handleBack} />
   const toastEl = toast && <div className="community-toast">{toast}</div>
-  const headerNoBorder = <Header title="커뮤니티" onBack={handleBack} noBorder />
+  const headerNoBorder = <Header title="커뮤니티" noBorder />
 
   /* 단체 플로깅 상세 */
   if (view.type === 'group-detail' && detailEvent) {

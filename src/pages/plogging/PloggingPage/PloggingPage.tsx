@@ -484,7 +484,7 @@ export default function PloggingPage() {
     <>
       {runningView}
 
-      <Header title="플로깅" onBack={() => navigate('/')} />
+      <Header title="플로깅" />
 
       <div className="plogging-page">
         <p className="plogging-main-title">디바이스 연결</p>

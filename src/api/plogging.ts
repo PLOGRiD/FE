@@ -24,6 +24,7 @@ export interface RecentPlogging {
   distanceMeters: number
   durationSeconds: number
   trashCount: number
+  createdAt: string
 }
 
 export async function startPlogging(): Promise<number> {
