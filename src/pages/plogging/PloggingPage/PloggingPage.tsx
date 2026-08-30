@@ -41,6 +41,12 @@ function haversine(lat1: number, lng1: number, lat2: number, lng2: number) {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 }
 
+// GPS 노이즈 필터 - 모든 fix를 그대로 누적하면 제자리에 서 있어도 거리가 계속 늘고,
+// 실내/터널에서 섞여 들어오는 부정확한 fix 때문에 한 번에 수백 m씩 튐
+const MAX_ACCURACY_M = 30   // 이보다 부정확한 위치는 경로에 반영하지 않음
+const MIN_STEP_M = 5        // 직전 점과 이만큼도 안 움직였으면 GPS 흔들림으로 간주
+const MAX_SPEED_MPS = 10    // 사람이 낼 수 없는 속도로 이동한 점은 이상치
+
 interface TrashChip { label: string; count: number; color: string }
 
 // SSE trash-added/plogging-in-progress에서 오는 category 코드 → 라벨/색상/지도 배지 아이콘
@@ -102,6 +108,11 @@ export default function PloggingPage() {
   const polylineRef = useRef<any>(null)
   const trashMarkersRef = useRef<any[]>([])
   const pathRef = useRef<{ lat: number; lng: number }[]>([])
+  const lastFixRef = useRef<{ lat: number; lng: number; t: number } | null>(null)
+  const clientDistanceRef = useRef(0)
+  // 서버 거리 이벤트를 한 번이라도 받으면 그 뒤로는 서버 값만 사용
+  // (클라이언트 누적치와 서버 계산치가 서로 덮어쓰면 숫자가 위아래로 튐)
+  const hasServerDistanceRef = useRef(false)
   const watchIdRef = useRef<number>(-1)
   const sseRef = useRef<EventSource | null>(null)
   const locationIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -123,29 +134,34 @@ export default function PloggingPage() {
     if (!starting) return
     let cancelled = false
 
+    // 경로의 시작점도 watchPosition이 준 실제 fix로만 잡음
+    // (전에는 getCurrentPosition이 뒤늦게 도착해 pathRef를 통째로 덮어써서 거리가 0으로 떨어졌음)
     const startTracking = (map: any, marker: any) => {
       if (!navigator.geolocation) return
-      navigator.geolocation.getCurrentPosition(pos => {
-        const { latitude: lat, longitude: lng } = pos.coords
-        const latlng = new window.kakao.maps.LatLng(lat, lng)
-        map.setCenter(latlng)
-        marker.setPosition(latlng)
-        pathRef.current = [{ lat, lng }]
-      })
       watchIdRef.current = navigator.geolocation.watchPosition(pos => {
-        const { latitude: lat, longitude: lng } = pos.coords
+        const { latitude: lat, longitude: lng, accuracy } = pos.coords
+        if (typeof accuracy === 'number' && accuracy > MAX_ACCURACY_M) return
+
+        const t = pos.timestamp || Date.now()
+        const prev = lastFixRef.current
+        if (prev) {
+          const stepKm = haversine(prev.lat, prev.lng, lat, lng)
+          const stepM = stepKm * 1000
+          if (stepM < MIN_STEP_M) return
+          const dtSec = Math.max((t - prev.t) / 1000, 0.001)
+          if (stepM / dtSec > MAX_SPEED_MPS) return
+          clientDistanceRef.current += stepKm
+        }
+        lastFixRef.current = { lat, lng, t }
+        pathRef.current = [...pathRef.current, { lat, lng }]
+
         const latlng = new window.kakao.maps.LatLng(lat, lng)
         marker.setPosition(latlng)
         map.panTo(latlng)
-        pathRef.current = [...pathRef.current, { lat, lng }]
-        if (pathRef.current.length >= 2) {
-          let total = 0
-          for (let i = 1; i < pathRef.current.length; i++) {
-            const a = pathRef.current[i - 1], b = pathRef.current[i]
-            total += haversine(a.lat, a.lng, b.lat, b.lng)
-          }
-          setDistance(total)
-        }
+
+        // 서버 거리 이벤트가 도착하기 전까지만 클라이언트 추정치를 보여줌
+        if (!hasServerDistanceRef.current) setDistance(clientDistanceRef.current)
+
         polylineRef.current?.setMap(null)
         const poly = new window.kakao.maps.Polyline({
           path: pathRef.current.map(p => new window.kakao.maps.LatLng(p.lat, p.lng)),
@@ -153,9 +169,11 @@ export default function PloggingPage() {
         })
         poly.setMap(map)
         polylineRef.current = poly
-      }, undefined, { enableHighAccuracy: true, maximumAge: 2000 })
+      }, undefined, { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 })
     }
 
+    // 지도 초기 중심 좌표 전용. 실패 시 서울시청으로 폴백하지만 이 값은 경로/거리에 넣지 않음
+    // (넣으면 첫 실제 GPS 좌표가 들어오는 순간 서울시청까지의 거리가 통째로 더해짐)
     const getInitialPos = (): Promise<{ lat: number; lng: number }> =>
       new Promise((resolve) => {
         navigator.geolocation?.getCurrentPosition(
@@ -178,7 +196,6 @@ export default function PloggingPage() {
       setTimeout(enterRunning, 4000)
       const marker = new window.kakao.maps.Marker({ position: initialLatLng, map })
       markerRef.current = marker
-      pathRef.current = [pos]
       startTracking(map, marker)
     }).catch(console.error)
 
@@ -263,11 +280,14 @@ export default function PloggingPage() {
       } catch {}
     })
 
-    // 서버가 계산한 이동거리로 갱신
+    // 서버가 계산한 이동거리 - 종료 시 endPlogging()이 주는 값과 같은 기준이라 이쪽을 단일 진실로 삼음
     on('plogging-distance-updated', (raw) => {
       try {
         const data = JSON.parse(raw)
-        if (typeof data.distanceMeters === 'number') setDistance(data.distanceMeters / 1000)
+        if (typeof data.distanceMeters === 'number') {
+          hasServerDistanceRef.current = true
+          setDistance(data.distanceMeters / 1000)
+        }
       } catch {}
     })
 
