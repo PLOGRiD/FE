@@ -118,6 +118,8 @@ export default function PloggingPage() {
   // 서버 거리 이벤트를 한 번이라도 받으면 그 뒤로는 서버 값만 사용
   // (클라이언트 누적치와 서버 계산치가 서로 덮어쓰면 숫자가 위아래로 튐)
   const hasServerDistanceRef = useRef(false)
+  // 마지막으로 화면에 반영한 서버 거리(km) - 순서 역전 판별용
+  const serverDistanceKmRef = useRef(0)
   const watchIdRef = useRef<number>(-1)
   const sseRef = useRef<EventSource | null>(null)
   const locationIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -226,6 +228,13 @@ export default function PloggingPage() {
     }
     localStorage.removeItem(ACTIVE_PLOGGING_KEY)
     ploggingIdRef.current = null
+    // 다음 세션이 이전 거리를 물려받지 않도록 누적 상태를 모두 초기화
+    pathRef.current = []
+    lastFixRef.current = null
+    clientDistanceRef.current = 0
+    hasServerDistanceRef.current = false
+    serverDistanceKmRef.current = 0
+    setDistance(0)
     setStarting(false)
     setStage('idle')
     setSessionGoneToast(true)
@@ -306,14 +315,20 @@ export default function PloggingPage() {
       } catch {}
     })
 
-    // 서버가 계산한 이동거리 - 종료 시 endPlogging()이 주는 값과 같은 기준이라 이쪽을 단일 진실로 삼음
+    // 서버가 계산한 이동거리 - 종료 시 endPlogging()이 주는 값과 같은 기준이라 이쪽을 단일 진실로 삼음.
+    // 서버는 Redis에 누적만 하므로 거리가 줄어들 수 없지만, updateLocation의 읽기-계산-쓰기가
+    // 원자적이지 않아 요청이 겹치면 더 작은 값이 뒤늦게 도착할 수 있음(순서 역전).
+    // 첫 값은 그대로 받아 클라이언트 추정치에서 넘겨받고, 이후로는 이전보다 작은 값은 버림
     on('plogging-distance-updated', (raw) => {
       try {
         const data = JSON.parse(raw)
-        if (typeof data.distanceMeters === 'number') {
-          hasServerDistanceRef.current = true
-          setDistance(data.distanceMeters / 1000)
-        }
+        if (typeof data.distanceMeters !== 'number') return
+        const km = data.distanceMeters / 1000
+        if (!Number.isFinite(km) || km < 0) return
+        if (hasServerDistanceRef.current && km <= serverDistanceKmRef.current) return
+        hasServerDistanceRef.current = true
+        serverDistanceKmRef.current = km
+        setDistance(km)
       } catch {}
     })
 
