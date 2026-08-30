@@ -1,3 +1,4 @@
+import type { JSX } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { PLOGGING_ICON_PATH, PLOGGING_ICON_VIEWBOX } from '../../assets/icons/ploggingPath'
 import './BottomNav.css'

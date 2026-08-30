@@ -1,5 +1,5 @@
 
-/* ?�?� 메시지 ?�역 배경 (마스코트 ?�에 깔리???�이?? ?�?� */
+/* 채팅 메시지 영역 배경 (마스코트 위에 깔리는 레이어) */
 .chat-messages-bg {
   position: fixed;
   top: 56px;
@@ -12,7 +12,7 @@
   z-index: 1;
 }
 
-/* ?�?� 메시지 ?�역 Figma: bg=#f4f6f8 (배경?� .chat-messages-bg�?분리) ?�?� */
+/* 채팅 메시지 영역 Figma: bg=#f4f6f8 (배경은 .chat-messages-bg로 분리) */
 .chat-messages {
   position: fixed;
   top: 56px;
@@ -64,7 +64,7 @@
   top: -356.06%;
 }
 
-/* Figma 345:555: �?bubble bg=white, shadow, radius 3/10/10/10 */
+/* Figma 345:555: bot bubble bg=white, shadow, radius 3/10/10/10 */
 .chat-bubble {
   max-width: 246px;
   padding: 13px 14px;
@@ -78,14 +78,14 @@
 }
 .chat-bubble.bot { background: #fff; margin-top: 8px; }
 
-/* Figma 345:565: ?��? bubble bg=#a0cfbd, radius 10/3/10/10 */
+/* Figma 345:565: user bubble bg=#a0cfbd, radius 10/3/10/10 */
 .chat-bubble.user {
   background: #a0cfbd;
   color: #fff;
   border-radius: 10px 3px 10px 10px;
 }
 
-/* 메시지 ?�라?�드 ???�니메이??*/
+/* 메시지 슬라이드 인 애니메이션 */
 @keyframes slide-from-right {
   from { opacity: 0; transform: translateX(16px); }
   to   { opacity: 1; transform: translateX(0); }
@@ -97,7 +97,7 @@
 .chat-row.user .chat-bubble { animation: slide-from-right 0.22s ease; }
 .chat-row.bot  .chat-bubble { animation: slide-from-left  0.22s ease; }
 
-/* ?�?�핑 ?�니메이??*/
+/* 타이핑 애니메이션 */
 .chat-typing { display: flex; gap: 4px; align-items: center; min-height: 40px; }
 .chat-typing span {
   width: 5px; height: 5px;
@@ -112,7 +112,7 @@
 }
 
 /* Figma 345:518: BackgroundMascot w=234, h=262, opacity=50%
-   frame 기�? left=calc(33.33%+25px), top=492 */
+   frame 기준 left=calc(33.33%+25px), top=492
 .chat-bg-mascot {
   position: fixed;
   width: 234px;
@@ -128,7 +128,7 @@
   object-fit: contain;
 }
 
-/* Figma 345:550: ?�력�?bg=white, h=96, shadow 0 -5 4 rgba(0,0,0,0.1) */
+/* Figma 345:550: 입력창 bg=white, h=96, shadow 0 -5 4 rgba(0,0,0,0.1) */
 .chat-input-area {
   position: fixed;
   bottom: 90px;
@@ -165,7 +165,7 @@
   gap: 10px;
 }
 
-/* Figma 345:553: ?��?지 첨�? 버튼 size=24 */
+/* Figma 345:553: 이미지 첨부 버튼 size=24 */
 .chat-attach-btn {
   width: 24px; height: 24px;
   flex-shrink: 0;
@@ -202,7 +202,7 @@
   display: block;
 }
 
-/* 첨�? ?��?지 미리보기 카드 (?�력창과 같�? ??배경 ?? ?�력 �?바로 ?? */
+/* 첨부 이미지 미리보기 카드 (입력창과 같은 배경, 입력 바로 위) */
 .chat-attach-preview {
   position: relative;
   padding: 0 19px;
@@ -230,7 +230,7 @@
   cursor: pointer;
 }
 
-/* ?�?� 채팅 ?�션 목록 ?�널 ?�?� */
+/* 채팅 세션 목록 패널 */
 .chat-sessions-backdrop {
   position: fixed;
   top: 56px;

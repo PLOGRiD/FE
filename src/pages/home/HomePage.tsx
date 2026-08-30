@@ -26,6 +26,7 @@ import electronicsIcon from '../../assets/home/recycling/electronics.png'
 import plasticIcon from '../../assets/home/recycling/pet.png'
 import BottomNav from '../../components/BottomNav/BottomNav'
 import { getRecentPlogging } from '../../api/plogging'
+import type { RecentPlogging } from '../../api/plogging'
 import { getRanking } from '../../api/member'
 import type { RankItem } from '../../api/member'
 import './HomePage.css'
@@ -67,7 +68,7 @@ export default function HomePage() {
   const navigate = useNavigate()
   const nickname = localStorage.getItem('nickname') ?? '사용자'
 
-  const [recent, setRecent] = useState<{ distanceMeters: number; durationSeconds: number; trashCount: number } | null>(null)
+  const [recent, setRecent] = useState<RecentPlogging | null>(null)
   const [topRankings, setTopRankings] = useState<RankItem[]>([])
 
   useEffect(() => {
