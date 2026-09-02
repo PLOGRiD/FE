@@ -94,6 +94,8 @@ export default function PloggingPage() {
   const [starting, setStarting] = useState(() => readActivePlogging() !== null)
 
   const ploggingIdRef = useRef<number | null>(readActivePlogging()?.ploggingId ?? null)
+  // SSE 이펙트가 ploggingId 도착 시점을 감지해야 해서 ref와 별개로 state도 유지
+  const [ploggingId, setPloggingId] = useState<number | null>(readActivePlogging()?.ploggingId ?? null)
   const mapRef = useRef<any>(null)
   const markerRef = useRef<any>(null)
   const trashMarkersRef = useRef<any[]>([])
@@ -191,6 +193,7 @@ export default function PloggingPage() {
     }
     localStorage.removeItem(ACTIVE_PLOGGING_KEY)
     ploggingIdRef.current = null
+    setPloggingId(null)
     // 다음 세션이 이전 거리를 물려받지 않도록 누적 상태를 모두 초기화
     pathRef.current = []
     lastFixRef.current = null
@@ -221,10 +224,10 @@ export default function PloggingPage() {
   // SSE 쓰레기 감지 — 백엔드가 event: 필드로 이름 붙여서 보내므로 onmessage(unnamed)가 아니라
   // addEventListener로 각 이벤트 이름별로 받아야 함
   useEffect(() => {
-    if (stage !== 'running' || !ploggingIdRef.current) return
+    if (stage !== 'running' || !ploggingId) return
     const token = localStorage.getItem('accessToken')
     const es = new EventSource(
-      `${BASE_URL}/ploggings/${ploggingIdRef.current}/events?token=${token}`
+      `${BASE_URL}/ploggings/${ploggingId}/events?token=${token}`
     )
     sseRef.current = es
 
@@ -316,7 +319,7 @@ export default function PloggingPage() {
       trashMarkersRef.current.forEach(m => m.setMap(null))
       trashMarkersRef.current = []
     }
-  }, [stage])
+  }, [stage, ploggingId])
 
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const rafRef = useRef<number>(-1)
@@ -434,6 +437,7 @@ export default function PloggingPage() {
     try {
       const id = await startPlogging()
       ploggingIdRef.current = id
+      setPloggingId(id)
       localStorage.setItem(ACTIVE_PLOGGING_KEY, JSON.stringify({ ploggingId: id, startedAt: Date.now() }))
     } catch {}
     // 지도 로딩이 끝나면(맵 useEffect 안에서) stage가 'running'으로 바뀜
