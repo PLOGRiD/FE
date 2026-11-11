@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const BASE_URL = 'http://43.201.15.97:8080/api/v1'
+const BASE_URL = 'https://plogrid.p-e.kr/api/v1'
 
 const client = axios.create({
   baseURL: BASE_URL,
